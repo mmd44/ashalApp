@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     multicastLock.acquire();
 
     // example listener code
-    final socket = await RawDatagramSocket.bind('255.255.255.255', 67)
+    final socket = await RawDatagramSocket.bind('224.0.0.1', 1900)
     ..multicastHops = 10
     ..broadcastEnabled = true
     ..writeEventsEnabled = true;
@@ -52,7 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
         final datagramPacket = socket.receive();
         if (datagramPacket == null) return;
 
-        _packets = '$_packets\n${datagramPacket.toString()}';
+        setState(() {
+          _packets = '$_packets\n${datagramPacket.address.toString()}';
+        });
+
         print("packet!");
         print(datagramPacket);
       }});
@@ -80,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_packets',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme.of(context).textTheme.display1.copyWith(fontSize: 12),
             ),
           ],
         ),
