@@ -38,12 +38,11 @@ class _MyHomePageState extends State<MyHomePage> {
   String _packets='';
   
   void _initListener () async {
-    if (multicastLock != null) multicastLock.release();
 
     multicastLock.acquire();
 
     // example listener code
-    final socket = await RawDatagramSocket.bind('224.0.0.1', 1900)
+    final socket = await RawDatagramSocket.bind('255.255.255.255', 67)
     ..multicastHops = 10
     ..broadcastEnabled = true
     ..writeEventsEnabled = true;
