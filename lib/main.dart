@@ -31,8 +31,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
 
-
-
   final multicastLock = new MulticastLock();
 
   String _packets='';
@@ -42,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     multicastLock.acquire();
 
     // example listener code
-    final socket = await RawDatagramSocket.bind('224.0.0.1', 1900)
+    final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8888)
     ..multicastHops = 10
     ..broadcastEnabled = true
     ..writeEventsEnabled = true;
@@ -53,12 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
         if (datagramPacket == null) return;
 
         setState(() {
-          _packets = '$_packets\n${datagramPacket.address.toString()}';
+          if(String.fromCharCodes(datagramPacket.data).contains("ASHAL"))
+            _packets = '$_packets\n${datagramPacket.address.address}';
         });
 
         print("packet!");
         print(datagramPacket);
       }});
+    socket.send("Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"), 8888);
   }
 
 
