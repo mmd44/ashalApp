@@ -30,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-
+  var socket=null;
   final multicastLock = new MulticastLock();
 
   String _packets='';
@@ -40,24 +40,28 @@ class _MyHomePageState extends State<MyHomePage> {
     multicastLock.acquire();
 
     // example listener code
-    final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8888)
-    ..multicastHops = 10
-    ..broadcastEnabled = true
-    ..writeEventsEnabled = true;
+    if(socket==null) {
+       socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8888)
+        ..multicastHops = 10
+        ..broadcastEnabled = true
+        ..writeEventsEnabled = true;
 
-    socket.listen((RawSocketEvent event) {
-      if (event == RawSocketEvent.read) {
-        final datagramPacket = socket.receive();
-        if (datagramPacket == null) return;
+      socket.listen((RawSocketEvent event) {
+        if (event == RawSocketEvent.read) {
+          final datagramPacket = socket.receive();
+          if (datagramPacket == null) return;
 
-        setState(() {
-          if(String.fromCharCodes(datagramPacket.data).contains("ASHAL"))
-            _packets = '$_packets\n${datagramPacket.address.address}';
-        });
+          setState(() {
+            if (String.fromCharCodes(datagramPacket.data).contains(
+                "ASHAL_SERVER"))
+              _packets = '$_packets\n${datagramPacket.address.address}';
+          });
 
-        print("packet!");
-        print(datagramPacket);
-      }});
+          print("packet!");
+          print(datagramPacket);
+        }
+      });
+    }
     socket.send("Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"), 8888);
   }
 
