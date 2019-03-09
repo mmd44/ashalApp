@@ -21,18 +21,28 @@ class MeterCollectionModel {
   MeterCollectionModel(this.id, this.referenceId, this.amount, this.date,
       this.multiplePayment);
 
+
+  MeterCollectionModel.MeterCollectionModel(this.referenceId, this.amount, this.date,
+      this.multiplePayment);
+
+  static bool toBoolean(String str, [bool strict]) {
+    if (strict == true) {
+      return str == '1' || str == 'true';
+    }
+    return str != '0' && str != 'false' && str != '';
+  }
+
   factory MeterCollectionModel.fromJson(Map<String, dynamic> json) => new MeterCollectionModel(
       json["id"],
       json["referenceId"],
       json["amount"],
-      json["date"],
-      json["multiplePayment"]);
+      DateTime.fromMicrosecondsSinceEpoch(json["date"]),
+      toBoolean(json["multiplePayment"].toString()));
 
   Map<String, dynamic> toJson() => {
-        "id": id,
         "referenceId": referenceId,
         "amount": amount,
-        "date": date,
+        "date": date.millisecondsSinceEpoch,
         "multiplePayment": multiplePayment
       };
 }

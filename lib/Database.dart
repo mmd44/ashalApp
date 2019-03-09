@@ -22,13 +22,27 @@ class DBProvider {
     return _database;
   }
 
+  reCreateDatabase() async {
+    await DBProvider.db.database;
+    if (_database != null) {
+      var result = await deleteDatabase(_database.path);
+      await _database.close();
+      _database=null;
+    }
+    await DBProvider.db.database;
+  }
+
   dropDatabase() async {
-    if (_database != null) var result = await deleteDatabase(_database.path);
+    if (_database != null) {
+      var result = await deleteDatabase(_database.path);
+      await _database.close();
+      _database=null;
+    }
   }
 
   createTables(Database db) async {
     await db.execute('CREATE TABLE `$CLIENT_TABLE` (`id` TEXT NOT NULL,'
-        '`referenceId` INT,'
+        '`referenceId` INTEGER,'
         '`category` VARCHAR(100),'
         '`organizationName` VARCHAR(100),'
         '`sharedDescription` VARCHAR(100),'
@@ -39,31 +53,29 @@ class DBProvider {
         '`area` VARCHAR(100),'
         '`streetAddress` VARCHAR(100),'
         '`building` VARCHAR(100),'
-        '`floor` INT,'
+        '`floor` INTEGER,'
         '`phone` VARCHAR(100),'
         '`email` VARCHAR(100),'
         '`meterId` VARCHAR(100),'
         '`deleted` BOOLEAN,'
         '`purged` BOOLEAN,'
-        '`dateTimeAdded` DATETIME,'
-        '`dateTimeDeleted` DATETIME,'
+        '`dateTimeAdded` INTEGER,'
+        '`dateTimeDeleted` INTEGER,'
         '`outstanding` DOUBLE,'
         '`comment` VARCHAR(100),'
         'PRIMARY KEY (`id`,`referenceId`));');
     await db.execute('CREATE TABLE `$METER_READING_TABLE` ('
-        '`id` INT unsigned NOT NULL AUTO_INCREMENT,'
-        '`referenceId` INT,'
+//        '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+        '`referenceId` INTEGER NOT NULL PRIMARY KEY,'
         '`reading` DOUBLE,'
-        '`meter_image` TEXT,'
-        '`date` DATETIME,'
-        '	PRIMARY KEY (`id`,`referenceId`));');
+        '`meterImage` TEXT,'
+        '`date` INTEGER);');
     await db.execute( 'CREATE TABLE `$METER_COLLECTION_TABLE` ('
-        '`id` INT unsigned NOT NULL AUTO_INCREMENT,'
-        '`referenceId` INT,'
+        //'`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+        '`referenceId` INTEGER NOT NULL PRIMARY KEY,'
         '`amount` DOUBLE,'
-        '`multiple_payment` BOOLEAN DEFAULT \'false\','
-        '`date` DATETIME,'
-        'PRIMARY KEY (`id`,`referenceId`));');
+        '`multiplePayment` BOOLEAN DEFAULT \'false\','
+        '`date` INTEGER);');
   }
 
   batchTransaction() async {
@@ -78,121 +90,116 @@ class DBProvider {
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "ashal.db");
-    return await openDatabase(path, version: 1, onOpen: (db) {},
+    return await openDatabase(path, version: 2, onOpen: (db) {},
         onCreate: (Database db, int version) async {
             await createTables(db);
         });
   }
 
-  insertClient(ClientModel newUser) async {
+  Future insertClient(ClientModel newUser) async {
     final db = await database;
     var res = await db.insert("`client`", newUser.toJson());
     return res;
   }
 
-  getClient(int referenceId) async {
+  Future<ClientModel> getClient(int referenceId) async {
     final db = await database;
     var res = await db.query("$CLIENT_TABLE", where: "referenceId = ? and dateTimeDeleted IS NULL", whereArgs: [referenceId]);
     return res.isNotEmpty ? ClientModel.fromJson(res.first) : Null;
   }
 
-  getAllClients() async {
+  Future <List<ClientModel>> getAllClients() async {
     final db = await database;
     var res = await db.query("$CLIENT_TABLE");
-    List<ClientModel> list =
-        res.isNotEmpty ? res.map((c) => ClientModel.fromJson(c)).toList() : [];
-    return list;
+    return res.isNotEmpty ? res.map((c) => ClientModel.fromJson(c)).toList() : [];
   }
 
-  updateClient(ClientModel newClient) async {
+  Future updateClient(ClientModel newClient) async {
     final db = await database;
-    var res = await db.update("$CLIENT_TABLE", newClient.toJson(),
+     var res = await db.update("$CLIENT_TABLE", newClient.toJson(),
         where: "id = ?", whereArgs: [newClient.id]);
     return res;
   }
 
-  deleteClient(int id) async {
+  Future deleteClient(int id) async {
     final db = await database;
     db.delete("$CLIENT_TABLE", where: "id = ?", whereArgs: [id]);
   }
 
-  deleteAllClient() async {
+  Future deleteAllClient() async {
     final db = await database;
     db.rawDelete("Delete * from $CLIENT_TABLE");
   }
 
 
 
-  insertMeterReading(MeterReadingModel newUser) async {
+  Future insertMeterReading(MeterReadingModel newUser) async {
     final db = await database;
     var res = await db.insert("`$METER_READING_TABLE`", newUser.toJson());
     return res;
   }
 
-  getMeterReading(int referenceId) async {
+  Future<MeterReadingModel> getMeterReading(int referenceId) async {
     final db = await database;
     var res = await db.query("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
     return res.isNotEmpty ? MeterReadingModel.fromJson(res.first) : Null;
   }
 
-  getAllMeterReading() async {
+  Future<List<MeterReadingModel>> getAllMeterReading() async {
     final db = await database;
     var res = await db.query("$METER_READING_TABLE");
-    List<ClientModel> list =
-    res.isNotEmpty ? res.map((c) => MeterReadingModel.fromJson(c)).toList() : [];
-    return list;
+   return res.isNotEmpty ? res.map((c) => MeterReadingModel.fromJson(c)).toList() : [];
   }
 
-  updateMeterReading(MeterReadingModel newMeterReadingModel) async {
+  Future updateMeterReading(MeterReadingModel newMeterReadingModel) async {
     final db = await database;
     var res = await db.update("$METER_READING_TABLE", newMeterReadingModel.toJson(),
-        where: "id = ?", whereArgs: [newMeterReadingModel.id]);
-    return res;
-  }
-
-  deleteMeterReading(int referenceId) async {
-    final db = await database;
-    db.delete("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
-  }
-
-  deleteAllMeterReading() async {
-    final db = await database;
-    db.rawDelete("Delete * from $METER_READING_TABLE");
-  }
-
-  insertMeterCollection(MeterCollectionModel newUser) async {
-    final db = await database;
-    var res = await db.insert("`$METER_COLLECTION_TABLE`", newUser.toJson());
-    return res;
-  }
-
-  getMeterCollection(int referenceId) async {
-    final db = await database;
-    var res = await db.query("$METER_COLLECTION_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
-    return res.isNotEmpty ? MeterReadingModel.fromJson(res.first) : Null;
-  }
-
-  getAllMeterCollection() async {
-    final db = await database;
-    var res = await db.query("$METER_COLLECTION_TABLE");
-    List<ClientModel> list =
-    res.isNotEmpty ? res.map((c) => MeterCollectionModel.fromJson(c)).toList() : [];
-    return list;
-  }
-
-  updateMeterCollection(MeterReadingModel newMeterReadingModel) async {
-    final db = await database;
-    var res = await db.update("$METER_COLLECTION_TABLE", newMeterReadingModel.toJson(),
         where: "referenceId = ?", whereArgs: [newMeterReadingModel.referenceId]);
     return res;
   }
 
-  deleteMetereCollection(int referenceId) async {
+  Future deleteMeterReading(int referenceId) async {
+    final db = await database;
+    db.delete("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
+  }
+
+  Future deleteAllMeterReading() async {
+    final db = await database;
+    db.rawDelete("Delete * from $METER_READING_TABLE");
+  }
+
+  Future insertMeterCollection(MeterCollectionModel newMeterCollectionModel) async {
+    final db = await database;
+    var res = await db.insert("`$METER_COLLECTION_TABLE`", newMeterCollectionModel.toJson());
+    return res;
+  }
+
+  Future<MeterCollectionModel> getMeterCollection(int referenceId) async {
+    final db = await database;
+    var res = await db.query("$METER_COLLECTION_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
+    print(res.first);
+    return res.isNotEmpty ? MeterCollectionModel.fromJson(res.first) : Null;
+  }
+
+  Future<List<MeterCollectionModel>> getAllMeterCollection() async {
+    final db = await database;
+    var res = await db.query("$METER_COLLECTION_TABLE");
+    return res.isNotEmpty ? res.map((c) => MeterCollectionModel.fromJson(c)).toList() : [];
+  }
+
+  Future updateMeterCollection(MeterCollectionModel newMeterCollectionModel) async {
+    final db = await database;
+    var res = await db.update("$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),
+        where: "referenceId = ?", whereArgs: [newMeterCollectionModel.referenceId]);
+    return res;
+  }
+
+  Future deleteMetereCollection(int referenceId) async {
     final db = await database;
     db.delete("$METER_COLLECTION_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
   }
 
-  deleteAllMeterCollection() async {
+  Future deleteAllMeterCollection() async {
     final db = await database;
     db.rawDelete("Delete * from $METER_COLLECTION_TABLE");
   }
