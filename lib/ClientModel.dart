@@ -55,8 +55,7 @@ class ClientModel {
       this.dateTimeAdded,
       this.dateTimeDeleted,
       this.outstanding,
-      this.comment,
-      this.monthlyDataReferences);
+      this.comment);
 
   factory ClientModel.fromJson(Map<String, dynamic> json) => new ClientModel(
       json["id"],
@@ -76,11 +75,10 @@ class ClientModel {
       json["meterId"],
       json["deleted"],
       json["purged"],
-      json["dateTimeAdded"],
-      json["dateTimeDeleted"],
+      DateTime.fromMicrosecondsSinceEpoch(json["dateTimeAdded"]),
+      DateTime.fromMicrosecondsSinceEpoch(json["dateTimeDeleted"]),
       json["outstanding"],
-      json["comment"],
-      json["monthlyDataReferences"]);
+      json["comment"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -100,10 +98,9 @@ class ClientModel {
         "meterId": meterId,
         "deleted": deleted,
         "purged": purged,
-        "dateTimeAdded": dateTimeAdded,
-        "dateTimeDeleted": dateTimeDeleted,
+        "dateTimeAdded": dateTimeAdded.millisecondsSinceEpoch,
+        "dateTimeDeleted": dateTimeDeleted.millisecondsSinceEpoch,
         "outstanding": outstanding,
-        "comment": comment,
-        "monthlyDataReferences": monthlyDataReferences
+        "comment": comment
       };
 }
