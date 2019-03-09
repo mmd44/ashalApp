@@ -79,7 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
+        child:
+        Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
@@ -93,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _initListener,
+        onPressed: (){_initListener();},
         tooltip: 'Listen',
         child: Icon(Icons.hearing),
       ),
