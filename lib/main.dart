@@ -1,14 +1,12 @@
 import 'dart:io';
 
-import 'package:ashal/MeterCollectionModel.dart';
-import 'package:ashal/MeterReadingModel.dart';
+import 'package:ashal/image_picker_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:multicast_lock/multicast_lock.dart';
-import 'Database.dart';
-
+import 'package:image_picker/image_picker.dart';
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget  {
   
   @override
   Widget build(BuildContext context) {
@@ -31,11 +29,13 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with ImagePickerListener,TickerProviderStateMixin {
 
   var socket=null;
   final multicastLock = new MulticastLock();
-
+  ImagePickerHandler imagePicker;
+  AnimationController _controller;
+  File _image;
   String _packets='';
   
   void _initListener () async {
@@ -95,16 +95,33 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){_initListener();},
+        onPressed: (){_openCamera();},
         tooltip: 'Listen',
         child: Icon(Icons.hearing),
       ),
     );
   }
 
+  _openCamera() async
+  {
+    imagePicker.getImageFromCamera();
+  }
   @override
   void initState() 
   {
     super.initState();
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    imagePicker=new ImagePickerHandler(this,_controller);
+    imagePicker.init();
+  }
+
+  @override
+  userImage(File _image) {
+    setState(() {
+      this._image = _image;
+    });
   }
 }
