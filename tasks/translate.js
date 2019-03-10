@@ -5,28 +5,31 @@ var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 
-var baseDir = './ubq/ubq/Resources/'
-var spreadSheetId = '1WEf_Y9Fr3ZWGwmmrlLPkkYgVzeMWz2u1R_GtxMyPw64';
+var spreadSheetId = '1TJoFFf7tpwpVS83UyPXdNySO0gVXUIzg5Fjw567XUys';
 var range = 'Sheet1!A2:D'
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
 var SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-    process.env.USERPROFILE) + '/.credentials/';
+//var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
+//    process.env.USERPROFILE) + '/.credentials/';
+var TOKEN_DIR="./.credentials/";
 var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
 
 // Load client secret
 var client = {
-    "installed": {
-        "client_id": "176556814394-024hi6hfsphl0u8aakos4699g4p0j9t9.apps.googleusercontent.com",
-        "project_id": "webbanking-167509",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://accounts.google.com/o/oauth2/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "A10_ft8O443__MBTs9CfFpKw",
-        "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
-    }
+	"installed": {
+		"client_id": "986682360607-rhlocn9ag2s3nbunfejihdvlgtfddvnu.apps.googleusercontent.com",
+		"project_id": "ashal-app",
+		"auth_uri": "https://accounts.google.com/o/oauth2/auth",
+		"token_uri": "https://oauth2.googleapis.com/token",
+		"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+		"client_secret": "enuCIeIKLmJRSEfkJVibM2TV",
+		"redirect_uris": [
+			"urn:ietf:wg:oauth:2.0:oob",
+			"http://localhost"
+		]
+	}
 };
 authorize(client, generateLocalization);
 
@@ -43,7 +46,7 @@ function authorize(credentials, callback) {
     var redirectUrl = credentials.installed.redirect_uris[0];
     var auth = new googleAuth();
     var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-
+	
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, function (err, token) {
         if (err) {
@@ -100,13 +103,14 @@ function storeToken(token) {
             throw err;
         }
     }
-    fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-    console.log('Token stored to ' + TOKEN_PATH);
+    fs.writeFile(TOKEN_PATH, JSON.stringify(token),fs_call_back);
 }
-
+function fs_call_back(err, result) {
+	if(err) console.log('error', err);	
+}
 /**
  * Generate translation files:
- * https://docs.google.com/spreadsheets/d/1nNNHZXmBcK31AHbZRMsuSzjeyea0DoTovCY56RZScaY/edit#gid=511517246
+ * https://docs.google.com/spreadsheets/d/1TJoFFf7tpwpVS83UyPXdNySO0gVXUIzg5Fjw567XUys/edit#gid=0
  */
 function generateLocalization(auth) {
     var sheets = google.sheets('v4');
@@ -120,7 +124,7 @@ function generateLocalization(auth) {
             return;
         }
         var rows = response.values;
-        if (rows.length == 0) {
+        if (rows==null || rows.length == 0) {
             console.log('No data found.');
         } else {
 
@@ -135,20 +139,12 @@ function generateLocalization(auth) {
             }
 
 
-            fs.writeFile('../flutter/assets/i18n/en.json', JSON.stringify(enStrings));
-            fs.writeFile('../flutter/assets/i18n/ar.json', JSON.stringify(arStrings));
-            fs.writeFile('../flutter/assets/i18n/fr.json', JSON.stringify(frStrings));
+            fs.writeFile('../flutter/assets/i18n/en.json', JSON.stringify(enStrings),fs_call_back);
+            fs.writeFile('../flutter/assets/i18n/ar.json', JSON.stringify(arStrings),fs_call_back);
+            fs.writeFile('../flutter/assets/i18n/fr.json', JSON.stringify(frStrings),fs_call_back);
 
 
             console.log('Successfully generated mobile localization files');
-
-                       fs.writeFile('../web/web/assets/i18n/en.json', JSON.stringify(enStrings));
-                        fs.writeFile('../web/web/assets/i18n/ar.json', JSON.stringify(arStrings));
-                        fs.writeFile('../web/web/assets/i18n/fr.json', JSON.stringify(frStrings));
-
-
-                        console.log('Successfully generated web localization files');
-
         }
 
     });

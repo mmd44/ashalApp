@@ -2,7 +2,7 @@ import 'package:ashal/routes.dart';
 import 'package:ashal/model/card_item.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:ashal/theme.dart' as Theme;
+import 'package:ashal/ui/theme.dart' as Theme;
 
 class CardRow extends StatelessWidget {
 

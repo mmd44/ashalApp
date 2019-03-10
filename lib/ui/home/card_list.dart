@@ -1,7 +1,7 @@
 import 'package:ashal/model/card_items.dart';
 import 'package:ashal/ui/home/card_row.dart';
 import 'package:flutter/material.dart';
-import 'package:ashal/theme.dart' as Theme;
+import 'package:ashal/ui/theme.dart' as Theme;
 
 class CardList extends StatelessWidget {
   @override

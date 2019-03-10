@@ -1,7 +1,5 @@
-import 'package:ashal/localization.dart';
-import 'package:ashal/model/card_item.dart';
 import 'package:flutter/material.dart';
-import 'package:ashal/theme.dart' as Theme;
+import 'package:ashal/ui/theme.dart' as Theme;
 
 class SubscriberInfo extends StatefulWidget {
   SubscriberInfo();

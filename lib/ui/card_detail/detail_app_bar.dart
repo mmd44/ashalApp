@@ -1,4 +1,4 @@
-import 'package:ashal/theme.dart' as Theme;
+import 'package:ashal/ui/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 
 class DetailAppBar extends StatelessWidget {
