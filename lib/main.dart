@@ -1,103 +1,53 @@
 import 'dart:io';
 
+import 'package:ashal/routes.dart';
+import 'package:ashal/ui/home/home_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ashal/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:multicast_lock/multicast_lock.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MainApp());
 
-class MyApp extends StatelessWidget {
-
+class MainApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  State<StatefulWidget> createState() {
+    return MainAppState();
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-
-
-
-  final multicastLock = new MulticastLock();
-
-  String _packets='';
-  
-  void _initListener () async {
-
-    multicastLock.acquire();
-
-    // example listener code
-    final socket = await RawDatagramSocket.bind('224.0.0.1', 1900)
-    ..multicastHops = 10
-    ..broadcastEnabled = true
-    ..writeEventsEnabled = true;
-
-    socket.listen((RawSocketEvent event) {
-      if (event == RawSocketEvent.read) {
-        final datagramPacket = socket.receive();
-        if (datagramPacket == null) return;
-
-        setState(() {
-          _packets = '$_packets\n${datagramPacket.address.toString()}';
-        });
-
-        print("packet!");
-        print(datagramPacket);
-      }});
-  }
-
-
-  @override
-  void dispose() {
-    multicastLock.release();
-    super.dispose();
-  }
+class MainAppState extends State<MainApp> {
+  Key key = new UniqueKey();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Listening to packets: ',
-            ),
-            Text(
-              '$_packets',
-              style: Theme.of(context).textTheme.display1.copyWith(fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _initListener,
-        tooltip: 'Listen',
-        child: Icon(Icons.hearing),
-      ),
-    );
-  }
+    Routes.initRoutes();
+    return new MaterialApp(
+        key: key,
+        title: 'Ashal Mobile',
+        supportedLocales: LocalizationDelegate.supportedLocales,
+        localizationsDelegates: [
+          LocalizationDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        localeResolutionCallback:
+            (Locale locale, Iterable<Locale> supportedLocales) {
+          if (locale == null) {
+            //networkSetup
+            //  .setNetworkLanguage(supportedLocales.first.languageCode);
 
-  @override
-  void initState() {
-    super.initState();
+            return supportedLocales.first;
+          }
+          for (Locale supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode) {
+              //networkSetup
+              //  .setNetworkLanguage(supportedLocales.first.languageCode);
+              return supportedLocale;
+            }
+          }
+          return supportedLocales.first;
+        },
+        home: HomePage());
   }
 }
