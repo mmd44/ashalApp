@@ -139,9 +139,9 @@ function generateLocalization(auth) {
             }
 
 
-            fs.writeFile('../flutter/assets/i18n/en.json', JSON.stringify(enStrings),fs_call_back);
-            fs.writeFile('../flutter/assets/i18n/ar.json', JSON.stringify(arStrings),fs_call_back);
-            fs.writeFile('../flutter/assets/i18n/fr.json', JSON.stringify(frStrings),fs_call_back);
+            fs.writeFile('../assets/i18n/en.json', JSON.stringify(enStrings),fs_call_back);
+            fs.writeFile('../assets/i18n/ar.json', JSON.stringify(arStrings),fs_call_back);
+            fs.writeFile('../assets/i18n/fr.json', JSON.stringify(frStrings),fs_call_back);
 
 
             console.log('Successfully generated mobile localization files');
