@@ -1,4 +1,4 @@
-import 'package:ashal/model/card_item.dart';
+import 'package:ashal/ui/models/card_item.dart';
 class CardItemsDao {
 
   static final List<CardItem> menuItems = [
