@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:ashal/core/models/meter_collection.dart';
-import 'package:ashal/model/client.dart';
+import 'package:ashal/core/models/client.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';

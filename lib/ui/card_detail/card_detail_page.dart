@@ -1,5 +1,5 @@
-import 'package:ashal/model/card_item.dart';
-import 'package:ashal/model/card_items.dart';
+import 'package:ashal/ui/models/card_item.dart';
+import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/card_detail/detail_app_bar.dart';
 import 'package:ashal/ui/card_detail/card_detail_body.dart';
 import 'package:flutter/material.dart';

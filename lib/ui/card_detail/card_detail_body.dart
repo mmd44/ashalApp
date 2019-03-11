@@ -1,5 +1,5 @@
 import 'package:ashal/localization.dart';
-import 'package:ashal/model/card_item.dart';
+import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/card_detail/subscriber_info.dart';
 import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
