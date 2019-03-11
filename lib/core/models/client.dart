@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ashal/core/models/meter_collection.dart';
+
 Client clientFromJson(String str) {
   final jsonData = json.decode(str);
   return Client.fromJson(jsonData);
@@ -11,7 +13,7 @@ String clientToJson(Client data) {
 }
 
 class Client {
-  int id;
+  String id;
   int referenceId;
   String category;
   String organizationName;
@@ -73,8 +75,8 @@ class Client {
       json["phone"],
       json["email"],
       json["meterId"],
-      json["deleted"],
-      json["purged"],
+      MeterCollection.toBoolean(json["deleted"].toString()),
+      MeterCollection.toBoolean(json["purged"].toString()),
       DateTime.fromMicrosecondsSinceEpoch(json["dateTimeAdded"]),
       DateTime.fromMicrosecondsSinceEpoch(json["dateTimeDeleted"]),
       json["outstanding"],
