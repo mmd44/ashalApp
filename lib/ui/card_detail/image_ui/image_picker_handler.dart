@@ -42,8 +42,7 @@ class ImagePickerHandler {
     _listener.userImage(croppedFile);
   }
 
-  getImageFromCamera() async
-  {
+  getImageFromCamera() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
     cropImage(image);
   }

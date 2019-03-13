@@ -5,29 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 
 class CardDetailPage extends StatefulWidget {
-
   final CardItem cardItem;
 
-  CardDetailPage(String id) :
-        cardItem = CardItemsDao.getCardByID(id);
-
+  CardDetailPage(String id) : cardItem = CardItemsDao.getCardByID(id);
 
   @override
   _CardDetailPageState createState() => _CardDetailPageState();
 }
 
 class _CardDetailPageState extends State<CardDetailPage> {
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(widget.cardItem.name),
+      ),
       body: Container(
         padding: EdgeInsets.all(8),
         color: Theme.Colors.cardPageBackground,
-        child: new CardDetailBody(widget.cardItem),
+        child: CardDetailBody(widget.cardItem),
       ),
     );
   }
 }
-

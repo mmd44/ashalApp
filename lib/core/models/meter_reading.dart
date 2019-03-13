@@ -1,25 +1,25 @@
 import 'dart:convert';
 
-MeterReadingModel meterReadingFromJson(String str) {
+MeterReading meterReadingFromJson(String str) {
   final jsonData = json.decode(str);
-  return MeterReadingModel.fromJson(jsonData);
+  return MeterReading.fromJson(jsonData);
 }
 
-String meterReadingToJson(MeterReadingModel data) {
+String meterReadingToJson(MeterReading data) {
   final dyn = data.toJson();
   return json.encode(dyn);
 }
 
-class MeterReadingModel {
+class MeterReading {
   int referenceId;
   double reading;
   DateTime date;
   String meterImage;
 
-  MeterReadingModel(this.referenceId, this.reading, this.date, this.meterImage);
+  MeterReading(this.referenceId, this.reading, this.date, this.meterImage);
 
 
-  factory MeterReadingModel.fromJson(Map<String, dynamic> json) => new MeterReadingModel(
+  factory MeterReading.fromJson(Map<String, dynamic> json) => new MeterReading(
       json["referenceId"],
       json["reading"],
       DateTime.fromMicrosecondsSinceEpoch(json["date"]),

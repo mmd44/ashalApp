@@ -18,6 +18,7 @@ class _SubscriberInfoState extends State<SubscriberInfo> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              keyboardType: TextInputType.numberWithOptions(),
               onChanged: null,
               decoration:
                   Theme.TextStyles.textField.copyWith(hintText: 'Reference ID'),

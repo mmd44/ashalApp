@@ -31,6 +31,7 @@ class ImagePickerDialog extends StatelessWidget {
     if (_controller == null ||
         _drawerDetailsPosition == null ||
         _drawerContentsOpacity == null) {
+
       return;
     }
     _controller.forward();

@@ -36,6 +36,9 @@ class Client {
   String comment;
   List<String> monthlyDataReferences;
 
+  Client.dummy(this.id, this.referenceId, this.category, this.deleted,
+      this.purged, this.dateTimeAdded, this.dateTimeDeleted);
+
   Client(
       this.id,
       this.referenceId,

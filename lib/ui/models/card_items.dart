@@ -6,19 +6,19 @@ class CardItemsDao {
       id: "1",
       name: "Sync",
       description: "Sync your data",
-      image: "assets/img/mars.png",
+      image: "assets/img/pc_sync.png",
     ),
     const CardItem(
       id: "2",
       name: "Metering",
       description: "Type in a Meter Reading",
-      image: "assets/img/neptune.png",
+      image: "assets/img/metering.png",
     ),
     const CardItem(
       id: "3",
       name: "Collection",
       description: "Collect your Money!",
-      image: "assets/img/moon.png",
+      image: "assets/img/bill_tools.png",
     ),
   ];
 

@@ -25,7 +25,10 @@ class MeterCollection {
   MeterCollection.MeterCollectionModel(this.referenceId, this.amount, this.date,
       this.multiplePayment);
 
-  static bool toBoolean(String str, [bool strict]) {
+  static bool toBoolean(String str, [bool strict])
+  {
+    if(str==null) return true;
+
     if (strict == true) {
       return str == '1' || str == 'true';
     }

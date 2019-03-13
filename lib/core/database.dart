@@ -138,25 +138,25 @@ class DBProvider {
 
 
 
-  Future<int> insertMeterReading(MeterReadingModel newUser) async {
+  Future<int> insertMeterReading(MeterReading newUser) async {
     final db = await database;
     var res = await db.insert("`$METER_READING_TABLE`", newUser.toJson());
     return res;
   }
 
-  Future<MeterReadingModel> getMeterReading(int referenceId) async {
+  Future<MeterReading> getMeterReading(int referenceId) async {
     final db = await database;
     var res = await db.query("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
-    return res.isNotEmpty ? MeterReadingModel.fromJson(res.first) : Null;
+    return res.isNotEmpty ? MeterReading.fromJson(res.first) : Null;
   }
 
-  Future<List<MeterReadingModel>> getAllMeterReading() async {
+  Future<List<MeterReading>> getAllMeterReading() async {
     final db = await database;
     var res = await db.query("$METER_READING_TABLE");
-   return res.isNotEmpty ? res.map((c) => MeterReadingModel.fromJson(c)).toList() : [];
+   return res.isNotEmpty ? res.map((c) => MeterReading.fromJson(c)).toList() : [];
   }
 
-  Future<int> updateMeterReading(MeterReadingModel newMeterReadingModel) async {
+  Future<int> updateMeterReading(MeterReading newMeterReadingModel) async {
     final db = await database;
     var res = await db.update("$METER_READING_TABLE", newMeterReadingModel.toJson(),
         where: "referenceId = ?", whereArgs: [newMeterReadingModel.referenceId]);

@@ -20,6 +20,7 @@ dependencies:
   fluro: ^1.1.0
   image_picker: ^0.4.5
   image_cropper: ^0.0.4
+  autocomplete_textfield: ^1.6.4
   sqflite: any
   path_provider: any
 
@@ -52,11 +53,7 @@ flutter:
   uses-material-design: true
 
   assets:
-  - assets/img/mars.png
-  - assets/img/neptune.png
-  - assets/img/moon.png
-  - assets/img/earth.png
-  - assets/img/mercury.png
+  - assets/img/
   - assets/i18n/
 
   fonts:
