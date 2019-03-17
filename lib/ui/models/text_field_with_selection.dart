@@ -41,8 +41,10 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
         keyboardType: TextInputType.number,
         onChanged: (value) async {
           items = await widget.recommendedItems(value);
+          isVisibleOnTap=true;
           setState(() {});
         },
+        onTap: ()=>{isVisibleOnTap=true},
         textAlign: TextAlign.center,
         decoration: Theme.TextStyles.textField.copyWith(
             errorText: null, counterText: '', hintText: 'Reference Id'),
@@ -50,7 +52,7 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
       Padding(
         padding: const EdgeInsets.only(top: 48),
         child: Visibility(
-          visible: isVisible,
+          visible: isVisible&isVisibleOnTap,
           child: Container(
             padding: EdgeInsets.only(top: 8, bottom: 8),
             decoration: new BoxDecoration(
@@ -72,6 +74,7 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
                       ),
                       onTap: () async {
                         selectedValue.text = items[index];
+                        isVisibleOnTap=false;
                         items = await widget.recommendedItems(items[index]);
                         widget.view.onEditingCompleted(selectedValue.text);
                         inputTextNode.unfocus();
