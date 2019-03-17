@@ -81,7 +81,7 @@ class InputPagesController {
   }
 
   void setupDB() async {
-    await DBProvider.db.reCreateDatabase();
+    await DBProvider.db.initDB();
   }
 
   void setImage(File image) {

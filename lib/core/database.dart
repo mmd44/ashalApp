@@ -1,18 +1,19 @@
 import 'dart:io';
 
-import 'package:ashal/core/models/meter_collection.dart';
+import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/models/client.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:ashal/core/models/meter_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
-
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DBProvider {
   DBProvider._();
-  static final String CLIENT_TABLE='client';
-  static final String METER_READING_TABLE='meter_reading';
-  static final String METER_COLLECTION_TABLE='meter_collection';
+
+  static final String CLIENT_TABLE = 'client';
+  static final String METER_READING_TABLE = 'meter_reading';
+  static final String METER_COLLECTION_TABLE = 'meter_collection';
   static final DBProvider db = DBProvider._();
   static Database _database;
 
@@ -27,16 +28,24 @@ class DBProvider {
     if (_database != null) {
       var result = await deleteDatabase(_database.path);
       await _database.close();
-      _database=null;
+      _database = null;
     }
     await DBProvider.db.database;
+  }
+
+  changeDatabaseVesion() async {
+    if (_database != null) {
+      await _database.close();
+      _database = null;
+    }
+    await reCreateDatabase();
   }
 
   dropDatabase() async {
     if (_database != null) {
       var result = await deleteDatabase(_database.path);
       await _database.close();
-      _database=null;
+      _database = null;
     }
   }
 
@@ -64,14 +73,14 @@ class DBProvider {
         '`outstanding` DOUBLE,'
         '`comment` VARCHAR(100));');
     await db.execute('CREATE TABLE `$METER_READING_TABLE` ('
-//        '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
-        '`referenceId` INTEGER NOT NULL PRIMARY KEY,'
+        '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+        '`referenceId` INTEGER NOT NULL,'
         '`reading` DOUBLE,'
         '`meterImage` TEXT,'
         '`date` INTEGER);');
-    await db.execute( 'CREATE TABLE `$METER_COLLECTION_TABLE` ('
-        //'`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
-        '`referenceId` INTEGER NOT NULL PRIMARY KEY,'
+    await db.execute('CREATE TABLE `$METER_COLLECTION_TABLE` ('
+        '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+        '`referenceId` INTEGER NOT NULL,'
         '`amount` DOUBLE,'
         '`multiplePayment` BOOLEAN DEFAULT \'false\','
         '`date` INTEGER);');
@@ -87,12 +96,16 @@ class DBProvider {
 //  }
 
   initDB() async {
+    int dbVersion = await ProjectSharedPreferences.getDataBaseVersion();
+    print("DATA BASE VESION $dbVersion");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "ashal.db");
-    return await openDatabase(path, version: 3, onOpen: (db) {},
+    String path = join(documentsDirectory.path, "ashal-$dbVersion.db");
+    bool temp = await ProjectSharedPreferences.isMeterReadingSync();
+    temp = await ProjectSharedPreferences.isCollectionSync();
+    return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-            await createTables(db);
-        });
+      await createTables(db);
+    });
   }
 
   Future<int> insertClient(Client newUser) async {
@@ -103,20 +116,21 @@ class DBProvider {
 
   Future<Client> getClient(int referenceId) async {
     final db = await database;
-    var res = await db.query("$CLIENT_TABLE", where: "referenceId = ?", whereArgs: [referenceId]); //ToDo removed a check
+    var res = await db.query("$CLIENT_TABLE",
+        where: "referenceId = ?",
+        whereArgs: [referenceId]); //ToDo removed a check
     return res.isNotEmpty ? Client.fromJson(res.first) : null;
   }
 
-  Future <List<Client>> getClients(String startWith) async
-  {
-    if(startWith==null || startWith.isEmpty)
-      return [];
+  Future<List<Client>> getClients(String startWith) async {
+    if (startWith == null || startWith.isEmpty) return [];
     final db = await database;
-    var res = await db.rawQuery("SELECT * FROM $CLIENT_TABLE WHERE referenceId LIKE '$startWith%';");
+    var res = await db.rawQuery(
+        "SELECT * FROM $CLIENT_TABLE WHERE referenceId LIKE '$startWith%';");
     return res.isNotEmpty ? res.map((c) => Client.fromJson(c)).toList() : [];
   }
 
-  Future <List<Client>> getAllClients() async {
+  Future<List<Client>> getAllClients() async {
     final db = await database;
     var res = await db.query("$CLIENT_TABLE");
     return res.isNotEmpty ? res.map((c) => Client.fromJson(c)).toList() : [];
@@ -124,7 +138,7 @@ class DBProvider {
 
   Future<int> updateClient(Client newClient) async {
     final db = await database;
-     var res = await db.update("$CLIENT_TABLE", newClient.toJson(),
+    var res = await db.update("$CLIENT_TABLE", newClient.toJson(),
         where: "id = ?", whereArgs: [newClient.id]);
     return res;
   }
@@ -136,10 +150,8 @@ class DBProvider {
 
   Future<int> deleteAllClient() async {
     final db = await database;
-    return db.rawDelete("Delete * from $CLIENT_TABLE");
+    return db.rawDelete("Delete from $CLIENT_TABLE");
   }
-
-
 
   Future<int> insertMeterReading(MeterReading newUser) async {
     final db = await database;
@@ -149,42 +161,51 @@ class DBProvider {
 
   Future<MeterReading> getMeterReading(int referenceId) async {
     final db = await database;
-    var res = await db.query("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
+    var res = await db.query("$METER_READING_TABLE",
+        where: "referenceId = ?", whereArgs: [referenceId]);
     return res.isNotEmpty ? MeterReading.fromJson(res.first) : null;
   }
 
   Future<List<MeterReading>> getAllMeterReading() async {
     final db = await database;
     var res = await db.query("$METER_READING_TABLE");
-   return res.isNotEmpty ? res.map((c) => MeterReading.fromJson(c)).toList() : [];
+    return res.isNotEmpty
+        ? res.map((c) => MeterReading.fromJson(c)).toList()
+        : [];
   }
 
   Future<int> updateMeterReading(MeterReading newMeterReadingModel) async {
     final db = await database;
-    var res = await db.update("$METER_READING_TABLE", newMeterReadingModel.toJson(),
-        where: "referenceId = ?", whereArgs: [newMeterReadingModel.referenceId]);
+    var res = await db.update(
+        "$METER_READING_TABLE", newMeterReadingModel.toJson(),
+        where: "referenceId = ?",
+        whereArgs: [newMeterReadingModel.referenceId]);
     return res;
   }
 
   Future<int> deleteMeterReading(int referenceId) async {
     final db = await database;
-    return db.delete("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
+    return db.delete("$METER_READING_TABLE",
+        where: "referenceId = ?", whereArgs: [referenceId]);
   }
 
   Future<int> deleteAllMeterReading() async {
     final db = await database;
-    return db.rawDelete("Delete * from $METER_READING_TABLE");
+    return db.rawDelete("Delete from $METER_READING_TABLE");
   }
 
-  Future<int> insertMeterCollection(MeterCollection newMeterCollectionModel) async {
+  Future<int> insertMeterCollection(
+      MeterCollection newMeterCollectionModel) async {
     final db = await database;
-    var res = await db.insert("`$METER_COLLECTION_TABLE`", newMeterCollectionModel.toJson());
+    var res = await db.insert(
+        "`$METER_COLLECTION_TABLE`", newMeterCollectionModel.toJson());
     return res;
   }
 
   Future<MeterCollection> getMeterCollection(int referenceId) async {
     final db = await database;
-    var res = await db.query("$METER_COLLECTION_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
+    var res = await db.query("$METER_COLLECTION_TABLE",
+        where: "referenceId = ?", whereArgs: [referenceId]);
     print(res.first);
     return res.isNotEmpty ? MeterCollection.fromJson(res.first) : null;
   }
@@ -192,23 +213,29 @@ class DBProvider {
   Future<List<MeterCollection>> getAllMeterCollection() async {
     final db = await database;
     var res = await db.query("$METER_COLLECTION_TABLE");
-    return res.isNotEmpty ? res.map((c) => MeterCollection.fromJson(c)).toList() : [];
+    return res.isNotEmpty
+        ? res.map((c) => MeterCollection.fromJson(c)).toList()
+        : [];
   }
 
-  Future<int> updateMeterCollection(MeterCollection newMeterCollectionModel) async {
+  Future<int> updateMeterCollection(
+      MeterCollection newMeterCollectionModel) async {
     final db = await database;
-    var res = await db.update("$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),
-        where: "referenceId = ?", whereArgs: [newMeterCollectionModel.referenceId]);
+    var res = await db.update(
+        "$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),
+        where: "referenceId = ?",
+        whereArgs: [newMeterCollectionModel.referenceId]);
     return res;
   }
 
   Future<int> deleteMetereCollection(int referenceId) async {
     final db = await database;
-    return db.delete("$METER_COLLECTION_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
+    return db.delete("$METER_COLLECTION_TABLE",
+        where: "referenceId = ?", whereArgs: [referenceId]);
   }
 
   Future<int> deleteAllMeterCollection() async {
     final db = await database;
-    return db.rawDelete("Delete * from $METER_COLLECTION_TABLE");
+    return db.rawDelete("Delete from $METER_COLLECTION_TABLE");
   }
 }

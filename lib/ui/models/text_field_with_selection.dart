@@ -44,7 +44,10 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
           isVisibleOnTap=true;
           setState(() {});
         },
-        onTap: ()=>{isVisibleOnTap=true},
+        onTap: (){
+          isVisibleOnTap=true;
+          setState(() {});
+        },
         textAlign: TextAlign.center,
         decoration: Theme.TextStyles.textField.copyWith(
             errorText: null, counterText: '', hintText: 'Reference Id'),
@@ -52,7 +55,7 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
       Padding(
         padding: const EdgeInsets.only(top: 48),
         child: Visibility(
-          visible: isVisible&isVisibleOnTap,
+          visible: isVisible&&isVisibleOnTap,
           child: Container(
             padding: EdgeInsets.only(top: 8, bottom: 8),
             decoration: new BoxDecoration(
