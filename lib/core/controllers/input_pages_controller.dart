@@ -21,7 +21,6 @@ class InputPagesController {
   bool isLoading = false;
 
   bool get isCollectionValid =>
-      _meterReading?.referenceId != null &&
       _meterReading?.reading != null &&
       _meterReading?.meterImage != null;
 
@@ -70,13 +69,13 @@ class InputPagesController {
         _meterReading.referenceId = id;
         _view.onSetClientSuccess();
       }).catchError((error) {
-        print('DBGetClientError: $error');
-        _view.onSetClientError('Client Not Found');
+        //print('DBGetClient: $error');
+        //_view.onSetClientError('Client Not Found');
       });
     } else {
       _client = null;
       _meterReading.referenceId = null;
-      _view.onSetClientError('Invalid ID');
+      //_view.onSetClientError('Invalid ID');
     }
   }
 
@@ -101,12 +100,28 @@ class InputPagesController {
       _view.onReadingsError('Invalid Readings');
     }
   }
+
+  void submit() {
+    if (_client == null || referenceID == null){
+      _view.onError('Invalid reference id!');
+    } else {
+      isLoading = true;
+      DBProvider.db.insertMeterReading(_meterReading).then((result){
+        if (result == 1) _view.onSuccess('Reading added successfully!');
+      }).catchError((error) {
+        print('DBinsertReadingError: $error');
+        _view.onError('Adding reading failed!');
+      }).whenComplete((){
+        isLoading = false;
+      });
+    }
+  }
 }
 
 abstract class InputPageView {
   void onSetClientSuccess();
   void onSetClientError(String msg);
   void onReadingsError(String msg);
-  void onSuccess();
-  void onError();
+  void onError(String error);
+  void onSuccess(String msg);
 }

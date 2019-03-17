@@ -19,22 +19,9 @@ abstract class NetworkSetup {
 
 
 
+
   void beforeMiddleware(String url, {Object body, Map headers}) {
     print('Calling: GET ${Uri.encodeFull(url)}');
-
-    /* ToDo: shuf hol sockets ma sockets iza baddak ne7na mnesta3melon la certificate pinning
-    if (EnvironmentConfiguration.lastReturnedConfig.serverKey != null) {
-      final socketUrl = Uri.parse(API.host);
-      return SecureSocket.connect(socketUrl.host, socketUrl.port)
-          .then((socket) async {
-        final isSecure = await checkServerCertificate(socket.peerCertificate);
-        if (!isSecure) {
-          debugPrint('Certificate pinning failed');
-          throw APIException.certificatePinning;
-        }
-        socket.close();
-      });
-    }*/
   }
 
   void afterMiddleware(http.Response response) async {

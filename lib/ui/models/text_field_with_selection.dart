@@ -42,6 +42,7 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
         onChanged: (value) async {
           items = await widget.recommendedItems(value);
           isVisibleOnTap=true;
+          widget.view.onEditingCompleted(selectedValue.text);
           setState(() {});
         },
         onTap: (){
@@ -79,8 +80,8 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
                         selectedValue.text = items[index];
                         isVisibleOnTap=false;
                         items = await widget.recommendedItems(items[index]);
-                        widget.view.onEditingCompleted(selectedValue.text);
                         inputTextNode.unfocus();
+                        widget.view.onEditingCompleted(selectedValue.text);
                         setState(() {});
                       },
                     ),

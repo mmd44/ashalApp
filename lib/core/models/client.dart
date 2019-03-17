@@ -62,6 +62,10 @@ class Client {
       this.outstanding,
       this.comment);
 
+  static List<Client> fromJsonList (List<dynamic> json) {
+    return json.map((client) => Client.fromJson(client)).toList();
+  }
+
   factory Client.fromJson(Map<String, dynamic> json) => new Client(
       json["id"],
       json["referenceId"],

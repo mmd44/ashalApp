@@ -132,9 +132,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
           child: Padding(
             padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
             child: CustomButton(
-              onPressed: () {
-
-              },
+              onPressed: _onSubmit,
               disabled: !_controller.isCollectionValid,
               loading: _controller.isLoading,
               label: Text(
@@ -150,6 +148,10 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     );
   }
 
+  void _onSubmit () {
+    _controller.submit();
+  }
+
   @override
   userImage(File image) {
     _controller.setImage(image);
@@ -157,13 +159,13 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
   }
 
   @override
-  void onSuccess() {
-
+  void onSuccess(String msg) {
+    showSnackbar(msg, context);
   }
 
   @override
-  void onError() {
-
+  void onError(String error) {
+    showErrorSnackbar(error, context: context);
   }
 
   @override

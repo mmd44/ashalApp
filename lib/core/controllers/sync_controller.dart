@@ -3,6 +3,7 @@ import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/meter_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/core/network/client_service.dart';
 
 class SyncController
 {
@@ -12,6 +13,8 @@ class SyncController
   bool get readings => _readings;
 
   bool get collection => _collection;
+
+  List<Client> _clients;
 
   set collection(bool value) {
     _collection = value;
@@ -135,16 +138,14 @@ class SyncController
   Future syncClients() async
   {
     await DBProvider.db.deleteAllClient();
-
-    bool success=true;
-    if(success) {
+    ClientService _service = ClientService();
+    _service.syncClients().then((clients) {
       _syncCallBack.onClientSyncSuccess();
-    }else{
+    }).catchError((error) {
+      print('errorClientService $error');
       _syncCallBack.onClientSyncError("error");
-    }
+    });
   }
-
-
 }
 
 abstract class SyncCallBack {
