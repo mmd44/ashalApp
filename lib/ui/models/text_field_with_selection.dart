@@ -23,30 +23,37 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
   List<String> items;
 
   bool get isVisible =>
-      (items != null && items.length > 1) ||
+      inputTextFocusNode.hasFocus &&
+          isVisibleOnTap &&
+          (items != null && items.length > 1) ||
       (items != null && items.length == 1 && selectedValue.text != items[0]);
 
   bool isVisibleOnTap = true;
 
   var selectedValue = new TextEditingController();
 
-  FocusNode inputTextNode = FocusNode();
+  FocusNode inputTextFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> base = <Widget>[
       TextField(
-        focusNode: inputTextNode,
+        focusNode: inputTextFocusNode,
         controller: selectedValue,
         keyboardType: TextInputType.number,
         onChanged: (value) async {
           items = await widget.recommendedItems(value);
-          isVisibleOnTap=true;
+          isVisibleOnTap = true;
           widget.view.onEditingCompleted(selectedValue.text);
           setState(() {});
         },
-        onTap: (){
-          isVisibleOnTap=true;
+        onTap: () {
+          isVisibleOnTap = true;
           setState(() {});
         },
         textAlign: TextAlign.center,
@@ -56,7 +63,7 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
       Padding(
         padding: const EdgeInsets.only(top: 48),
         child: Visibility(
-          visible: isVisible&&isVisibleOnTap,
+          visible: isVisible,
           child: Container(
             padding: EdgeInsets.only(top: 8, bottom: 8),
             decoration: new BoxDecoration(
@@ -78,9 +85,9 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
                       ),
                       onTap: () async {
                         selectedValue.text = items[index];
-                        isVisibleOnTap=false;
+                        isVisibleOnTap = false;
                         items = await widget.recommendedItems(items[index]);
-                        inputTextNode.unfocus();
+                        inputTextFocusNode.unfocus();
                         widget.view.onEditingCompleted(selectedValue.text);
                         setState(() {});
                       },

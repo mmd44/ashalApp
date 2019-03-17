@@ -26,7 +26,6 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
 
   @override
   Widget build(BuildContext context) {
-
     return new Container(
       color: Theme.Colors.cardPageBackground,
       child: ListView(
@@ -48,9 +47,8 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
                 _buildSyncMeterReadingButton(),
                 _buildSyncCollectionReadingButton(),
                 Visibility(
-                    visible: _controller.collection&&_controller.readings,
-                    child: _buildSyncClearMeterData()
-                )
+                    visible: _controller.collection && _controller.readings,
+                    child: _buildSyncClearMeterData())
               ],
             ),
           )
@@ -66,10 +64,8 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           minWidth: 200.0,
           child: new RaisedButton(
               child: const Text('Sync Clients'),
-              onPressed: () async
-              {
-                  _controller.syncClients();
-
+              onPressed: () async {
+                _controller.syncClients();
               },
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0))),
@@ -113,8 +109,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Clear Meter Data and Sync Clients'),
-                onPressed: () async
-                {
+                onPressed: () async {
                   _controller.clearMeterData();
                   setState(() {});
                 },
@@ -122,11 +117,10 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
                     borderRadius: new BorderRadius.circular(30.0)))));
   }
 
-  void _init() async{
-
-    bool collection=await ProjectSharedPreferences.isCollectionSync();
-    bool readings=await ProjectSharedPreferences.isMeterReadingSync();
-    _controller=new SyncController(this,readings,collection);
+  void _init() async {
+    bool collection = await ProjectSharedPreferences.isCollectionSync();
+    bool readings = await ProjectSharedPreferences.isMeterReadingSync();
+    _controller = new SyncController(this, readings, collection);
     setState(() {});
     await _controller.dummy();
   }
@@ -166,5 +160,4 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   void onMeterReadingSyncSuccess() {
     // TODO: implement onMeterReadingSyncSuccess
   }
-
 }
