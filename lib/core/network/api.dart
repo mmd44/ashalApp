@@ -1,11 +1,11 @@
 class API {
 
-  // host
+  // host ToDo: set this when ip is obtained before sync
   static const String host = 'https://demo.flutter.io:8443';
 
   // services
-  static const String infobanking = '$host/infobanking/v1';
+  static const String metering = '$host/metering/';
 
   // endpoints
-  static const String alert = "$infobanking/alert";
+  static const String client = "$metering/client";
 }

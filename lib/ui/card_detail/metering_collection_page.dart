@@ -3,29 +3,33 @@ import 'dart:io';
 
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
-import 'package:ashal/ui/card_detail/subscriber_info.dart';
+import 'package:ashal/ui/card_detail/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/snackbar_helper.dart';
 import 'package:ashal/ui/models/card_item.dart';
+import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/models/custom_button.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 
-class CardDetailBody extends StatefulWidget {
+class MeteringCollectionPage extends StatefulWidget {
   final CardItem cardItem;
 
-  CardDetailBody(this.cardItem);
+  MeteringCollectionPage(String id) : cardItem = CardItemsDao.getCardByID(id);
 
   @override
-  _CardDetailBodyState createState() => _CardDetailBodyState();
+  _MeteringCollectionPageState createState() => _MeteringCollectionPageState();
 }
 
-class _CardDetailBodyState extends State<CardDetailBody>
+class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     with SingleTickerProviderStateMixin
     implements ImagePickerListener, InputPageView {
+  
   InputPagesController _controller;
+  
+  
   AnimationController _animationController;
   ImagePickerHandler _imagePickerHandler;
-  File _image;
+  
   @override
   void initState() {
     super.initState();
@@ -67,7 +71,7 @@ class _CardDetailBodyState extends State<CardDetailBody>
           SubscriberInfo(_controller),
           _buildInputField(),
           _buildCamButton(),
-          _buildButton(),
+          _buildConfirmButton(),
         ],
       ),
     );
@@ -121,7 +125,7 @@ class _CardDetailBodyState extends State<CardDetailBody>
         });
   }
 
-  Widget _buildButton() {
+  Widget _buildConfirmButton() {
     return Row(
       children: [
         Expanded(

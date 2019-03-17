@@ -29,17 +29,6 @@ class HttpRequest {
         afterMiddleware(response);
       }
 
-      int cacheTimeSeconds = 0;
-      if (response.headers != null &&
-          response.headers["cache-control"] != null) {
-        int x = int.tryParse(response.headers['cache-control'].split('=')[1]);
-        if (x != null && x > 0) {
-          cacheTimeSeconds = x;
-        }
-      }
-
-      //max-age =0(add the header)
-
       if (statusCode < 200 || statusCode >= 400) {
         try {
           throw APIException.fromJson(json.decode(res));

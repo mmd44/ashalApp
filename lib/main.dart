@@ -38,15 +38,10 @@ class MainAppState extends State<MainApp> {
         localeResolutionCallback:
             (Locale locale, Iterable<Locale> supportedLocales) {
           if (locale == null) {
-            //networkSetup
-            //  .setNetworkLanguage(supportedLocales.first.languageCode);
-
             return supportedLocales.first;
           }
           for (Locale supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode) {
-              //networkSetup
-              //  .setNetworkLanguage(supportedLocales.first.languageCode);
               return supportedLocale;
             }
           }
