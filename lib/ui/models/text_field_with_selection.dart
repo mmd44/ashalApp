@@ -7,9 +7,13 @@ class TextFieldWithSelection extends StatefulWidget {
 
   //TextFieldWithSelection(this.items);
 
-  final Future<List<String>> Function(String regex) recommandedItems;
+  final Future<List<String>> Function(String regex) recommendedItems;
+  final List<Widget> children;
+  final double childrenPadding;
+  final TextFieldWithSelectionView view;
 
-  TextFieldWithSelection(this.recommandedItems);
+  TextFieldWithSelection(this.recommendedItems, this.view,
+      {this.children = const <Widget>[], this.childrenPadding = 48});
 
   @override
   _TextFieldWithSelectionState createState() => _TextFieldWithSelectionState();
@@ -18,41 +22,84 @@ class TextFieldWithSelection extends StatefulWidget {
 class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
   List<String> items;
 
-  String selectedValue;
+  bool get isVisible =>
+      (items != null && items.length > 1) ||
+      (items != null && items.length == 1 && selectedValue.text != items[0]);
 
-  bool get isVisible => items!=null && items.length > 1;
+  bool isVisibleOnTap = true;
+
+  var selectedValue = new TextEditingController();
+
+  FocusNode inputTextNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          TextField(
-
-            keyboardType: TextInputType.number,
-            onChanged: (value) async {
-              items = await widget.recommandedItems(value);
-            },
-            textAlign: TextAlign.center,
-            decoration: Theme.TextStyles.textField.copyWith(
-                errorText: null, counterText: '', hintText: selectedValue ?? 'Reading', ),
-          ),
-          Visibility(
-            visible: true,
+    List<Widget> base = <Widget>[
+      TextField(
+        focusNode: inputTextNode,
+        controller: selectedValue,
+        keyboardType: TextInputType.number,
+        onChanged: (value) async {
+          items = await widget.recommendedItems(value);
+          setState(() {});
+        },
+        textAlign: TextAlign.center,
+        decoration: Theme.TextStyles.textField.copyWith(
+            errorText: null, counterText: '', hintText: 'Reference Id'),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 48),
+        child: Visibility(
+          visible: isVisible,
+          child: Container(
+            padding: EdgeInsets.only(top: 8, bottom: 8),
+            decoration: new BoxDecoration(
+                color: Color.fromRGBO(64, 75, 96, 1),
+                borderRadius: new BorderRadius.circular(5),
+                border: Border.all(width: 1.0, color: Colors.black12)),
             child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return ListTile (
-                    title: Text(items[index]),
-                    onTap:() => selectedValue = items[index],
+                  return Center(
+                    child: InkWell(
+                      child: Text(
+                        items[index],
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: () async {
+                        selectedValue.text = items[index];
+                        items = await widget.recommendedItems(items[index]);
+                        widget.view.onEditingCompleted(selectedValue.text);
+                        inputTextNode.unfocus();
+                        setState(() {});
+                      },
+                    ),
                   );
                 },
-                separatorBuilder: (BuildContext context, int index) => new Divider(),
+                separatorBuilder: (BuildContext context, int index) =>
+                    new Divider(
+                      color: Colors.white,
+                    ),
                 itemCount: items?.length ?? 0),
           ),
-        ],
+        ),
       ),
+      Padding(
+        padding: EdgeInsets.only(top: widget.childrenPadding),
+        child: Column(
+          children: widget.children,
+        ),
+      ),
+    ];
+    //base.addAll(widget.children);
+    return Stack(
+      children: base,
     );
   }
+}
+
+abstract class TextFieldWithSelectionView {
+  void onEditingCompleted(String value);
 }

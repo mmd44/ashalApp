@@ -1,21 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:ashal/core/controllers/DetailsController.dart';
-import 'package:ashal/core/database.dart';
-import 'package:ashal/core/models/client.dart';
-import 'package:ashal/localization.dart';
-import 'package:ashal/ui/card_detail/image_ui/image_picker_dialog.dart';
+import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
-import 'package:ashal/ui/card_detail/sync_body.dart';
-import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/card_detail/subscriber_info.dart';
+import 'package:ashal/ui/helpers/snackbar_helper.dart';
+import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/custom_button.dart';
-import 'package:ashal/ui/models/text_field_with_selection.dart';
-import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-
+import 'package:flutter/material.dart';
 
 class CardDetailBody extends StatefulWidget {
   final CardItem cardItem;
@@ -26,21 +19,31 @@ class CardDetailBody extends StatefulWidget {
   _CardDetailBodyState createState() => _CardDetailBodyState();
 }
 
-class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProviderStateMixin implements ImagePickerListener  {
-  DetailsController _controller;
+class _CardDetailBodyState extends State<CardDetailBody>
+    with SingleTickerProviderStateMixin
+    implements ImagePickerListener, InputPageView {
+  InputPagesController _controller;
   AnimationController _animationController;
   ImagePickerHandler _imagePickerHandler;
   File _image;
   @override
   void initState() {
-    _init();
     super.initState();
+    _init();
   }
 
+
+
   void _init() async {
-    _controller = new DetailsController();
-      await _controller.init();
-    _animationController = AnimationController(vsync: this,duration: Duration(seconds: 1));
+    _controller = new InputPagesController(this);
+    await _controller.initDummy();
+    _controller.init();
+    //_controller.init();
+
+
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    //ToDo: Move these to controller
     _imagePickerHandler = ImagePickerHandler(this, _animationController);
     _imagePickerHandler.init();
   }
@@ -61,10 +64,10 @@ class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProvid
               ),
             ),
           ),
-          widget.cardItem.id != '1' ? SubscriberInfo() : SyncBody(),
-          widget.cardItem.id != '1' ? _buildInputField() : Container(),
-          widget.cardItem.id != '1' ? _buildCamButton() : Container(),
-          widget.cardItem.id != '1' ? _buildButton() : Container(),
+          SubscriberInfo(_controller),
+          _buildInputField(),
+          _buildCamButton(),
+          _buildButton(),
         ],
       ),
     );
@@ -72,7 +75,7 @@ class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProvid
 
   Widget _buildInputField() {
     return Padding(
-      padding: const EdgeInsets.only(top:16, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -81,17 +84,22 @@ class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProvid
             child: Container(),
           ),
           Expanded(
-            flex: 2,
-            child: TextFieldWithSelection((String regex) async {
-              List<Client> clients = await DBProvider.db.getClients(regex);
-              return clients.map((client) => client.referenceId.toString()).toList();
-            }
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                decoration: Theme.TextStyles.textField.copyWith(hintText: 'Reading'),
+                onChanged: (value){
+                  _controller.setReadings(value);
+                },
+              ),
             ),
           ),
           Expanded(
             flex: 1,
             child: Padding(
-              padding: const EdgeInsets.only(bottom:20),
+              padding: const EdgeInsets.only(bottom: 20),
               child: Text('Kwh', textAlign: TextAlign.center),
             ),
           ),
@@ -104,15 +112,13 @@ class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProvid
     );
   }
 
-  Widget _buildCamButton(){
+  Widget _buildCamButton() {
     return GestureDetector(
-      child: Container(
-          child: (CircleAvatar(child: Icon(Icons.photo_camera)))
-      ),
-      onTap: () async{
-        _imagePickerHandler.getImageFromCamera();
-        }
-    );
+        child:
+            Container(child: (CircleAvatar(child: Icon(Icons.photo_camera)))),
+        onTap: () async {
+          _imagePickerHandler.getImageFromCamera();
+        });
   }
 
   Widget _buildButton() {
@@ -120,12 +126,15 @@ class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProvid
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top:16, left:16, right:  16),
+            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
             child: CustomButton(
-              onPressed: null,
-              disabled: true,
-              loading: false,
-              label: Text('Confirm',
+              onPressed: () {
+
+              },
+              disabled: !_controller.isCollectionValid,
+              loading: _controller.isLoading,
+              label: Text(
+                'Confirm',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -138,10 +147,33 @@ class _CardDetailBodyState extends State<CardDetailBody> with SingleTickerProvid
   }
 
   @override
-  userImage(File _image) {
-    print ('imageSaved!');
-    List<int> imageBytes = _image.readAsBytesSync();
-    String base64Image = base64Encode(imageBytes);
-    this._image=_image;
+  userImage(File image) {
+    _controller.setImage(image);
+    setState(() {});
+  }
+
+  @override
+  void onSuccess() {
+
+  }
+
+  @override
+  void onError() {
+
+  }
+
+  @override
+  void onReadingsError(String msg) {
+    showErrorSnackbar(msg, context: context);
+  }
+
+  @override
+  void onSetClientSuccess() {
+    setState(() {});
+  }
+
+  @override
+  void onSetClientError(String msg) {
+    showErrorSnackbar(msg, context: context);
   }
 }

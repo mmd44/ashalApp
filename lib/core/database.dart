@@ -103,11 +103,14 @@ class DBProvider {
 
   Future<Client> getClient(int referenceId) async {
     final db = await database;
-    var res = await db.query("$CLIENT_TABLE", where: "referenceId = ? and dateTimeDeleted IS NULL", whereArgs: [referenceId]);
-    return res.isNotEmpty ? Client.fromJson(res.first) : Null;
+    var res = await db.query("$CLIENT_TABLE", where: "referenceId = ?", whereArgs: [referenceId]); //ToDo removed a check
+    return res.isNotEmpty ? Client.fromJson(res.first) : null;
   }
 
-  Future <List<Client>> getClients(String startWith) async {
+  Future <List<Client>> getClients(String startWith) async
+  {
+    if(startWith==null || startWith.isEmpty)
+      return [];
     final db = await database;
     var res = await db.rawQuery("SELECT * FROM $CLIENT_TABLE WHERE referenceId LIKE '$startWith%';");
     return res.isNotEmpty ? res.map((c) => Client.fromJson(c)).toList() : [];
@@ -147,7 +150,7 @@ class DBProvider {
   Future<MeterReading> getMeterReading(int referenceId) async {
     final db = await database;
     var res = await db.query("$METER_READING_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
-    return res.isNotEmpty ? MeterReading.fromJson(res.first) : Null;
+    return res.isNotEmpty ? MeterReading.fromJson(res.first) : null;
   }
 
   Future<List<MeterReading>> getAllMeterReading() async {
@@ -183,7 +186,7 @@ class DBProvider {
     final db = await database;
     var res = await db.query("$METER_COLLECTION_TABLE", where: "referenceId = ?", whereArgs: [referenceId]);
     print(res.first);
-    return res.isNotEmpty ? MeterCollection.fromJson(res.first) : Null;
+    return res.isNotEmpty ? MeterCollection.fromJson(res.first) : null;
   }
 
   Future<List<MeterCollection>> getAllMeterCollection() async {

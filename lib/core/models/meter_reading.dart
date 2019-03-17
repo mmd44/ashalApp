@@ -16,14 +16,15 @@ class MeterReading {
   DateTime date;
   String meterImage;
 
-  MeterReading(this.referenceId, this.reading, this.date, this.meterImage);
+
+  MeterReading({this.referenceId, this.reading, this.date, this.meterImage});
 
 
   factory MeterReading.fromJson(Map<String, dynamic> json) => new MeterReading(
-      json["referenceId"],
-      json["reading"],
-      DateTime.fromMicrosecondsSinceEpoch(json["date"]),
-      json["meterImage"]);
+      referenceId :json["referenceId"],
+      reading: json["reading"],
+      date: DateTime.fromMicrosecondsSinceEpoch(json["date"]),
+      meterImage: json["meterImage"]);
 
   Map<String, dynamic> toJson() => {
         "referenceId": referenceId,

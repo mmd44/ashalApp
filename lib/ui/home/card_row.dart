@@ -88,7 +88,7 @@ class CardRow extends StatelessWidget {
   _navigateTo(context, String id) {
     Routes.navigateTo(
       context,
-      '/detail/${cardItem.id}',
+      '/${cardItem.name.toLowerCase()}/${cardItem.id}',
       transition: TransitionType.fadeIn
     );
   }

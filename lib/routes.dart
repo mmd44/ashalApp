@@ -11,8 +11,16 @@ class Routes {
       return new CardDetailPage(temp[0]);
     });
 
+  static var inputPageHandler  = new Handler(
+      handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+        List<String> temp = params['id'];
+        return new CardDetailPage(temp[0]);
+      });
+
   static void initRoutes() {
-    _router.define("/detail/:id", handler: cardDetailHandler);
+    //_router.define("/detail/:id", handler: cardDetailHandler);
+    _router.define("/metering/:id", handler: inputPageHandler);
+    _router.define("/collection/:id", handler: inputPageHandler);
   }
 
   static void navigateTo(context, String route, {TransitionType transition}) {
