@@ -60,12 +60,14 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
             child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return Center(
+                  return Container(
                     child: InkWell(
-                      child: Text(
-                        items[index],
-                        style: TextStyle(
-                          color: Colors.white,
+                      child: Center(
+                        child: Text(
+                          items[index],
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       onTap: () async {
