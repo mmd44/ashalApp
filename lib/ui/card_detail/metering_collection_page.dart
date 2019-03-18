@@ -4,12 +4,13 @@ import 'dart:io';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
 import 'package:ashal/ui/card_detail/common/subscriber_info.dart';
-import 'package:ashal/ui/helpers/snackbar_helper.dart';
+import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/models/custom_button.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MeteringCollectionPage extends StatefulWidget {
   final CardItem cardItem;
@@ -23,31 +24,23 @@ class MeteringCollectionPage extends StatefulWidget {
 class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     with SingleTickerProviderStateMixin
     implements ImagePickerListener, InputPageView {
-  
   InputPagesController _controller;
-  
-  
+
   AnimationController _animationController;
   ImagePickerHandler _imagePickerHandler;
-  
+
   @override
   void initState() {
-    super.initState();
     _init();
+    super.initState();
   }
-
-
 
   void _init() async {
     _controller = new InputPagesController(this);
-    await _controller.initDummy();
     _controller.init();
-    //_controller.init();
 
 
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    //ToDo: Move these to controller
+    _animationController = AnimationController(vsync: this, duration: Duration(seconds: 1));
     _imagePickerHandler = ImagePickerHandler(this, _animationController);
     _imagePickerHandler.init();
   }
@@ -68,6 +61,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               ),
             ),
           ),
+          _buildTodayDate(),
           SubscriberInfo(_controller),
           _buildInputField(),
           _buildCamButton(),
@@ -93,8 +87,9 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               padding: const EdgeInsets.only(bottom: 20),
               child: TextField(
                 keyboardType: TextInputType.number,
-                decoration: Theme.TextStyles.textField.copyWith(hintText: 'Reading'),
-                onChanged: (value){
+                decoration:
+                    Theme.TextStyles.textField.copyWith(hintText: 'Reading'),
+                onChanged: (value) {
                   _controller.setReadings(value);
                 },
               ),
@@ -148,7 +143,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     );
   }
 
-  void _onSubmit () {
+  void _onSubmit() {
     _controller.submit();
   }
 
@@ -161,7 +156,11 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
   @override
   void onSuccess(String msg) {
     setState(() {});
-    showSnackbar(msg, context);
+
+    showDialogMessage(context,
+        title: 'Success',
+        message: msg,
+        onConfirm: () => Navigator.of(context).pop());
   }
 
   @override
@@ -184,5 +183,13 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
   @override
   void onSetClientError(String msg) {
     showErrorSnackbar(msg, context: context);
+  }
+
+  _buildTodayDate() {
+    DateTime today = DateTime.now();
+    _controller.todayDate = today;
+    return Center(
+      child: Text(DateFormat('yyyy-MM-dd – kk:mm').format(today)),
+    );
   }
 }

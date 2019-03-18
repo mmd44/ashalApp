@@ -36,7 +36,8 @@ class InputPagesController {
 
   init() {
     setupDB();
-    _meterReading = MeterReading();
+    //initDummy();
+    resetFields();
   }
 
   initDummy() async {
@@ -56,6 +57,11 @@ class InputPagesController {
         DateTime.now(), DateTime.now(), '03040404'));
   }
 
+  set todayDate (DateTime dateTime) {
+    _meterReading.date = dateTime;
+    _meterCollection.date =dateTime;
+  }
+
   void setClientByReference() {
     int id;
 
@@ -69,13 +75,11 @@ class InputPagesController {
         _meterReading.referenceId = id;
         _view.onSetClientSuccess();
       }).catchError((error) {
-        //print('DBGetClient: $error');
-        //_view.onSetClientError('Client Not Found');
+        print('DBGetClient: $error');
       });
     } else {
       _client = null;
       _meterReading.referenceId = null;
-      //_view.onSetClientError('Invalid ID');
     }
   }
 
@@ -108,9 +112,7 @@ class InputPagesController {
       isLoading = true;
       _meterReading.date = DateTime.now();
       DBProvider.db.insertMeterReading(_meterReading).then((result){
-        resetFields();
-        if (result == 1) _view.onSuccess('Reading added successfully!');
-        else  _view.onError('Adding reading failed!');
+        _view.onSuccess('Reading added successfully!');
       }).catchError((error) {
         print('DBinsertReadingError: $error');
         _view.onError('Adding reading failed!');

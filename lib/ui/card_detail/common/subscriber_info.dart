@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 
 class SubscriberInfo extends StatefulWidget {
-  SubscriberInfo(this._controller);
+  SubscriberInfo(this._controller, {this.children = const <Widget>[]});
 
   final InputPagesController _controller;
+  final List<Widget> children;
 
   @override
   _SubscriberInfoState createState() => _SubscriberInfoState();
@@ -31,72 +32,70 @@ class _SubscriberInfoState extends State<SubscriberInfo>
           },
               this,
               children: [
-            Visibility(
-              visible: widget._controller.client != null,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: Theme.TextStyles.textField
-                                .copyWith(hintText: widget._controller.clientArea, helperText: 'Area', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
-                          ),
+            Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: Theme.TextStyles.textField
+                              .copyWith(hintText: widget._controller.clientArea, helperText: 'Area', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: Theme.TextStyles.textField
-                                .copyWith(hintText: widget._controller.clientStreet, helperText: 'Street', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: Theme.TextStyles.textField
-                                .copyWith(hintText: widget._controller.clientBldg, helperText: 'Building', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: Theme.TextStyles.textField
-                                .copyWith(hintText: widget._controller.clientFloor, helperText: 'Floor', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      enabled: false,
-                      decoration: Theme.TextStyles.textField
-                          .copyWith(hintText: widget._controller.clientPhone, helperText: 'Phone', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                     ),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: Theme.TextStyles.textField
+                              .copyWith(hintText: widget._controller.clientStreet, helperText: 'Street', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: Theme.TextStyles.textField
+                              .copyWith(hintText: widget._controller.clientBldg, helperText: 'Building', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: Theme.TextStyles.textField
+                              .copyWith(hintText: widget._controller.clientFloor, helperText: 'Floor', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    enabled: false,
+                    decoration: Theme.TextStyles.textField
+                        .copyWith(hintText: widget._controller.clientPhone, helperText: 'Phone', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ]),
         ],
