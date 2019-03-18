@@ -12,6 +12,7 @@ import 'package:multicast_lock/multicast_lock.dart';
 class SyncController implements SocketCallBack {
   bool _readings=false;
   bool _collection=false;
+
   SyncCallBack _syncCallBack;
   bool get readings => _readings;
   bool get collection => _collection;
@@ -65,18 +66,36 @@ class SyncController implements SocketCallBack {
         reading: 4,
         referenceId: 11111));
 
-    await DBProvider.db
-        .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
-    await DBProvider.db
-        .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
-    await DBProvider.db
-        .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
-    await DBProvider.db
-        .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
-    await DBProvider.db
-        .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
-    await DBProvider.db
-        .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
+    await DBProvider.db.insertMeterCollection(MeterCollection(
+        referenceId: 1111,
+        amount: 2,
+        date: DateTime.now(),
+        multiplePayment: false));
+    await DBProvider.db.insertMeterCollection(MeterCollection(
+        referenceId: 1111,
+        amount: 2,
+        date: DateTime.now(),
+        multiplePayment: false));
+    await DBProvider.db.insertMeterCollection(MeterCollection(
+        referenceId: 1111,
+        amount: 2,
+        date: DateTime.now(),
+        multiplePayment: false));
+    await DBProvider.db.insertMeterCollection(MeterCollection(
+        referenceId: 1111,
+        amount: 2,
+        date: DateTime.now(),
+        multiplePayment: false));
+    await DBProvider.db.insertMeterCollection(MeterCollection(
+        referenceId: 1111,
+        amount: 2,
+        date: DateTime.now(),
+        multiplePayment: false));
+    await DBProvider.db.insertMeterCollection(MeterCollection(
+        referenceId: 1111,
+        amount: 2,
+        date: DateTime.now(),
+        multiplePayment: false));
 
     List<Client> l=new List();
     l.add(Client.from('1', 2, 'test', true, true,
@@ -94,6 +113,7 @@ class SyncController implements SocketCallBack {
     List<Client> clients=await DBProvider.db.getAllClients();
     clients.forEach((clients)=>print(clients.toJson()));
   }
+
 
   Future getServerIp() async {
     RawDatagramSocket socket=await NetworkSocket.networkSocket.getInstance(this);
@@ -142,6 +162,7 @@ class SyncController implements SocketCallBack {
   }
 
   Future clearMeterData() async {
+
     if(_serverIpAddress==null)
       return;
     collection = await ProjectSharedPreferences.isCollectionSync();

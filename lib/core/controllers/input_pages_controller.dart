@@ -35,7 +35,7 @@ class InputPagesController {
   String get clientPhone => _client?.phone;
 
   init() {
-    //setupDB();
+    setupDB();
     _meterReading = MeterReading();
   }
 
@@ -106,8 +106,11 @@ class InputPagesController {
       _view.onError('Invalid reference id!');
     } else {
       isLoading = true;
+      _meterReading.date = DateTime.now();
       DBProvider.db.insertMeterReading(_meterReading).then((result){
+        resetFields();
         if (result == 1) _view.onSuccess('Reading added successfully!');
+        else  _view.onError('Adding reading failed!');
       }).catchError((error) {
         print('DBinsertReadingError: $error');
         _view.onError('Adding reading failed!');
@@ -115,6 +118,13 @@ class InputPagesController {
         isLoading = false;
       });
     }
+  }
+
+  void resetFields() {
+    _client = null;
+    referenceID = null;
+    _meterReading = MeterReading();
+    _meterCollection = MeterCollection();
   }
 }
 
