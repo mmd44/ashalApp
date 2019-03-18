@@ -1,5 +1,6 @@
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
+import 'package:ashal/core/network/api.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
@@ -17,7 +18,6 @@ class SyncPage extends StatefulWidget {
 
 class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   SyncController _controller;
-  String _serverAddressIp;
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -37,7 +37,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           new Center(
             child: new Column(
               children: <Widget>[
-                Text(_serverAddressIp!=null?'Connected : $_serverAddressIp':"Searching For server"),
+                Text(!API.ipAddress.isEmpty?'Connected : ${API.ipAddress}':"Searching For server"),
                 _buildSyncClientButton(),
                 _buildSyncMeterReadingButton(),
                 _buildSyncCollectionReadingButton(),
@@ -60,7 +60,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           minWidth: 200.0,
           child: new RaisedButton(
               child: const Text('Sync Clients'),
-              onPressed: () async {
+              onPressed:API.ipAddress.isEmpty ? null : () async {
                 _controller.syncClients();
               },
               shape: new RoundedRectangleBorder(
@@ -75,7 +75,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Sync Meter Reading'),
-                onPressed: () async {
+                onPressed: API.ipAddress.isEmpty ? null :() async {
                   await _controller.syncMeterReading();
                   setState(() {});
                 },
@@ -90,7 +90,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Sync Collection Reading'),
-                onPressed: () async {
+                onPressed: API.ipAddress.isEmpty ? null :() async {
                   await _controller.syncCollection();
                   setState(() {});
                 },
@@ -105,7 +105,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Clear Meter Data and Sync Clients'),
-                onPressed: () async {
+                onPressed: API.ipAddress.isEmpty ? null :() async {
                   _controller.clearMeterData();
                   setState(() {});
                 },
@@ -124,8 +124,8 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -167,7 +167,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   @override
   void onConnect(String serverAddressIp) {
     print(serverAddressIp);
-    _serverAddressIp = serverAddressIp;
+    API.ipAddress = serverAddressIp;
     if(mounted) {
       this.setState(() {});
     }
