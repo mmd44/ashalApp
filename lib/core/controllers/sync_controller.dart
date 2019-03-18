@@ -5,9 +5,12 @@ import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/meter_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/client_service.dart';
 import 'package:ashal/core/network/discovery_socket.dart';
 import 'package:multicast_lock/multicast_lock.dart';
+import 'package:flutter/services.dart';
+import 'package:get_ip/get_ip.dart';
 
 class SyncController implements SocketCallBack {
   bool _readings=false;
@@ -17,7 +20,7 @@ class SyncController implements SocketCallBack {
   bool get readings => _readings;
   bool get collection => _collection;
 
-  String _serverIpAddress;
+  String _ip = '255.255.255.255';
 
   set collection(bool value) {
     _collection = value;
@@ -26,8 +29,6 @@ class SyncController implements SocketCallBack {
   set readings(bool value) {
     _readings = value;
   }
-
-  String get serverIpAddress => _serverIpAddress;
 
   SyncController(this._syncCallBack, this._readings, this._collection) {
     DBProvider.db.database;
@@ -116,17 +117,27 @@ class SyncController implements SocketCallBack {
 
 
   Future getServerIp() async {
+    await initPlatformState();
     RawDatagramSocket socket=await NetworkSocket.networkSocket.getInstance(this);
-    while(_serverIpAddress==null) {
-      socket.send(
-          "Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"),
-          8888);
+    while(API.ipAddress.isEmpty) {
+      try{
+        socket.send(
+            "Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"), 8888);
+      }catch(Exception) {}
       await Future.delayed(const Duration(seconds: 10));
     }
   }
 
+  Future<void> initPlatformState() async {
+    try {
+      _ip = await GetIp.ipAddress;
+    } on PlatformException {
+    }
+    print(_ip);
+  }
+
   Future syncMeterReading() async {
-    if(_serverIpAddress==null)
+    if(API.ipAddress.isEmpty)
       return;
     var readings = await DBProvider.db.getAllMeterReading();
 
@@ -144,7 +155,7 @@ class SyncController implements SocketCallBack {
   }
 
   Future syncCollection() async {
-    if(_serverIpAddress==null)
+    if(API.ipAddress.isEmpty)
       return;
     var collection = await DBProvider.db.getAllMeterCollection();
     collection.forEach((f) => print(f.toJson()));
@@ -163,7 +174,7 @@ class SyncController implements SocketCallBack {
 
   Future clearMeterData() async {
 
-    if(_serverIpAddress==null)
+    if(API.ipAddress.isEmpty)
       return;
     collection = await ProjectSharedPreferences.isCollectionSync();
     readings = await ProjectSharedPreferences.isMeterReadingSync();
@@ -183,8 +194,8 @@ class SyncController implements SocketCallBack {
   }
 
   Future syncClients() async {
-    if(_serverIpAddress==null)
-      return;
+    if(API.ipAddress.isEmpty)
+      return null;
     await DBProvider.db.deleteAllClient();
     ClientService _service = ClientService();
     _service.syncClients().then((clients)async {
@@ -198,7 +209,7 @@ class SyncController implements SocketCallBack {
 
   @override
   void onFoundAddress(String address) {
-    _serverIpAddress=address;
+    API.ipAddress=address;
     _syncCallBack.onConnect(address);
   }
 
