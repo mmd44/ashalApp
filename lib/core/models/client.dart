@@ -84,8 +84,8 @@ class Client {
       json["meterId"],
       MeterCollection.toBoolean(json["deleted"].toString()),
       MeterCollection.toBoolean(json["purged"].toString()),
-      DateTime.fromMicrosecondsSinceEpoch(json["dateTimeAdded"]),
-      DateTime.fromMicrosecondsSinceEpoch(json["dateTimeDeleted"]),
+      json["dateTimeAdded"]!=null?DateTime.fromMicrosecondsSinceEpoch(json["dateTimeAdded"]):null,
+      json["dateTimeDeleted"]!=null?DateTime.fromMicrosecondsSinceEpoch(json["dateTimeDeleted"]):null,
       json["outstanding"],
       json["comment"]);
 
@@ -107,8 +107,8 @@ class Client {
         "meterId": meterId,
         "deleted": deleted,
         "purged": purged,
-        "dateTimeAdded": dateTimeAdded.millisecondsSinceEpoch,
-        "dateTimeDeleted": dateTimeDeleted.millisecondsSinceEpoch,
+        "dateTimeAdded": dateTimeAdded?.millisecondsSinceEpoch,
+        "dateTimeDeleted": dateTimeDeleted?.millisecondsSinceEpoch,
         "outstanding": outstanding,
         "comment": comment
       };

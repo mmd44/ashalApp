@@ -15,15 +15,13 @@ class SyncPage extends StatefulWidget {
 
   SyncPage(String id) : cardItem = CardItemsDao.getCardByID(id);
 
-  SyncController _controller;
-
   @override
   _SyncPageState createState() => _SyncPageState();
 }
 
 class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   SyncController _controller;
-
+  String _serverAddressIp;
   @override
   Widget build(BuildContext context) {
 
@@ -44,11 +42,12 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           new Center(
             child: new Column(
               children: <Widget>[
+                Text(_serverAddressIp!=null?'Connected : $_serverAddressIp':"Searching For server"),
                 _buildSyncClientButton(),
                 _buildSyncMeterReadingButton(),
                 _buildSyncCollectionReadingButton(),
                 Visibility(
-                    visible: _controller.collection&&_controller.readings,
+                    visible: _controller!=null&&_controller.collection&&_controller.readings,
                     child: _buildSyncClearMeterData()
                 )
               ],
@@ -123,12 +122,18 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   }
 
   void _init() async{
-
     bool collection=await ProjectSharedPreferences.isCollectionSync();
     bool readings=await ProjectSharedPreferences.isMeterReadingSync();
     _controller=new SyncController(this,readings,collection);
-    setState(() {});
+    _controller.getServerIp();
     await _controller.dummy();
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -165,6 +170,15 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   @override
   void onMeterReadingSyncSuccess() {
     // TODO: implement onMeterReadingSyncSuccess
+  }
+
+  @override
+  void onConnect(String serverAddressIp) {
+    print(serverAddressIp);
+    _serverAddressIp = serverAddressIp;
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
 }
