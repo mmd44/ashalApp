@@ -1,9 +1,5 @@
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
-import 'package:ashal/core/database.dart';
-import 'package:ashal/core/models/client.dart';
-import 'package:ashal/core/models/meter_collection.dart';
-import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
@@ -24,7 +20,6 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   String _serverAddressIp;
   @override
   Widget build(BuildContext context) {
-
     return new Container(
       color: Theme.Colors.cardPageBackground,
       child: ListView(
@@ -65,10 +60,8 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           minWidth: 200.0,
           child: new RaisedButton(
               child: const Text('Sync Clients'),
-              onPressed: () async
-              {
-                  _controller.syncClients();
-
+              onPressed: () async {
+                _controller.syncClients();
               },
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0))),
@@ -112,8 +105,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Clear Meter Data and Sync Clients'),
-                onPressed: () async
-                {
+                onPressed: () async {
                   _controller.clearMeterData();
                   setState(() {});
                 },
