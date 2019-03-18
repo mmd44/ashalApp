@@ -1,17 +1,23 @@
+import 'dart:io';
+
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/meter_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/core/network/client_service.dart';
+import 'package:ashal/core/network/discovery_socket.dart';
+import 'package:multicast_lock/multicast_lock.dart';
 
-class SyncController {
-  bool _readings;
-  bool _collection;
+class SyncController implements SocketCallBack {
+  bool _readings=false;
+  bool _collection=false;
+
   SyncCallBack _syncCallBack;
   bool get readings => _readings;
-
   bool get collection => _collection;
+
+  String _serverIpAddress;
 
   set collection(bool value) {
     _collection = value;
@@ -20,6 +26,8 @@ class SyncController {
   set readings(bool value) {
     _readings = value;
   }
+
+  String get serverIpAddress => _serverIpAddress;
 
   SyncController(this._syncCallBack, this._readings, this._collection) {
     DBProvider.db.database;
@@ -90,20 +98,33 @@ class SyncController {
         multiplePayment: false));
 
     await DBProvider.db.insertClient(Client.from('1', 2, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03030303'));
+        DateTime.now(), null, '03030303'));
     await DBProvider.db.insertClient(Client.from('1', 234, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
+        DateTime.now(), null, '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 4564, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
+        DateTime.now(), null, '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 1234, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
+        DateTime.now(), null, '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 1232, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
+        DateTime.now(), null, '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 1222, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
+        DateTime.now(), null, '03040404'));
+  }
+
+
+  Future getServerIp() async {
+    RawDatagramSocket socket=await NetworkSocket.networkSocket.getInstance(this);
+    while(_serverIpAddress==null) {
+      socket.send(
+          "Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"),
+          8888);
+      await Future.delayed(const Duration(seconds: 10));
+    }
   }
 
   Future syncMeterReading() async {
+    if(_serverIpAddress==null)
+      return;
     var readings = await DBProvider.db.getAllMeterReading();
 
     readings.forEach((m) => print(m.toJson()));
@@ -120,6 +141,8 @@ class SyncController {
   }
 
   Future syncCollection() async {
+    if(_serverIpAddress==null)
+      return;
     var collection = await DBProvider.db.getAllMeterCollection();
     collection.forEach((f) => print(f.toJson()));
 
@@ -136,6 +159,9 @@ class SyncController {
   }
 
   Future clearMeterData() async {
+
+    if(_serverIpAddress==null)
+      return;
     collection = await ProjectSharedPreferences.isCollectionSync();
     readings = await ProjectSharedPreferences.isMeterReadingSync();
     if (collection && readings) {
@@ -154,6 +180,8 @@ class SyncController {
   }
 
   Future syncClients() async {
+    if(_serverIpAddress==null)
+      return;
     await DBProvider.db.deleteAllClient();
     ClientService _service = ClientService();
     _service.syncClients().then((clients) {
@@ -162,6 +190,16 @@ class SyncController {
       print('errorClientService $error');
       _syncCallBack.onClientSyncError("error");
     });
+  }
+
+  @override
+  void onFoundAddress(String address) {
+    _serverIpAddress=address;
+    _syncCallBack.onConnect(address);
+  }
+
+  void dispose() async {
+    NetworkSocket.networkSocket.dispose();
   }
 }
 
@@ -172,4 +210,5 @@ abstract class SyncCallBack {
   void onMeterReadingSyncError(String msg);
   void onMeterCollectionSyncSuccess();
   void onMeterCollectionSyncError(String msg);
+  void onConnect(String serverAddressIp);
 }
