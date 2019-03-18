@@ -18,8 +18,8 @@ class MeterCollection {
   bool multiplePayment;
 
 
-  MeterCollection( this.referenceId, this.amount, this.date,
-      this.multiplePayment,{this.id});
+  MeterCollection({this.referenceId, this.amount, this.date,
+      this.multiplePayment,this.id});
 
 
   MeterCollection.MeterCollectionModel(this.referenceId, this.amount, this.date,
@@ -36,10 +36,10 @@ class MeterCollection {
   }
 
   factory MeterCollection.fromJson(Map<String, dynamic> json) => new MeterCollection(
-      json["referenceId"],
-      json["amount"],
-      DateTime.fromMicrosecondsSinceEpoch(json["date"]),
-      toBoolean(json["multiplePayment"].toString()),
+      referenceId: json["referenceId"],
+      amount: json["amount"],
+      date: DateTime.fromMicrosecondsSinceEpoch(json["date"]),
+      multiplePayment: toBoolean(json["multiplePayment"].toString()),
       id:json["id"]);
 
   Map<String, dynamic> toJson() => {

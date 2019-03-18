@@ -1,9 +1,5 @@
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
-import 'package:ashal/core/database.dart';
-import 'package:ashal/core/models/client.dart';
-import 'package:ashal/core/models/meter_collection.dart';
-import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/theme.dart' as Theme;

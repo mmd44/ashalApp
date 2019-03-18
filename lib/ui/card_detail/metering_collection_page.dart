@@ -160,16 +160,19 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
 
   @override
   void onSuccess(String msg) {
+    setState(() {});
     showSnackbar(msg, context);
   }
 
   @override
   void onError(String error) {
+    setState(() {});
     showErrorSnackbar(error, context: context);
   }
 
   @override
   void onReadingsError(String msg) {
+    setState(() {});
     showErrorSnackbar(msg, context: context);
   }
 
