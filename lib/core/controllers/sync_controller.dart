@@ -78,18 +78,21 @@ class SyncController implements SocketCallBack {
     await DBProvider.db
         .insertMeterCollection(MeterCollection(1111, 2, DateTime.now(), false));
 
-    await DBProvider.db.insertClient(Client.from('1', 2, 'test', true, true,
+    List<Client> l=new List();
+    l.add(Client.from('1', 2, 'test', true, true,
         DateTime.now(), null, '03030303'));
-    await DBProvider.db.insertClient(Client.from('1', 234, 'test', true, true,
+    l.add(Client.from('1', 234, 'test', true, true,
         DateTime.now(), null, '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 4564, 'test', true, true,
+    l.add(Client.from('1', 4564, 'test', true, true,
         DateTime.now(), null, '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 1234, 'test', true, true,
+    l.add(Client.from('1', 1234, 'test', true, true,
         DateTime.now(), null, '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 1232, 'test', true, true,
+    l.add(Client.from('1', 1222, 'test', true, true,
         DateTime.now(), null, '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 1222, 'test', true, true,
-        DateTime.now(), null, '03040404'));
+    DBProvider.db.insertClients(l);
+
+    List<Client> clients=await DBProvider.db.getAllClients();
+    clients.forEach((clients)=>print(clients.toJson()));
   }
 
   Future getServerIp() async {
@@ -163,7 +166,8 @@ class SyncController implements SocketCallBack {
       return;
     await DBProvider.db.deleteAllClient();
     ClientService _service = ClientService();
-    _service.syncClients().then((clients) {
+    _service.syncClients().then((clients)async {
+      await DBProvider.db.insertClients(clients);
       _syncCallBack.onClientSyncSuccess();
     }).catchError((error) {
       print('errorClientService $error');

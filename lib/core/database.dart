@@ -4,6 +4,7 @@ import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/meter_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/core/network/api_exception.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -86,14 +87,7 @@ class DBProvider {
         '`date` INTEGER);');
   }
 
-//  batchTransaction() async {
-//    var batch = _database.batch();
-//    batch.insert('Test', {'name': 'item'});
-//    batch.update('Test', {'name': 'new_item'},
-//        where: 'name = ?', whereArgs: ['item']);
-//    batch.delete('Test', where: 'name = ?', whereArgs: ['item']);
-//    var results = await batch.commit();
-//  }
+
 
   initDB() async {
     int dbVersion = await ProjectSharedPreferences.getDataBaseVersion();
@@ -112,6 +106,15 @@ class DBProvider {
     final db = await database;
     var res = await db.insert("$CLIENT_TABLE", newUser.toJson());
     return res;
+  }
+
+  Future<bool> insertClients(List<Client> clients) async {
+    var batch = _database.batch();
+    clients.forEach((client)=> batch.insert("$CLIENT_TABLE", client.toJson()));
+    List<dynamic> results = await batch.commit();
+    if(results.length<clients.length)
+      throw new APIException("database.insert_clients", "Insert Error Clients");
+    return true;
   }
 
   Future<Client> getClient(int referenceId) async {
@@ -156,6 +159,8 @@ class DBProvider {
   Future<int> insertMeterReading(MeterReading newUser) async {
     final db = await database;
     var res = await db.insert("`$METER_READING_TABLE`", newUser.toJson());
+    if(res<=0)
+      throw new APIException("database.insert_meter_readin_error", "");
     return res;
   }
 
@@ -197,8 +202,10 @@ class DBProvider {
   Future<int> insertMeterCollection(
       MeterCollection newMeterCollectionModel) async {
     final db = await database;
-    var res = await db.insert(
+    int res = await db.insert(
         "`$METER_COLLECTION_TABLE`", newMeterCollectionModel.toJson());
+    if(res<=0)
+      throw new APIException("database.insert_meter_collection_error", "");
     return res;
   }
 
