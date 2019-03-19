@@ -115,12 +115,13 @@ class SyncController implements SocketCallBack {
   Future getServerIp() async {
     RawDatagramSocket socket=await NetworkSocket.networkSocket.getInstance(this);
     while(API.ipAddress.isEmpty&&canSend) {
-      print("sending");
-      print(socket.address.address);
-      socket.send(
-          "Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"), 8888);
+      try{
+        socket.send(
+            "Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"), 8888);
+      }catch(Ex){}
       await Future.delayed(const Duration(seconds: 5));
     }
+    await NetworkSocket.networkSocket.dispose();
   }
 
   Future syncMeterReading() async {
