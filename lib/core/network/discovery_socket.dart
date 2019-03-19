@@ -5,7 +5,6 @@ import 'package:multicast_lock/multicast_lock.dart';
 class NetworkSocket {
   NetworkSocket._();
   static RawDatagramSocket _socket = null;
-  final multicastLock = new MulticastLock();
   SocketCallBack _callBack;
   static final NetworkSocket _networkSocket = NetworkSocket._();
 
@@ -27,7 +26,9 @@ class NetworkSocket {
   }
 
   init(SocketCallBack callBack) async{
+    MulticastLock multicastLock = new MulticastLock();
     multicastLock.acquire();
+    print(await multicastLock.isHeld());
     _callBack=callBack;
     if (_socket == null) {
       print("init");
@@ -51,6 +52,7 @@ class NetworkSocket {
         }
       });
     }
+    multicastLock.release();
   }
 
   dispose()
