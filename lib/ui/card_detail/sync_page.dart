@@ -38,6 +38,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             child: new Column(
               children: <Widget>[
                 Text(!API.ipAddress.isEmpty?'Connected : ${API.ipAddress}':"Searching For server"),
+                _buildClearIpButton(),
                 _buildSyncClientButton(),
                 _buildSyncMeterReadingButton(),
                 _buildSyncCollectionReadingButton(),
@@ -50,6 +51,22 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildClearIpButton() {
+    return ButtonTheme(
+      minWidth: 100.0,
+      child: new FlatButton(
+          child: const Text('Reconnect'),
+          color: Colors.black12,
+          onPressed:  () async {
+            API.ipAddress='';
+            setState(() {});
+            _controller.getServerIp();
+          },
+          shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0))),
     );
   }
 

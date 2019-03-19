@@ -8,18 +8,16 @@ import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/client_service.dart';
 import 'package:ashal/core/network/discovery_socket.dart';
-import 'package:flutter/services.dart';
-import 'package:get_ip/get_ip.dart';
+
 
 class SyncController implements SocketCallBack {
   bool _readings=false;
   bool _collection=false;
 
   SyncCallBack _syncCallBack;
+  bool canSend=true;
   bool get readings => _readings;
   bool get collection => _collection;
-
-  String _ip = '255.255.255.255';
 
   set collection(bool value) {
     _collection = value;
@@ -116,23 +114,15 @@ class SyncController implements SocketCallBack {
 
 
   Future getServerIp() async {
-    await initPlatformState();
     RawDatagramSocket socket=await NetworkSocket.networkSocket.getInstance(this);
-    while(API.ipAddress.isEmpty) {
+    while(API.ipAddress.isEmpty&&canSend) {
       try{
         socket.send(
             "Where-are-you-ashal?".codeUnits, InternetAddress("255.255.255.255"), 8888);
-      }catch(Exception) {}
-      await Future.delayed(const Duration(seconds: 10));
+      }catch(Ex){}
+      await Future.delayed(const Duration(seconds: 5));
     }
-  }
-
-  Future<void> initPlatformState() async {
-    try {
-      _ip = await GetIp.ipAddress;
-    } on PlatformException {
-    }
-    print(_ip);
+    await NetworkSocket.networkSocket.dispose();
   }
 
   Future syncMeterReading() async {
@@ -208,12 +198,14 @@ class SyncController implements SocketCallBack {
 
   @override
   void onFoundAddress(String address) {
+    NetworkSocket.networkSocket.dispose();
     API.ipAddress=address;
     _syncCallBack.onConnect(address);
   }
 
   void dispose() async {
     NetworkSocket.networkSocket.dispose();
+    canSend=false;
   }
 }
 

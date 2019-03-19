@@ -23,7 +23,6 @@ dependencies:
   autocomplete_textfield: ^1.6.4
   sqflite: any
   path_provider: any
-  get_ip: ^0.2.0
   flutter:
     sdk: flutter
 
