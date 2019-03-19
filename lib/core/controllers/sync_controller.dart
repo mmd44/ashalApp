@@ -8,7 +8,6 @@ import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/client_service.dart';
 import 'package:ashal/core/network/discovery_socket.dart';
-import 'package:multicast_lock/multicast_lock.dart';
 import 'package:flutter/services.dart';
 import 'package:get_ip/get_ip.dart';
 
