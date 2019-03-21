@@ -39,7 +39,6 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     _controller = new InputPagesController(this);
     _controller.init();
 
-
     _animationController = AnimationController(vsync: this, duration: Duration(seconds: 1));
     _imagePickerHandler = ImagePickerHandler(this, _animationController);
     _imagePickerHandler.init();
@@ -189,7 +188,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     DateTime today = DateTime.now();
     _controller.todayDate = today;
     return Center(
-      child: Text(DateFormat('yyyy-MM-dd – kk:mm').format(today)),
+      child: Text(DateFormat('dd-MM-yyyy').format(today)),
     );
   }
 }

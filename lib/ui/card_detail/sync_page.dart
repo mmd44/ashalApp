@@ -1,5 +1,6 @@
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
+import 'package:ashal/core/database.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -135,7 +136,8 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
     bool readings=await ProjectSharedPreferences.isMeterReadingSync();
     _controller=new SyncController(this,readings,collection);
     _controller.getServerIp();
-    await _controller.dummy();
+    DBProvider.db.initDB();
+    //await _controller.dummy();
     setState(() {});
   }
 
