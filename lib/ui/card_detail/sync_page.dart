@@ -1,7 +1,9 @@
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
 import 'package:ashal/core/database.dart';
+import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/network/api.dart';
+import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
@@ -136,8 +138,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
     bool readings=await ProjectSharedPreferences.isMeterReadingSync();
     _controller=new SyncController(this,readings,collection);
     _controller.getServerIp();
-    DBProvider.db.initDB();
-    //await _controller.dummy();
+//    await _controller.dummy();
     setState(() {});
   }
 
@@ -155,32 +156,70 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
 
   @override
   void onClientSyncError(String msg) {
-    // TODO: implement onClientSyncError
+    showDialogMessage(context,
+        title: 'Error',
+        message: msg,
+        onConfirm: null);
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
-  void onClientSyncSuccess() {
-    // TODO: implement onClientSyncSuccess
+  void onClientSyncSuccess(String msg)async {
+    List<Client> clients =await DBProvider.db.getAllClients();
+    clients.forEach((client)=>print(client.toJson()));
+    showDialogMessage(context,
+        title: 'Success',
+        message: msg,
+        onConfirm: null);
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
   void onMeterCollectionSyncError(String msg) {
-    // TODO: implement onMeterCollectionSyncError
+    showDialogMessage(context,
+        title: 'Error',
+        message: msg,
+        onConfirm: null);
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
-  void onMeterCollectionSyncSuccess() {
-    // TODO: implement onMeterCollectionSyncSuccess
+  void onMeterCollectionSyncSuccess(String msg) {
+    showDialogMessage(context,
+        title: 'Success',
+        message: msg,
+        onConfirm: null);
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
   void onMeterReadingSyncError(String msg) {
-    // TODO: implement onMeterReadingSyncError
+    showDialogMessage(context,
+        title: 'Error',
+        message: msg,
+        onConfirm: null);
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
-  void onMeterReadingSyncSuccess() {
-    // TODO: implement onMeterReadingSyncSuccess
+  void onMeterReadingSyncSuccess(String msg) {
+    showDialogMessage(context,
+        title: 'Success',
+        message: msg,
+        onConfirm: null);
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
