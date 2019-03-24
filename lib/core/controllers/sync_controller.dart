@@ -130,40 +130,42 @@ class SyncController implements SocketCallBack {
 
   Future syncMeterReading() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onMeterReadingSyncError("Reading sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("reading","Reading sync Cannot be done before connecting");
       return;
     }
+    _syncCallBack.onStart("reading");
     var readings = await DBProvider.db.getAllMeterReading();
     ClientService _service = ClientService();
     print(API.reading);
     _service.syncMeterReadings(readings).then((string)async {
-      ProjectSharedPreferences.setMeterReadingSync(true);
+      ProjectSharedPreferences.instance.setMeterReadingSync(true);
       _readings = true;
-      _syncCallBack.onMeterReadingSyncSuccess("Reading sync successfully");
+      _syncCallBack.onSyncSuccess("reading","Reading sync successfully");
     }).catchError((error) {
       _readings = false;
-      ProjectSharedPreferences.setMeterReadingSync(false);
-      _syncCallBack.onMeterReadingSyncError("Error in Reading sync");
+      ProjectSharedPreferences.instance.setMeterReadingSync(false);
+      _syncCallBack.onSyncError("reading","Error in Reading sync");
     });
   }
 
   Future syncCollection() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onMeterCollectionSyncError("Collection sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("collection","Collection sync Cannot be done before connecting");
       return;
     }
+    _syncCallBack.onStart("collection");
     var collections = await DBProvider.db.getAllMeterCollection();
     ClientService _service = ClientService();
     print(API.collection);
     _service.syncMeterCollection(collections).then((string)async {
-      ProjectSharedPreferences.setCollectionSync(true);
+      ProjectSharedPreferences.instance.setCollectionSync(true);
       _collection = true;
-      _syncCallBack.onMeterCollectionSyncSuccess("Collection sync successfully");
+      _syncCallBack.onSyncSuccess("collection","Collection sync successfully");
     }).catchError((error) {
       _collection = false;
-      ProjectSharedPreferences.setCollectionSync(false);
+      ProjectSharedPreferences.instance.setCollectionSync(false);
       print('errorClientService $error');
-      _syncCallBack.onMeterCollectionSyncError("Error in Collection sync");
+      _syncCallBack.onSyncError("collection","Error in Collection sync");
     });
   }
 
@@ -171,15 +173,15 @@ class SyncController implements SocketCallBack {
 
     if(API.ipAddress.isEmpty)
       return;
-    collection = await ProjectSharedPreferences.isCollectionSync();
-    readings = await ProjectSharedPreferences.isMeterReadingSync();
+    collection = await ProjectSharedPreferences.instance.isCollectionSync();
+    readings = await ProjectSharedPreferences.instance.isMeterReadingSync();
     if (collection && readings) {
-      int dbVersion = await ProjectSharedPreferences.getDataBaseVersion();
+      int dbVersion = await ProjectSharedPreferences.instance.getDataBaseVersion();
       bool success =
-          await ProjectSharedPreferences.setDataBaseVersion(dbVersion + 1);
+          await ProjectSharedPreferences.instance.setDataBaseVersion(dbVersion + 1);
       if (success) {
-        await ProjectSharedPreferences.setMeterReadingSync(false);
-        await ProjectSharedPreferences.setCollectionSync(false);
+        await ProjectSharedPreferences.instance.setMeterReadingSync(false);
+        await ProjectSharedPreferences.instance.setCollectionSync(false);
         await DBProvider.db.changeDatabaseVesion();
         collection = false;
         readings = false;
@@ -190,18 +192,19 @@ class SyncController implements SocketCallBack {
 
   Future syncClients() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onClientSyncError("Client sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("client","Client sync Cannot be done before connecting");
       return null;
     }
+    _syncCallBack.onStart("client");
     await DBProvider.db.deleteAllClient();
     ClientService _service = ClientService();
     print(API.client);
     _service.syncClients().then((clients) async {
       await DBProvider.db.insertClients(clients);
-      _syncCallBack.onClientSyncSuccess("Client sync successfully");
+      _syncCallBack.onSyncSuccess("client","Client sync successfully");
     }).catchError((error) {
       print('errorClientService $error');
-      _syncCallBack.onClientSyncError("Error in Client sync");
+      _syncCallBack.onSyncError("client","Error in Client sync");
     });
   }
 
@@ -225,11 +228,8 @@ class SyncController implements SocketCallBack {
 }
 
 abstract class SyncCallBack {
-  void onClientSyncSuccess(String msg);
-  void onClientSyncError(String msg);
-  void onMeterReadingSyncSuccess(String msg);
-  void onMeterReadingSyncError(String msg);
-  void onMeterCollectionSyncSuccess(String msg);
-  void onMeterCollectionSyncError(String msg);
+  void onSyncSuccess(String fromButton,String msg);
+  void onSyncError(String fromButton,String msg);
   void onConnect();
+  void onStart(String from);
 }
