@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ashal/core/models/meter_collection.dart';
+import 'package:ashal/core/models/amount_collection.dart';
 
 Client clientFromJson(String str) {
   final jsonData = json.decode(str);

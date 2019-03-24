@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
-import 'package:ashal/core/models/meter_collection.dart';
+import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/ui/models/card_item.dart';
 
@@ -24,6 +24,8 @@ class InputPagesController {
   bool isLoading = false;
 
   File meterImageFile;
+
+  DateTime todayDate;
 
   bool get isCollectionValid => _amountCollection?.amount != null;
 
@@ -69,11 +71,11 @@ class InputPagesController {
         DateTime.now(), DateTime.now(), '03040404'));
   }
 
-  set todayDate(DateTime dateTime) {
+  set meteringCollectionDates (DateTime dateTime) {
+    todayDate = dateTime;
     _meterReading.date = dateTime;
     _amountCollection.date = dateTime;
   }
-  get todayDate => _meterReading.date ?? _amountCollection.date;
 
   void setClientByReference() {
     int id;
@@ -156,9 +158,8 @@ class InputPagesController {
     referenceID = null;
     _meterReading = MeterReading();
     _amountCollection = AmountCollection(multiplePayment: false);
-    todayDate = DateTime.now();
+    meteringCollectionDates = DateTime.now();
   }
-
   
 }
 
