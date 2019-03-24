@@ -144,11 +144,12 @@ Widget buildLoader (BuildContext context) {
       child: SizedBox(
         child: Opacity(
           opacity: 1,
-          child: LinearProgressIndicator(
+          child: CircularProgressIndicator(
             backgroundColor: Theme.Colors.primary,
+            strokeWidth: 2,
           ),
         ),
-        height: 2.0,
+        height: 12,
       ),
     ),
   );
