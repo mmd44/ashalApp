@@ -12,8 +12,9 @@ import 'package:flutter/material.dart';
 
 class SyncPage extends StatefulWidget {
   final CardItem cardItem;
-
-  SyncPage(String id) : cardItem = CardItemsDao.getCardByID(id);
+  bool showDialog;
+  SyncPage(String id, this.showDialog)
+      : cardItem = CardItemsDao.getCardByID(id);
 
   @override
   _SyncPageState createState() => _SyncPageState();
@@ -38,17 +39,20 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             ),
           ),
           new Center(
-            child: _controller.isLoading ? buildLoader(context) : new Column(
+            child: new Column(
               children: <Widget>[
-                Text(!API.ipAddress.isEmpty?'Connected : ${API.ipAddress}':"Searching For server"),
+                Text(!API.ipAddress.isEmpty
+                    ? 'Connected : ${API.ipAddress}'
+                    : "Searching For server"),
                 _buildClearIpButton(),
                 _buildSyncClientButton(),
                 _buildSyncMeterReadingButton(),
                 _buildSyncCollectionReadingButton(),
                 Visibility(
-                    visible: _controller!=null&&_controller.collection&&_controller.readings,
-                    child: _buildSyncClearMeterData()
-                )
+                    visible: _controller != null &&
+                        _controller.collection &&
+                        _controller.readings,
+                    child: _buildSyncClearMeterData())
               ],
             ),
           )
@@ -63,8 +67,8 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
       child: new FlatButton(
           child: const Text('Reconnect'),
           color: Colors.black12,
-          onPressed:  () async {
-            API.ipAddress='';
+          onPressed: () async {
+            API.ipAddress = '';
             setState(() {});
             _controller.getServerIp();
           },
@@ -80,9 +84,11 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           minWidth: 200.0,
           child: new RaisedButton(
               child: const Text('Sync Clients'),
-              onPressed:API.ipAddress.isEmpty ? null : () async {
-                _controller.syncClients();
-              },
+              onPressed: API.ipAddress.isEmpty
+                  ? null
+                  : () async {
+                      _controller.syncClients();
+                    },
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0))),
         ));
@@ -95,10 +101,12 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Sync Meter Reading'),
-                onPressed: API.ipAddress.isEmpty ? null :() async {
-                  await _controller.syncMeterReading();
-                  setState(() {});
-                },
+                onPressed: API.ipAddress.isEmpty || ProjectSharedPreferences.instance.isMeterReadingSync()
+                    ? null
+                    : () async {
+                        await _controller.syncMeterReading();
+                        setState(() {});
+                      },
                 shape: new RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(30.0)))));
   }
@@ -110,10 +118,12 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Sync Collection Reading'),
-                onPressed: API.ipAddress.isEmpty ? null :() async {
-                  await _controller.syncCollection();
-                  setState(() {});
-                },
+                onPressed: API.ipAddress.isEmpty || ProjectSharedPreferences.instance.isCollectionSync()
+                    ? null
+                    : () async {
+                        await _controller.syncCollection();
+                        setState(() {});
+                      },
                 shape: new RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(30.0)))));
   }
@@ -125,20 +135,34 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             minWidth: 200.0,
             child: new RaisedButton(
                 child: const Text('Clear Meter Data and Sync Clients'),
-                onPressed: API.ipAddress.isEmpty ? null :() async {
-                  _controller.clearMeterData();
-                  setState(() {});
-                },
+                onPressed: API.ipAddress.isEmpty
+                    ? null
+                    : () async {
+                        _controller.clearMeterData();
+                        setState(() {});
+                      },
                 shape: new RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(30.0)))));
   }
 
-  void _init() async{
-    bool collection=await ProjectSharedPreferences.isCollectionSync();
-    bool readings=await ProjectSharedPreferences.isMeterReadingSync();
-    _controller=new SyncController(this,readings,collection);
+  void _showSyncDialog()
+  {
+    if (widget.showDialog) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        showDialogMessage(context,
+            buttonText: "ok",
+            title: 'Sync',
+            message: "Complete Sync and clear data to add new reading/collection",
+            onConfirm: null);
+      });
+    }
+  }
+  void _init() {
+    _showSyncDialog();
+    var collection = ProjectSharedPreferences.instance.isCollectionSync();
+    var readings = ProjectSharedPreferences.instance.isMeterReadingSync();
+    _controller = new SyncController(this, readings, collection);
     _controller.getServerIp();
-//    await _controller.dummy();
     setState(() {});
   }
 
@@ -155,78 +179,36 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   }
 
   @override
-  void onClientSyncError(String msg) {
-    showDialogMessage(context,
-        title: 'Error',
-        message: msg,
-        onConfirm: null);
-    if(mounted) {
-      this.setState(() {});
-    }
-  }
-
-  @override
-  void onClientSyncSuccess(String msg)async {
-    List<Client> clients =await DBProvider.db.getAllClients();
-    clients.forEach((client)=>print(client.toJson()));
-    showDialogMessage(context,
-        title: 'Success',
-        message: msg,
-        onConfirm: null);
-    if(mounted) {
-      this.setState(() {});
-    }
-  }
-
-  @override
-  void onMeterCollectionSyncError(String msg) {
-    showDialogMessage(context,
-        title: 'Error',
-        message: msg,
-        onConfirm: null);
-    if(mounted) {
-      this.setState(() {});
-    }
-  }
-
-  @override
-  void onMeterCollectionSyncSuccess(String msg) {
-    showDialogMessage(context,
-        title: 'Success',
-        message: msg,
-        onConfirm: null);
-    if(mounted) {
-      this.setState(() {});
-    }
-  }
-
-  @override
-  void onMeterReadingSyncError(String msg) {
-    showDialogMessage(context,
-        title: 'Error',
-        message: msg,
-        onConfirm: null);
-    if(mounted) {
-      this.setState(() {});
-    }
-  }
-
-  @override
-  void onMeterReadingSyncSuccess(String msg) {
-    showDialogMessage(context,
-        title: 'Success',
-        message: msg,
-        onConfirm: null);
-    if(mounted) {
-      this.setState(() {});
-    }
-  }
-
-  @override
   void onConnect() {
-    if(mounted) {
+    if (mounted) {
       this.setState(() {});
     }
   }
 
+  @override
+  void onStart(String from) {
+    showLoader(context);
+  }
+
+  @override
+  void onSyncError(String fromButton, String msg) {
+    Navigator.pop(context);
+    showDialogMessage(context, title: 'Error', message: msg, onConfirm: null);
+    if (mounted) {
+      this.setState(() {});
+    }
+  }
+
+  @override
+  void onSyncSuccess(String fromButton, String msg) async {
+    Navigator.pop(context);
+    if (fromButton == 'client') {
+      List<Client> clients = await DBProvider.db.getAllClients();
+      clients.forEach((client) => print(client.toJson()));
+    }
+    showDialogMessage(context, title: 'Success', message: msg, onConfirm: null);
+    if (mounted) {
+      this.setState(() {});
+    }
+  }
 }
