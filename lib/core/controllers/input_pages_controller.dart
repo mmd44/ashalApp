@@ -34,7 +34,7 @@ class InputPagesController {
       : _cardItem = cardItem,
         _view = view;
 
-  bool get isMetering => _cardItem.name == '2';
+  bool get isMetering => _cardItem.id == '2';
 
   bool get isMultiplePayment => _amountCollection.multiplePayment;
   set multiplePayment (bool val) => _amountCollection.multiplePayment = val;
