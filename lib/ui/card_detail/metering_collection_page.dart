@@ -31,15 +31,16 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
 
   @override
   void initState() {
-    _init();
     super.initState();
+    _init();
   }
 
   void _init() async {
-    _controller = new InputPagesController(this);
+    _controller = new InputPagesController(widget.cardItem, this);
     _controller.init();
 
-    _animationController = AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
     _imagePickerHandler = ImagePickerHandler(this, _animationController);
     _imagePickerHandler.init();
   }
@@ -60,10 +61,11 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               ),
             ),
           ),
-          _buildTodayDate(),
+          _controller.isMetering
+              ? _buildTodayDate()
+              : Container(width: 0, height: 0),
           SubscriberInfo(_controller),
           _buildInputField(),
-          _buildCamButton(),
           _buildConfirmButton(),
         ],
       ),
@@ -77,7 +79,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Container(),
           ),
           Expanded(
@@ -86,11 +88,9 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               padding: const EdgeInsets.only(bottom: 20),
               child: TextField(
                 keyboardType: TextInputType.number,
-                decoration:
-                    Theme.TextStyles.textField.copyWith(hintText: 'Reading'),
-                onChanged: (value) {
-                  _controller.setReadings(value);
-                },
+                decoration: Theme.TextStyles.textField.copyWith(
+                    hintText: _controller.isMetering ? 'Reading' : 'Amount'),
+                onChanged: (value) => _controller.setInput(value),
               ),
             ),
           ),
@@ -98,12 +98,15 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 20),
-              child: Text('Kwh', textAlign: TextAlign.center),
+              child: Text(_controller.isMetering ? 'Kwh' : 'L.L',
+                  textAlign: TextAlign.center),
             ),
           ),
           Expanded(
-            flex: 2,
-            child: Container(),
+            flex: 3,
+            child: _controller.isMetering
+                ? _buildCamButton()
+                : _buildMultiplePaymentCheckbox(),
           ),
         ],
       ),
@@ -111,12 +114,19 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
   }
 
   Widget _buildCamButton() {
-    return GestureDetector(
-        child:
-            Container(child: (CircleAvatar(child: Icon(Icons.photo_camera)))),
-        onTap: () async {
-          _imagePickerHandler.getImageFromCamera();
-        });
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: GestureDetector(
+        child: _controller.meterImageFile != null
+            ? _buildImageCaptured()
+            : Container(child: (CircleAvatar(child: Icon(Icons.camera)))),
+        onTap: _openCam,
+      ),
+    );
+  }
+
+  void _openCam() {
+    _imagePickerHandler.getImageFromCamera();
   }
 
   Widget _buildConfirmButton() {
@@ -124,10 +134,12 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+            padding: const EdgeInsets.only(top: 16, left: 40, right: 40),
             child: CustomButton(
               onPressed: _onSubmit,
-              disabled: !_controller.isCollectionValid,
+              disabled: _controller.isMetering
+                  ? !_controller.isMeteringValid
+                  : !_controller.isCollectionValid,
               loading: _controller.isLoading,
               label: Text(
                 'Confirm',
@@ -185,10 +197,73 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
   }
 
   _buildTodayDate() {
-    DateTime today = DateTime.now();
-    _controller.todayDate = today;
     return Center(
-      child: Text(DateFormat('dd-MM-yyyy').format(today)),
+      child: Text(DateFormat('dd-MM-yyyy').format(
+        _controller.todayDate,
+      )),
+    );
+  }
+
+  _buildImageCaptured() {
+    return InkWell(
+      onTap: _openCam,
+      child: Center(
+        child: _buildImageFile(),
+      ),
+    );
+  }
+
+  _buildImageFile() {
+    return new Container(
+      width: 70,
+      height: 70,
+      decoration: new BoxDecoration(
+        color: const Color(0xff7c94b6),
+        image: new DecorationImage(
+          image: new FileImage(_controller.meterImageFile),
+          fit: BoxFit.fill,
+        ),
+        borderRadius: new BorderRadius.all(new Radius.circular(150.0)),
+        border: new Border.all(
+          color: Theme.Colors.primary,
+          width: 0.0,
+        ),
+      ),
+    );
+  }
+
+  _buildMultiplePaymentCheckbox() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        children: <Widget>[
+          Checkbox(
+            onChanged: (value) {
+              setState(() {
+                _controller.multiplePayment = value;
+              });
+            },
+            value: _controller.isMultiplePayment,
+            activeColor: const Color(0xff00bbff),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          Text(
+            'Multiple\nPayments?',
+            style: TextStyle(
+              fontSize: 8,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void showWarningDialog(String msg) {
+    showDialogConfirm(
+      context,
+      message: msg,
+      onConfirm: () => _controller.submit(bypassChecks: true),
     );
   }
 }

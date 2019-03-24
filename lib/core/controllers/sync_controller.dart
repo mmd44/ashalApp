@@ -64,32 +64,32 @@ class SyncController implements SocketCallBack {
         reading: 4,
         referenceId: 11111));
 
-    await DBProvider.db.insertMeterCollection(MeterCollection(
+    await DBProvider.db.insertAmountCollection(AmountCollection(
         referenceId: 1111,
         amount: 2,
         date: DateTime.now(),
         multiplePayment: false));
-    await DBProvider.db.insertMeterCollection(MeterCollection(
+    await DBProvider.db.insertAmountCollection(AmountCollection(
         referenceId: 1111,
         amount: 2,
         date: DateTime.now(),
         multiplePayment: false));
-    await DBProvider.db.insertMeterCollection(MeterCollection(
+    await DBProvider.db.insertAmountCollection(AmountCollection(
         referenceId: 1111,
         amount: 2,
         date: DateTime.now(),
         multiplePayment: false));
-    await DBProvider.db.insertMeterCollection(MeterCollection(
+    await DBProvider.db.insertAmountCollection(AmountCollection(
         referenceId: 1111,
         amount: 2,
         date: DateTime.now(),
         multiplePayment: false));
-    await DBProvider.db.insertMeterCollection(MeterCollection(
+    await DBProvider.db.insertAmountCollection(AmountCollection(
         referenceId: 1111,
         amount: 2,
         date: DateTime.now(),
         multiplePayment: false));
-    await DBProvider.db.insertMeterCollection(MeterCollection(
+    await DBProvider.db.insertAmountCollection(AmountCollection(
         referenceId: 1111,
         amount: 2,
         date: DateTime.now(),
@@ -193,7 +193,7 @@ class SyncController implements SocketCallBack {
     await DBProvider.db.deleteAllClient();
     ClientService _service = ClientService();
     print(API.client);
-    _service.syncClients().then((clients)async {
+    _service.syncClients().then((clients) async {
       await DBProvider.db.insertClients(clients);
       _syncCallBack.onClientSyncSuccess("Client sync successfully");
     }).catchError((error) {

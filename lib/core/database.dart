@@ -199,8 +199,8 @@ class DBProvider {
     return db.rawDelete("Delete from $METER_READING_TABLE");
   }
 
-  Future<int> insertMeterCollection(
-      MeterCollection newMeterCollectionModel) async {
+  Future<int> insertAmountCollection(
+      AmountCollection newMeterCollectionModel) async {
     final db = await database;
     int res = await db.insert(
         "`$METER_COLLECTION_TABLE`", newMeterCollectionModel.toJson());
@@ -209,24 +209,24 @@ class DBProvider {
     return res;
   }
 
-  Future<MeterCollection> getMeterCollection(int referenceId) async {
+  Future<AmountCollection> getMeterCollection(int referenceId) async {
     final db = await database;
     var res = await db.query("$METER_COLLECTION_TABLE",
         where: "referenceId = ?", whereArgs: [referenceId]);
     print(res.first);
-    return res.isNotEmpty ? MeterCollection.fromJson(res.first) : null;
+    return res.isNotEmpty ? AmountCollection.fromJson(res.first) : null;
   }
 
-  Future<List<MeterCollection>> getAllMeterCollection() async {
+  Future<List<AmountCollection>> getAllMeterCollection() async {
     final db = await database;
     var res = await db.query("$METER_COLLECTION_TABLE");
     return res.isNotEmpty
-        ? res.map((c) => MeterCollection.fromJson(c)).toList()
+        ? res.map((c) => AmountCollection.fromJson(c)).toList()
         : [];
   }
 
   Future<int> updateMeterCollection(
-      MeterCollection newMeterCollectionModel) async {
+      AmountCollection newMeterCollectionModel) async {
     final db = await database;
     var res = await db.update(
         "$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),

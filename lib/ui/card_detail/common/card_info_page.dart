@@ -1,3 +1,4 @@
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/card_detail/sync_page.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -19,7 +20,7 @@ class _CardInfoPageState extends State<CardInfoPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Text(widget.cardItem.name),
+        title: Text(Localization.of (context, widget.cardItem.name)),
       ),
       body: Container(
         padding: EdgeInsets.all(8),

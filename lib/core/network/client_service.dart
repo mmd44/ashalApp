@@ -12,7 +12,7 @@ class ClientService {
     });
   }
 
-  Future syncMeterCollection(List<MeterCollection> collections) {
+  Future syncMeterCollection(List<AmountCollection> collections) {
     return HttpRequest.post(API.collection,collections)
         .then((dynamic res) {
       return res;

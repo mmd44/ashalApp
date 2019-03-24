@@ -5,11 +5,14 @@ import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/meter_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/ui/models/card_item.dart';
 
 class InputPagesController {
   final int maxInputDigits = 8;
 
-  MeterCollection _meterCollection;
+  CardItem _cardItem;
+
+  AmountCollection _amountCollection;
   MeterReading _meterReading;
 
   Client _client;
@@ -20,11 +23,21 @@ class InputPagesController {
 
   bool isLoading = false;
 
-  bool get isCollectionValid =>
-      _meterReading?.reading != null &&
-      _meterReading?.meterImage != null;
+  File meterImageFile;
 
-  InputPagesController(InputPageView view) : _view = view;
+  bool get isCollectionValid => _amountCollection?.amount != null;
+
+  bool get isMeteringValid =>
+      _meterReading?.reading != null && _meterReading?.meterImage != null;
+
+  InputPagesController(CardItem cardItem, InputPageView view)
+      : _cardItem = cardItem,
+        _view = view;
+
+  bool get isMetering => _cardItem.name == '2';
+
+  bool get isMultiplePayment => _amountCollection.multiplePayment;
+  set multiplePayment (bool val) => _amountCollection.multiplePayment = val;
 
   Client get client => _client;
 
@@ -36,7 +49,6 @@ class InputPagesController {
 
   init() {
     setupDB();
-    //initDummy();
     resetFields();
   }
 
@@ -57,10 +69,11 @@ class InputPagesController {
         DateTime.now(), DateTime.now(), '03040404'));
   }
 
-  set todayDate (DateTime dateTime) {
+  set todayDate(DateTime dateTime) {
     _meterReading.date = dateTime;
-    _meterCollection.date =dateTime;
+    _amountCollection.date = dateTime;
   }
+  get todayDate => _meterReading.date ?? _amountCollection.date;
 
   void setClientByReference() {
     int id;
@@ -72,7 +85,7 @@ class InputPagesController {
     if (id != null) {
       DBProvider.db.getClient(id).then((client) {
         _client = client;
-        _meterReading.referenceId = id;
+        isMetering ? _meterReading.referenceId = id : _amountCollection.referenceId = id;
         _view.onSetClientSuccess();
       }).catchError((error) {
         print('DBGetClient: $error');
@@ -80,6 +93,7 @@ class InputPagesController {
     } else {
       _client = null;
       _meterReading.referenceId = null;
+      _amountCollection.referenceId = null;
     }
   }
 
@@ -88,46 +102,64 @@ class InputPagesController {
   }
 
   void setImage(File image) {
+    meterImageFile = image;
     List<int> imageBytes = image.readAsBytesSync();
     String base64Image = base64Encode(imageBytes);
     _meterReading.meterImage = base64Image;
   }
 
-  void setReadings(String value) {
-    double readings;
+  void setInput(String value) {
+    double input;
     if (value != null) {
-      readings = double.tryParse(value);
+      input = double.tryParse(value);
     }
-    if (readings != null) {
-      _meterReading.reading = readings;
+    if (input != null) {
+      isMetering ? _meterReading.reading = input : _amountCollection.amount = input;
     } else {
-      _view.onReadingsError('Invalid Readings');
+      _view.onReadingsError('Invalid Input!');
     }
   }
 
-  void submit() {
-    if (_client == null || referenceID == null){
-      _view.onError('Invalid reference id!');
+  void submit({bypassChecks=false}) {
+    if (!bypassChecks && (_client == null || referenceID == null)) {
+      _view..showWarningDialog ('Invalid reference id!\nAre you sure you want to proceed?');
     } else {
       isLoading = true;
-      _meterReading.date = DateTime.now();
-      DBProvider.db.insertMeterReading(_meterReading).then((result){
-        _view.onSuccess('Reading added successfully!');
-      }).catchError((error) {
-        print('DBinsertReadingError: $error');
-        _view.onError('Adding reading failed!');
-      }).whenComplete((){
-        isLoading = false;
-      });
+      isMetering ? insertReading () : insertCollection();
     }
+  }
+
+  void insertReading() {
+    DBProvider.db.insertMeterReading(_meterReading).then((result) {
+      _view.onSuccess('Reading saved successfully!');
+    }).catchError((error) {
+      print('DBinsertReadingError: $error');
+      _view.onError('Failed to save reading!');
+    }).whenComplete(() {
+      isLoading = false;
+    });
+  }
+
+  void insertCollection() {
+    DBProvider.db.insertAmountCollection(_amountCollection).then((result) {
+      _view.onSuccess('Collection saved successfully!');
+    }).catchError((error) {
+      print('DBinsertCollectionError: $error');
+      _view.onError('Failed to save collection!');
+    }).whenComplete(() {
+      isLoading = false;
+    });
   }
 
   void resetFields() {
     _client = null;
     referenceID = null;
     _meterReading = MeterReading();
-    _meterCollection = MeterCollection();
+    _amountCollection = AmountCollection(multiplePayment: false);
+    todayDate = DateTime.now();
   }
+
+  
 }
 
 abstract class InputPageView {
@@ -136,4 +168,5 @@ abstract class InputPageView {
   void onReadingsError(String msg);
   void onError(String error);
   void onSuccess(String msg);
+  void showWarningDialog(String msg);
 }

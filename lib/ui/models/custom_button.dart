@@ -18,7 +18,6 @@ class CustomButton extends RaisedButton {
     EdgeInsets padding,
     double highlightElevation,
     double disabledElevation,
-    ShapeBorder shape,
     Clip clipBehavior = Clip.none,
     MaterialTapTargetSize materialTapTargetSize,
     Duration animationDuration,
@@ -27,45 +26,45 @@ class CustomButton extends RaisedButton {
     bool loading = false,
     bool disabled = false,
   }) : super(
-    key: key,
-    onPressed: disabled ? null : loading ? () {} : onPressed,
-    onHighlightChanged: onHighlightChanged,
-    textTheme: textTheme,
-    textColor: textColor ?? Theme.Colors.primary,
-    disabledTextColor: disabledTextColor ??
-        Theme.Colors.primary.withAlpha(50),
-    color: color,
-    disabledColor:
-    disabledColor ?? Theme.Colors.primary.withAlpha(50),
-    highlightColor: loading ? Colors.transparent : highlightColor,
-    splashColor: loading ? Colors.transparent : splashColor,
-    colorBrightness: colorBrightness,
-    elevation: elevation,
-    padding: padding,
-    highlightElevation: highlightElevation,
-    disabledElevation: disabledElevation,
-    shape: shape,
-    clipBehavior: clipBehavior,
-    materialTapTargetSize: materialTapTargetSize,
-    animationDuration: animationDuration,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: loading
-          ? [
-        SizedBox(
-          height: 15,
-          width: 15,
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.Colors.primary),
+          key: key,
+          onPressed: disabled ? null : loading ? () {} : onPressed,
+          onHighlightChanged: onHighlightChanged,
+          textTheme: textTheme,
+          textColor: textColor ?? Theme.Colors.primary,
+          disabledTextColor:
+              disabledTextColor ?? Theme.Colors.primary.withAlpha(50),
+          color: color,
+          disabledColor: disabledColor ?? Theme.Colors.primary.withAlpha(50),
+          highlightColor: loading ? Colors.transparent : highlightColor,
+          splashColor: loading ? Colors.transparent : splashColor,
+          colorBrightness: colorBrightness,
+          elevation: elevation,
+          padding: padding,
+          highlightElevation: highlightElevation,
+          disabledElevation: disabledElevation,
+          shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30)),
+          clipBehavior: clipBehavior,
+          materialTapTargetSize: materialTapTargetSize,
+          animationDuration: animationDuration,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: loading
+                ? [
+                    SizedBox(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Theme.Colors.primary),
+                      ),
+                    )
+                  ]
+                : [
+                    prefix ?? SizedBox.shrink(),
+                    const SizedBox(width: 8.0),
+                    label,
+                  ],
           ),
-        )
-      ]
-          : [
-        prefix ?? SizedBox.shrink(),
-        const SizedBox(width: 8.0),
-        label,
-      ],
-    ),
-  );
+        );
 }

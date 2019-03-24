@@ -93,3 +93,45 @@ void showDialogMessage(
     },
   );
 }
+
+void showDialogConfirm(
+    BuildContext context, {
+      String message,
+      VoidCallback onConfirm,
+      VoidCallback onDismiss,
+    }) {
+
+  message ??= Localization.of(context, 'are_you_sure');
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: [Text(message)],
+          ),
+        ),
+        actions: [
+          FlatButton(
+              child: Text('No'), //Text(Localization.of(context, 'no')),
+              onPressed: () {
+                if (onDismiss!=null) {
+                  onDismiss();
+                } else {
+                  Navigator.pop(context);
+                }
+              }
+          ),
+          FlatButton(
+            child: Text('Yes'), //Text(Localization.of(context, 'yes')),
+            onPressed: () {
+              onConfirm();
+              Navigator.pop(context);
+            },
+          )
+        ],
+      );
+    },
+  );
+}

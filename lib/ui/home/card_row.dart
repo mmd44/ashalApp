@@ -1,3 +1,4 @@
+import 'package:ashal/localization.dart';
 import 'package:ashal/routes.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:fluro/fluro.dart';
@@ -13,7 +14,7 @@ class CardRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardItemThumbnail = new Container(
-      alignment: new FractionalOffset(0.0, 0.5),
+      alignment: FractionalOffset(0.0, 0.5),
       margin: const EdgeInsets.only(left: 24.0),
       child: new Hero(
         tag: 'card-icon-${cardItem.id}',
@@ -38,32 +39,19 @@ class CardRow extends StatelessWidget {
         ],
       ),
       child: new Container(
-        margin: const EdgeInsets.only(top: 16.0, left: 72.0),
+        margin: const EdgeInsets.only(top: 16.0, left: 72, right: 16),
         constraints: new BoxConstraints.expand(),
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Text(cardItem.name, style: Theme.TextStyles.cardTitle),
-            new Text(cardItem.description, style: Theme.TextStyles.cardSubtitle),
+            new Text(Localization.of (context, cardItem.name), style: Theme.TextStyles.cardTitle),
+            new Text(Localization.of (context, cardItem.description), style: Theme.TextStyles.cardSubtitle),
             new Container(
               color: const Color(0xFF00C6FF),
               width: 24.0,
               height: 1.0,
               margin: const EdgeInsets.symmetric(vertical: 8.0)
             ),
-            /*new Row(
-              children: <Widget>[
-                new Icon(Icons.location_on, size: 14.0,
-                  color: Theme.Colors.cardDistance),
-                new Text(
-                  cardItem.distance, style: Theme.TextStyles.cardExtraInfo),
-                new Container(width: 24.0),
-                new Icon(Icons.flight_land, size: 14.0,
-                  color: Theme.Colors.cardDistance),
-                new Text(
-                  cardItem.gravity, style: Theme.TextStyles.cardExtraInfo),
-              ],
-            )*/
           ],
         ),
       ),

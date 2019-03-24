@@ -130,18 +130,15 @@ function generateLocalization(auth) {
 
             var enStrings = {};
             var arStrings = {};
-            var frStrings = {};
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i]; // key
                 enStrings[row[0]] = row[1]; // en
                 arStrings[row[0]] = row[2] || row[1]; // ar
-                frStrings[row[0]] = row[3] || row[1]; // fr
             }
 
 
             fs.writeFile('../assets/i18n/en.json', JSON.stringify(enStrings),fs_call_back);
             fs.writeFile('../assets/i18n/ar.json', JSON.stringify(arStrings),fs_call_back);
-            fs.writeFile('../assets/i18n/fr.json', JSON.stringify(frStrings),fs_call_back);
 
 
             console.log('Successfully generated mobile localization files');

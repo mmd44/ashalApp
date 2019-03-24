@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-MeterCollection meterReadingFromJson(String str) {
+AmountCollection meterReadingFromJson(String str) {
   final jsonData = json.decode(str);
-  return MeterCollection.fromJson(jsonData);
+  return AmountCollection.fromJson(jsonData);
 }
 
-String meterReadingToJson(MeterCollection data) {
+String meterReadingToJson(AmountCollection data) {
   final dyn = data.toJson();
   return json.encode(dyn);
 }
 
-class MeterCollection {
+class AmountCollection {
   int id;
   int referenceId;
   double amount;
@@ -18,11 +18,11 @@ class MeterCollection {
   bool multiplePayment;
 
 
-  MeterCollection({this.referenceId, this.amount, this.date,
+  AmountCollection({this.referenceId, this.amount, this.date,
       this.multiplePayment,this.id});
 
 
-  MeterCollection.MeterCollectionModel(this.referenceId, this.amount, this.date,
+  AmountCollection.AmountCollectionModel(this.referenceId, this.amount, this.date,
       this.multiplePayment);
 
   static bool toBoolean(String str, [bool strict])
@@ -35,7 +35,7 @@ class MeterCollection {
     return str != '0' && str != 'false' && str != '';
   }
 
-  factory MeterCollection.fromJson(Map<String, dynamic> json) => new MeterCollection(
+  factory AmountCollection.fromJson(Map<String, dynamic> json) => new AmountCollection(
       referenceId: json["referenceId"],
       amount: json["amount"],
       date: DateTime.fromMicrosecondsSinceEpoch(json["date"]),

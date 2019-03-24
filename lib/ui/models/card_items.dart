@@ -4,19 +4,19 @@ class CardItemsDao {
   static final List<CardItem> menuItems = [
     const CardItem(
       id: "1",
-      name: "Sync",
+      name: "sync",
       description: "Sync your data",
       image: "assets/img/pc_sync.png",
     ),
     const CardItem(
       id: "2",
-      name: "Metering",
+      name: "metering",
       description: "Type in a Meter Reading",
       image: "assets/img/metering.png",
     ),
     const CardItem(
       id: "3",
-      name: "Collection",
+      name: "collection",
       description: "Collect your Money!",
       image: "assets/img/bill_tools.png",
     ),

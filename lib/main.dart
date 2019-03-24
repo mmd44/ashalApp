@@ -22,8 +22,6 @@ class MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    //API.host = config.apiBaseUrl + ':' + config.port;
-
 
     Routes.initRoutes();
     return new MaterialApp(

@@ -37,7 +37,7 @@ class Localization {
 class LocalizationDelegate extends LocalizationsDelegate<Localization> {
   const LocalizationDelegate();
 
-  static final supportedCodes = ['en', 'ar', 'fr'];
+  static final supportedCodes = ['en', 'ar'];
   static final supportedLocales = supportedCodes.map((c) => Locale(c));
 
   @override
