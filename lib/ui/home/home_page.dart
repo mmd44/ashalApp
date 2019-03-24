@@ -1,3 +1,4 @@
+import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/ui/home/gradient_app_bar.dart';
 import 'package:ashal/ui/home/card_list.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,13 @@ class _HomePageBodyState extends State<HomePageBody> {
       ],
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    ProjectSharedPreferences.instance.init();
+  }
+
 }
 
 
