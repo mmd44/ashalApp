@@ -38,7 +38,31 @@ void showSnackbar(String text,
     Scaffold.of(context).showSnackBar(snackBar);
   }
 }
-
+void showLoader(BuildContext context)
+{
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+          content: Container(
+            width: 200,
+            height: 100,
+            child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: new CircularProgressIndicator(),
+                    ),
+                    new Text("Loading")
+                  ],
+                )),
+          ));
+    },
+  );
+}
 void showDialogMessage(
     BuildContext context, {
       String title,
