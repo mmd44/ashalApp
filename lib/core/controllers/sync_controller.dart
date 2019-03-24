@@ -8,6 +8,7 @@ import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/client_service.dart';
 import 'package:ashal/core/network/discovery_socket.dart';
+import 'package:ashal/core/network/network_setup.dart';
 
 
 class SyncController implements SocketCallBack {
@@ -205,13 +206,19 @@ class SyncController implements SocketCallBack {
   @override
   void onFoundAddress(String address) {
     NetworkSocket.networkSocket.dispose();
-    API.ipAddress=address;
-    _syncCallBack.onConnect(address);
+    setupNetwork (address);
+    _syncCallBack.onConnect();
   }
 
   void dispose() async {
     NetworkSocket.networkSocket.dispose();
     canSend=false;
+  }
+
+  void setupNetwork(String host){
+    API.ipAddress=host;
+    NetworkSetup networkSetup = NetworkSetup();
+    networkSetup.setNetworkHeaders();
   }
 }
 
@@ -222,5 +229,5 @@ abstract class SyncCallBack {
   void onMeterReadingSyncError(String msg);
   void onMeterCollectionSyncSuccess(String msg);
   void onMeterCollectionSyncError(String msg);
-  void onConnect(String serverAddressIp);
+  void onConnect();
 }

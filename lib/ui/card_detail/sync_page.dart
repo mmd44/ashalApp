@@ -223,9 +223,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   }
 
   @override
-  void onConnect(String serverAddressIp) {
-    print(serverAddressIp);
-    API.ipAddress = serverAddressIp;
+  void onConnect() {
     if(mounted) {
       this.setState(() {});
     }

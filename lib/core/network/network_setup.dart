@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:ashal/core/network/network.dart';
 import 'package:http/http.dart' as http;
 
-abstract class NetworkSetup {
+class NetworkSetup {
   NetworkSetup();
 
 
@@ -16,9 +16,6 @@ abstract class NetworkSetup {
     HttpRequest.beforeMiddleware = beforeMiddleware;
     HttpRequest.afterMiddleware = afterMiddleware;
   }
-
-
-
 
   void beforeMiddleware(String url, {Object body, Map headers}) {
     print('Calling: GET ${Uri.encodeFull(url)}');
@@ -34,7 +31,4 @@ abstract class NetworkSetup {
     print('=================================');
     print('BODY: $body');
   }
-
-
-
 }
