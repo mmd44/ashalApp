@@ -90,12 +90,10 @@ class DBProvider {
 
 
   initDB() async {
-    int dbVersion = await ProjectSharedPreferences.getDataBaseVersion();
+    int dbVersion = await ProjectSharedPreferences.instance.getDataBaseVersion();
     print("DATA BASE VESION $dbVersion");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "ashal-$dbVersion.db");
-    bool temp = await ProjectSharedPreferences.isMeterReadingSync();
-    temp = await ProjectSharedPreferences.isCollectionSync();
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await createTables(db);
