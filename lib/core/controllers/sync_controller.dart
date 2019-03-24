@@ -20,6 +20,8 @@ class SyncController implements SocketCallBack {
   bool get readings => _readings;
   bool get collection => _collection;
 
+  bool isLoading = true;
+
   set collection(bool value) {
     _collection = value;
   }

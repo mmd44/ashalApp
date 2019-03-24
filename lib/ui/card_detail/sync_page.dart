@@ -23,7 +23,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   SyncController _controller;
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       color: Theme.Colors.cardPageBackground,
       child: ListView(
         children: <Widget>[
@@ -38,7 +38,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
             ),
           ),
           new Center(
-            child: new Column(
+            child: _controller.isLoading ? buildLoader(context) : new Column(
               children: <Widget>[
                 Text(!API.ipAddress.isEmpty?'Connected : ${API.ipAddress}':"Searching For server"),
                 _buildClearIpButton(),

@@ -1,5 +1,6 @@
 import 'package:ashal/localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ashal/ui/theme.dart' as Theme;
 
 void showErrorSnackbar(String text,
     {BuildContext context,
@@ -22,14 +23,13 @@ void showSnackbar(String text,
     BuildContext context,
     {GlobalKey<ScaffoldState> key,
       SnackBarAction action}) {
-  final ThemeData theme = Theme.of(context);
   final snackBar = SnackBar(
     content: Text(
       text,
       style: TextStyle(color: Colors.white),
     ),
     duration: Duration(milliseconds: 1700),
-    backgroundColor: theme.primaryColor,
+    backgroundColor: Theme.Colors.primary,
     action: action,
   );
   if (key != null) {
@@ -133,5 +133,23 @@ void showDialogConfirm(
         ],
       );
     },
+  );
+}
+
+Widget buildLoader (BuildContext context) {
+  return Container(
+    alignment: Alignment.topCenter,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: SizedBox(
+        child: Opacity(
+          opacity: 1,
+          child: LinearProgressIndicator(
+            backgroundColor: Theme.Colors.primary,
+          ),
+        ),
+        height: 2.0,
+      ),
+    ),
   );
 }
