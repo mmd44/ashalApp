@@ -84,8 +84,8 @@ class Client {
       json["meterId"],
       AmountCollection.toBoolean(json["deleted"].toString()),
       AmountCollection.toBoolean(json["purged"].toString()),
-      json["dateTimeAdded"]!=null?DateTime.fromMicrosecondsSinceEpoch(json["dateTimeAdded"]):null,
-      json["dateTimeDeleted"]!=null?DateTime.fromMicrosecondsSinceEpoch(json["dateTimeDeleted"]):null,
+      json["dateTimeAdded"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"]):null,
+      json["dateTimeDeleted"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"]):null,
       json["outstanding"],
       json["comment"]);
 

@@ -38,7 +38,7 @@ class AmountCollection {
   factory AmountCollection.fromJson(Map<String, dynamic> json) => new AmountCollection(
       referenceId: json["referenceId"],
       amount: json["amount"],
-      date: DateTime.fromMicrosecondsSinceEpoch(json["date"]),
+      date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
       multiplePayment: toBoolean(json["multiplePayment"].toString()),
       id:json["id"]);
 
@@ -46,7 +46,7 @@ class AmountCollection {
         "id":id,
         "referenceId": referenceId,
         "amount": amount,
-        "date": date.millisecondsSinceEpoch,
+        "date": date?.millisecondsSinceEpoch,
         "multiplePayment": multiplePayment
       };
 }
