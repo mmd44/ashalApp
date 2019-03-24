@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:multicast_lock/multicast_lock.dart';
 
 class MyApp extends StatelessWidget {
 
@@ -27,13 +26,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final multicastLock = new MulticastLock();
-
   String _packets='';
 
   void _initListener () async {
-
-    multicastLock.acquire();
 
     // example listener code
     final socket = await RawDatagramSocket.bind('224.0.0.1', 1900)
@@ -58,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    multicastLock.release();
     super.dispose();
   }
 
