@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ashal/core/models/parse_utils.dart';
+
 AmountCollection meterReadingFromJson(String str) {
   final jsonData = json.decode(str);
   return AmountCollection.fromJson(jsonData);
@@ -15,38 +17,26 @@ class AmountCollection {
   int referenceId;
   double amount;
   DateTime date;
-  bool multiplePayment;
 
 
-  AmountCollection({this.referenceId, this.amount, this.date,
-      this.multiplePayment,this.id});
+  AmountCollection({this.id,this.referenceId, this.amount, this.date});
 
 
-  AmountCollection.AmountCollectionModel(this.referenceId, this.amount, this.date,
-      this.multiplePayment);
+  AmountCollection.AmountCollectionModel(this.referenceId, this.amount, this.date);
 
-  static bool toBoolean(String str, [bool strict])
-  {
-    if(str==null) return true;
 
-    if (strict == true) {
-      return str == '1' || str == 'true';
-    }
-    return str != '0' && str != 'false' && str != '';
-  }
 
   factory AmountCollection.fromJson(Map<String, dynamic> json) => new AmountCollection(
+      id:json["id"],
       referenceId: json["referenceId"],
       amount: json["amount"],
       date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
-      multiplePayment: toBoolean(json["multiplePayment"].toString()),
-      id:json["id"]);
+  );
 
   Map<String, dynamic> toJson() => {
         "id":id,
         "referenceId": referenceId,
         "amount": amount,
         "date": date?.millisecondsSinceEpoch,
-        "multiplePayment": multiplePayment
       };
 }

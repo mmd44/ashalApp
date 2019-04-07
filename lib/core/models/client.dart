@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ashal/core/models/amount_collection.dart';
+import 'package:ashal/core/models/parse_utils.dart';
 
 Client clientFromJson(String str) {
   final jsonData = json.decode(str);
@@ -17,6 +18,7 @@ class Client {
   int referenceId;
   String category;
   String organizationName;
+  String sharedDescription;
   String prefix;
   String firstName;
   String familyName;
@@ -44,6 +46,7 @@ class Client {
       this.referenceId,
       this.category,
       this.organizationName,
+      this.sharedDescription,
       this.prefix,
       this.firstName,
       this.familyName,
@@ -71,6 +74,7 @@ class Client {
       json["referenceId"],
       json["category"],
       json["organizationName"],
+      json["sharedDescription"],
       json["prefix"],
       json["firstName"],
       json["familyName"],
@@ -82,8 +86,8 @@ class Client {
       json["phone"],
       json["email"],
       json["meterId"],
-      AmountCollection.toBoolean(json["deleted"].toString()),
-      AmountCollection.toBoolean(json["purged"].toString()),
+      toBoolean(json["deleted"].toString()),
+      toBoolean(json["purged"].toString()),
       json["dateTimeAdded"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"]):null,
       json["dateTimeDeleted"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"]):null,
       json["outstanding"],
@@ -94,6 +98,7 @@ class Client {
         "referenceId": referenceId,
         "category": category,
         "organizationName": organizationName,
+        "sharedDescription": sharedDescription,
         "prefix": prefix,
         "firstName": firstName,
         "familyName": familyName,

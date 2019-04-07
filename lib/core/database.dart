@@ -13,6 +13,7 @@ class DBProvider {
   DBProvider._();
 
   static final String CLIENT_TABLE = 'client';
+  static final String HISTORY_TABLE = 'history';
   static final String METER_READING_TABLE = 'meter_reading';
   static final String METER_COLLECTION_TABLE = 'meter_collection';
   static final DBProvider db = DBProvider._();
@@ -50,12 +51,37 @@ class DBProvider {
     }
   }
 
+  String receiptIssued;
+  String category;
+  var meterReader;
+  var collector;
+  List<String> payers;
   createTables(Database db) async {
+    await db.execute('CREATE TABLE `$HISTORY_TABLE` (`id` TEXT NOT NULL,'
+        '`historyId` TEXT NOT NULL PRIMARY KEY,'
+        '`entryDateTime` INTEGER,'
+        '`parentId` INTEGER,'
+        '`subType` VARCHAR(800),'
+        '`amp` INTEGER,'
+        '`flatPrice` DOUBLE,'
+        '`oldMeter` DOUBLE,'
+        '`newMeter` DOUBLE),'
+        '`subscription` VARCHAR(800),'
+        '`discount` DOUBLE,'
+        '`bill` DOUBLE,'
+        '`dependentsBill` DOUBLE,'
+        '`collected` DOUBLE,'
+        '`forgiven` BOOLEAN DEFAULT \'false\','
+        '`receiptIssued` VARCHAR(800),'
+        '`category` VARCHAR(800),'
+        '`meterReader` VARCHAR(800),'
+        '`collector` VARCHAR(800),'
+        '`payers` TEXT);');
     await db.execute('CREATE TABLE `$CLIENT_TABLE` (`id` TEXT NOT NULL,'
         '`referenceId` INTEGER NOT NULL PRIMARY KEY,'
-        '`category` VARCHAR(100),'
-        '`organizationName` VARCHAR(100),'
-        '`sharedDescription` VARCHAR(100),'
+        '`category` VARCHAR(800),'
+        '`organizationName` VARCHAR(800),'
+        '`sharedDescription` VARCHAR(800),'
         '`prefix` VARCHAR(100),'
         '`firstName` VARCHAR(100),'
         '`familyName` VARCHAR(100),'
@@ -72,23 +98,25 @@ class DBProvider {
         '`dateTimeAdded` INTEGER,'
         '`dateTimeDeleted` INTEGER,'
         '`outstanding` DOUBLE,'
-        '`comment` VARCHAR(100));');
+        '`comment` VARCHAR(800)'
+        '`monthlyDataReferences` TEXT);');
     await db.execute('CREATE TABLE `$METER_READING_TABLE` ('
         '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
         '`referenceId` INTEGER NOT NULL,'
         '`reading` DOUBLE,'
+        '`subType` TEXT,'
+        '`lineStatus` TEXT,'
+        '`prepaid` TEXT,'
+        '`amp` INTEGER,'
         '`meterImage` TEXT,'
         '`date` INTEGER);');
     await db.execute('CREATE TABLE `$METER_COLLECTION_TABLE` ('
         '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
         '`referenceId` INTEGER NOT NULL,'
         '`amount` DOUBLE,'
-        '`multiplePayment` BOOLEAN DEFAULT \'false\','
         '`date` INTEGER);');
   }
-
-
-
+  
   initDB() async {
     int dbVersion = await ProjectSharedPreferences.instance.getDataBaseVersion();
     print("DATA BASE VESION $dbVersion");
