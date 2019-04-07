@@ -2,7 +2,7 @@ class API {
 
   static String ipAddress='';
   // host ToDo: set this when ip is obtained before sync
-  static String host = 'http://$ipAddress:8080/lib-service';
+  static String host = 'http://$ipAddress:8889/lib-service';
 
   // services
   static String metering = '$host/metering/';
@@ -11,4 +11,5 @@ class API {
   static String client = "$metering/client";
   static String collection = "$metering/collection";
   static String reading = "$metering/reading";
+  static String requests = "$metering/sync_requests";
 }

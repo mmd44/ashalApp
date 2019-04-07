@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:ashal/core/controllers/shared_perferences.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';
+import 'package:ashal/core/models/history.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/core/models/request.dart';
 import 'package:ashal/core/network/api_exception.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,6 +18,7 @@ class DBProvider {
   static final String HISTORY_TABLE = 'history';
   static final String METER_READING_TABLE = 'meter_reading';
   static final String METER_COLLECTION_TABLE = 'meter_collection';
+  static final String REQUEST_TABLE = 'request';
   static final DBProvider db = DBProvider._();
   static Database _database;
 
@@ -115,8 +118,18 @@ class DBProvider {
         '`referenceId` INTEGER NOT NULL,'
         '`amount` DOUBLE,'
         '`date` INTEGER);');
+
+    await db.execute('CREATE TABLE `$REQUEST_TABLE` ('
+        '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+        '`referenceId` INTEGER NOT NULL,'
+        '`lineStatus` TEXT,'
+        '`amp` INTEGER,'
+        '`subscriptionType` TEXT,'
+        '`comment` TEXT,'
+        '`prepaid` TEXT,'
+        '`date` INTEGER);');
   }
-  
+
   initDB() async {
     int dbVersion = await ProjectSharedPreferences.instance.getDataBaseVersion();
     print("DATA BASE VESION $dbVersion");
@@ -271,4 +284,63 @@ class DBProvider {
     final db = await database;
     return db.rawDelete("Delete from $METER_COLLECTION_TABLE");
   }
+
+  Future<int> insertRequest(
+      Request newRequest) async {
+    final db = await database;
+    int res = await db.insert(
+        "`$REQUEST_TABLE`", newRequest.toJson());
+    if(res<=0)
+      throw new APIException("database.insert_request_error", "");
+    return res;
+  }
+
+  Future<int> deleteAllRequest() async {
+    final db = await database;
+    return db.rawDelete("Delete from $REQUEST_TABLE");
+  }
+
+  Future<List<Request>> getAllRequest() async {
+    final db = await database;
+    var res = await db.query("$REQUEST_TABLE");
+    return res.isNotEmpty
+        ? res.map((c) => Request.fromJson(c)).toList()
+        : [];
+  }
+
+  Future<bool> insertHistory(List<History> historyList) async {
+    var batch = _database.batch();
+    historyList.forEach((history)=> batch.insert("$HISTORY_TABLE", history.toJson()));
+    List<dynamic> results = await batch.commit();
+    if(results.length<historyList.length)
+      throw new APIException("database.insert_clients", "Insert Error Clients");
+    return true;
+  }
+  Future<int> deleteAllHistory() async {
+    final db = await database;
+    return db.rawDelete("Delete from $HISTORY_TABLE");
+  }
+  Future<List<History>> getHistoryList(List<String> historyIdList) async {
+    final db = await database;
+    String ids=historyIdList.join(', ');
+    var res = await db.rawQuery(
+        "SELECT * FROM $HISTORY_TABLE WHERE historyId IN ($ids) ORDER BY entryDateTime DESC;");
+    return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
+  }
+
+
+  Future<History> getLastHistory(int referenceId) async
+  {
+    Client client=await getClient(referenceId);
+    List<History> historyList= await getHistoryList(client.monthlyDataReferences);
+    if(historyList.isEmpty)
+      return null;
+    History chosen=historyList[0];
+    for(var i = 1;i<historyList.length;i++){
+      if(historyList[i].entryDateTime.isAfter(chosen?.entryDateTime))
+        chosen=historyList[i];
+    }
+    return chosen;
+  }
+
 }

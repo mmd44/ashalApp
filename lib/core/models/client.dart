@@ -63,10 +63,16 @@ class Client {
       this.dateTimeAdded,
       this.dateTimeDeleted,
       this.outstanding,
-      this.comment);
+      this.comment,
+      this.monthlyDataReferences
+      );
 
   static List<Client> fromJsonList (List<dynamic> json) {
     return json.map((client) => Client.fromJson(client)).toList();
+  }
+
+  static List<Map<String, dynamic>> toJsonList (List<Client> clients) {
+    return clients.map((client) => client.toJson()).toList();
   }
 
   factory Client.fromJson(Map<String, dynamic> json) => new Client(
@@ -91,7 +97,9 @@ class Client {
       json["dateTimeAdded"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"]):null,
       json["dateTimeDeleted"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"]):null,
       json["outstanding"],
-      json["comment"]);
+      json["comment"],
+      (jsonDecode(json["monthlyDataReferences"]) as List<dynamic>).cast<String>()
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -115,6 +123,7 @@ class Client {
         "dateTimeAdded": dateTimeAdded?.millisecondsSinceEpoch,
         "dateTimeDeleted": dateTimeDeleted?.millisecondsSinceEpoch,
         "outstanding": outstanding,
-        "comment": comment
+        "comment": comment,
+        "monthlyDataReferences":jsonEncode(monthlyDataReferences)
       };
 }

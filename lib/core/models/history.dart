@@ -46,6 +46,10 @@ class History {
     return json.map((history) => History.fromJson(history)).toList();
   }
 
+  static List<Map<String, dynamic>> toJsonList (List<History> historyList) {
+    return historyList.map((history) => history.toJson()).toList();
+  }
+
   factory History.fromJson(Map<String, dynamic> json) => new History(
       json["id"],
       json["historyId"],
@@ -66,7 +70,7 @@ class History {
       json["category"],
       json["meterReader"],
       json["collector"],
-      json["payers"]
+      (jsonDecode(json["payers"]) as List<dynamic>).cast<String>()
     );
 
   Map<String, dynamic> toJson() => {
@@ -89,7 +93,7 @@ class History {
     "category": category,
     "meterReader": meterReader,
     "collector": collector,
-    "payers": payers
+    "payers": jsonEncode(payers)
   };
 
 

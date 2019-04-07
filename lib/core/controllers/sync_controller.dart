@@ -5,6 +5,7 @@ import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/core/models/syn_client_response.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/client_service.dart';
 import 'package:ashal/core/network/discovery_socket.dart';
@@ -33,87 +34,87 @@ class SyncController implements SocketCallBack {
   SyncController(this._syncCallBack, this._readings, this._collection) {
     DBProvider.db.database;
   }
-  Future dummy() async {
-    await DBProvider.db.reCreateDatabase();
-
-    await DBProvider.db.insertMeterReading(MeterReading(
-        date: DateTime.now(),
-        meterImage: "123213213121",
-        reading: 1232,
-        referenceId: 4444));
-    await DBProvider.db.insertMeterReading(MeterReading(
-        date: DateTime.now(),
-        meterImage: "1111",
-        reading: 1,
-        referenceId: 66666));
-    await DBProvider.db.insertMeterReading(MeterReading(
-        date: DateTime.now(),
-        meterImage: "2222",
-        reading: 2,
-        referenceId: 55555));
-    await DBProvider.db.insertMeterReading(MeterReading(
-        date: DateTime.now(),
-        meterImage: "333",
-        reading: 3,
-        referenceId: 33333));
-    await DBProvider.db.insertMeterReading(MeterReading(
-        date: DateTime.now(),
-        meterImage: "444",
-        reading: 5,
-        referenceId: 22222));
-    await DBProvider.db.insertMeterReading(MeterReading(
-        date: DateTime.now(),
-        meterImage: "555",
-        reading: 4,
-        referenceId: 11111));
-
-    await DBProvider.db.insertAmountCollection(AmountCollection(
-        referenceId: 1111,
-        amount: 2,
-        date: DateTime.now(),
-        multiplePayment: false));
-    await DBProvider.db.insertAmountCollection(AmountCollection(
-        referenceId: 1111,
-        amount: 2,
-        date: DateTime.now(),
-        multiplePayment: false));
-    await DBProvider.db.insertAmountCollection(AmountCollection(
-        referenceId: 1111,
-        amount: 2,
-        date: DateTime.now(),
-        multiplePayment: false));
-    await DBProvider.db.insertAmountCollection(AmountCollection(
-        referenceId: 1111,
-        amount: 2,
-        date: DateTime.now(),
-        multiplePayment: false));
-    await DBProvider.db.insertAmountCollection(AmountCollection(
-        referenceId: 1111,
-        amount: 2,
-        date: DateTime.now(),
-        multiplePayment: false));
-    await DBProvider.db.insertAmountCollection(AmountCollection(
-        referenceId: 1111,
-        amount: 2,
-        date: DateTime.now(),
-        multiplePayment: false));
-
-    List<Client> l=new List();
-    l.add(Client.from('1', 2, 'test', true, true,
-        DateTime.now(), null, '03030303'));
-    l.add(Client.from('1', 234, 'test', true, true,
-        DateTime.now(), null, '03040404'));
-    l.add(Client.from('1', 4564, 'test', true, true,
-        DateTime.now(), null, '03040404'));
-    l.add(Client.from('1', 1234, 'test', true, true,
-        DateTime.now(), null, '03040404'));
-    l.add(Client.from('1', 1222, 'test', true, true,
-        DateTime.now(), null, '03040404'));
-    DBProvider.db.insertClients(l);
-
-    List<Client> clients=await DBProvider.db.getAllClients();
-    clients.forEach((clients)=>print(clients.toJson()));
-  }
+//  Future dummy() async {
+//    await DBProvider.db.reCreateDatabase();
+//
+//    await DBProvider.db.insertMeterReading(MeterReading(
+//        date: DateTime.now(),
+//        meterImage: "123213213121",
+//        reading: 1232,
+//        referenceId: 4444));
+//    await DBProvider.db.insertMeterReading(MeterReading(
+//        date: DateTime.now(),
+//        meterImage: "1111",
+//        reading: 1,
+//        referenceId: 66666));
+//    await DBProvider.db.insertMeterReading(MeterReading(
+//        date: DateTime.now(),
+//        meterImage: "2222",
+//        reading: 2,
+//        referenceId: 55555));
+//    await DBProvider.db.insertMeterReading(MeterReading(
+//        date: DateTime.now(),
+//        meterImage: "333",
+//        reading: 3,
+//        referenceId: 33333));
+//    await DBProvider.db.insertMeterReading(MeterReading(
+//        date: DateTime.now(),
+//        meterImage: "444",
+//        reading: 5,
+//        referenceId: 22222));
+//    await DBProvider.db.insertMeterReading(MeterReading(
+//        date: DateTime.now(),
+//        meterImage: "555",
+//        reading: 4,
+//        referenceId: 11111));
+//
+//    await DBProvider.db.insertAmountCollection(AmountCollection(
+//        referenceId: 1111,
+//        amount: 2,
+//        date: DateTime.now(),
+//        multiplePayment: false));
+//    await DBProvider.db.insertAmountCollection(AmountCollection(
+//        referenceId: 1111,
+//        amount: 2,
+//        date: DateTime.now(),
+//        multiplePayment: false));
+//    await DBProvider.db.insertAmountCollection(AmountCollection(
+//        referenceId: 1111,
+//        amount: 2,
+//        date: DateTime.now(),
+//        multiplePayment: false));
+//    await DBProvider.db.insertAmountCollection(AmountCollection(
+//        referenceId: 1111,
+//        amount: 2,
+//        date: DateTime.now(),
+//        multiplePayment: false));
+//    await DBProvider.db.insertAmountCollection(AmountCollection(
+//        referenceId: 1111,
+//        amount: 2,
+//        date: DateTime.now(),
+//        multiplePayment: false));
+//    await DBProvider.db.insertAmountCollection(AmountCollection(
+//        referenceId: 1111,
+//        amount: 2,
+//        date: DateTime.now(),
+//        multiplePayment: false));
+//
+//    List<Client> l=new List();
+//    l.add(Client.from('1', 2, 'test', true, true,
+//        DateTime.now(), null, '03030303'));
+//    l.add(Client.from('1', 234, 'test', true, true,
+//        DateTime.now(), null, '03040404'));
+//    l.add(Client.from('1', 4564, 'test', true, true,
+//        DateTime.now(), null, '03040404'));
+//    l.add(Client.from('1', 1234, 'test', true, true,
+//        DateTime.now(), null, '03040404'));
+//    l.add(Client.from('1', 1222, 'test', true, true,
+//        DateTime.now(), null, '03040404'));
+//    DBProvider.db.insertClients(l);
+//
+//    List<Client> clients=await DBProvider.db.getAllClients();
+//    clients.forEach((clients)=>print(clients.toJson()));
+//  }
 
 
   Future getServerIp() async {
@@ -137,7 +138,9 @@ class SyncController implements SocketCallBack {
     var readings = await DBProvider.db.getAllMeterReading();
     ClientService _service = ClientService();
     print(API.reading);
-    _service.syncMeterReadings(readings).then((string)async {
+    _service.syncMeterReadings(readings).then((clientSyncResponse)async {
+      DBProvider.db.deleteAllMeterReading();
+      syncClientHistoryResponse(clientSyncResponse);
       ProjectSharedPreferences.instance.setMeterReadingSync(true);
       _readings = true;
       _syncCallBack.onSyncSuccess("reading","Reading sync successfully");
@@ -145,6 +148,23 @@ class SyncController implements SocketCallBack {
       _readings = false;
       ProjectSharedPreferences.instance.setMeterReadingSync(false);
       _syncCallBack.onSyncError("reading","Error in Reading sync");
+    });
+  }
+
+  Future syncRequests() async {
+    if(API.ipAddress.isEmpty) {
+      _syncCallBack.onSyncError("request","Request sync Cannot be done before connecting");
+      return;
+    }
+    _syncCallBack.onStart("request");
+    var requests = await DBProvider.db.getAllRequest();
+    ClientService _service = ClientService();
+    print(API.reading);
+    _service.syncRequests(requests).then((res)async {
+      DBProvider.db.deleteAllRequest();
+      _syncCallBack.onSyncSuccess("request","Request sync successfully");
+    }).catchError((error) {
+      _syncCallBack.onSyncError("request","Error in Request sync");
     });
   }
 
@@ -157,7 +177,9 @@ class SyncController implements SocketCallBack {
     var collections = await DBProvider.db.getAllMeterCollection();
     ClientService _service = ClientService();
     print(API.collection);
-    _service.syncMeterCollection(collections).then((string)async {
+    _service.syncMeterCollection(collections).then((clientSyncResponse)async {
+      DBProvider.db.deleteAllMeterCollection();
+      syncClientHistoryResponse(clientSyncResponse);
       ProjectSharedPreferences.instance.setCollectionSync(true);
       _collection = true;
       _syncCallBack.onSyncSuccess("collection","Collection sync successfully");
@@ -196,16 +218,23 @@ class SyncController implements SocketCallBack {
       return null;
     }
     _syncCallBack.onStart("client");
-    await DBProvider.db.deleteAllClient();
     ClientService _service = ClientService();
     print(API.client);
-    _service.syncClients().then((clients) async {
-      await DBProvider.db.insertClients(clients);
+    _service.syncClients().then((clientSyncResponse) async {
+      syncClientHistoryResponse(clientSyncResponse);
       _syncCallBack.onSyncSuccess("client","Client sync successfully");
     }).catchError((error) {
       print('errorClientService $error');
       _syncCallBack.onSyncError("client","Error in Client sync");
     });
+  }
+
+  syncClientHistoryResponse(ClientSyncResponse clientSyncResponse) async
+  {
+    await DBProvider.db.deleteAllClient();
+    await DBProvider.db.deleteAllHistory();
+    await DBProvider.db.insertClients(clientSyncResponse.client);
+    await DBProvider.db.insertHistory(clientSyncResponse.history);
   }
 
   @override

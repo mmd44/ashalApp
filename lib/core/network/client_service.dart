@@ -1,26 +1,35 @@
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
+import 'package:ashal/core/models/request.dart';
+import 'package:ashal/core/models/syn_client_response.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/network.dart';
 
 class ClientService {
-  Future<List<Client>> syncClients() {
+  Future<ClientSyncResponse> syncClients() {
     return HttpRequest.get(API.client)
         .then((dynamic res) {
-      return Client.fromJsonList(res);
+      return ClientSyncResponse.fromJson(res);
     });
   }
 
-  Future syncMeterCollection(List<AmountCollection> collections) {
+  Future<ClientSyncResponse> syncMeterCollection(List<AmountCollection> collections) {
     return HttpRequest.post(API.collection,collections)
         .then((dynamic res) {
-      return res;
+      return ClientSyncResponse.fromJson(res);
     });
   }
 
-  Future syncMeterReadings(List<MeterReading> readings) {
+  Future<ClientSyncResponse> syncMeterReadings(List<MeterReading> readings) {
     return HttpRequest.post(API.reading,readings)
+        .then((dynamic res) {
+      return ClientSyncResponse.fromJson(res);
+    });
+  }
+
+  Future syncRequests(List<Request> requests) {
+    return HttpRequest.post(API.requests,requests)
         .then((dynamic res) {
       return res;
     });
