@@ -38,8 +38,6 @@ class InputPagesController {
 
   bool get isMetering => _cardItem.id == '2';
 
-  bool get isMultiplePayment => _amountCollection.multiplePayment;
-  set multiplePayment (bool val) => _amountCollection.multiplePayment = val;
 
   Client get client => _client;
 
@@ -157,7 +155,7 @@ class InputPagesController {
     _client = null;
     referenceID = null;
     _meterReading = MeterReading();
-    _amountCollection = AmountCollection(multiplePayment: false);
+    _amountCollection = AmountCollection();
     meteringCollectionDates = DateTime.now();
   }
   

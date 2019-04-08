@@ -22,7 +22,7 @@ class AmountCollection {
   AmountCollection({this.id,this.referenceId, this.amount, this.date});
 
 
-  AmountCollection.AmountCollectionModel(this.referenceId, this.amount, this.date);
+  AmountCollection.amountCollectionModel(this.referenceId, this.amount, this.date);
 
 
 

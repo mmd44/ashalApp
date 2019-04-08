@@ -106,7 +106,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
             flex: 3,
             child: _controller.isMetering
                 ? _buildCamButton()
-                : _buildMultiplePaymentCheckbox(),
+                : Container()
           ),
         ],
       ),
@@ -232,31 +232,6 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
     );
   }
 
-  _buildMultiplePaymentCheckbox() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: <Widget>[
-          Checkbox(
-            onChanged: (value) {
-              setState(() {
-                _controller.multiplePayment = value;
-              });
-            },
-            value: _controller.isMultiplePayment,
-            activeColor: const Color(0xff00bbff),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          Text(
-            'Multiple\nPayments?',
-            style: TextStyle(
-              fontSize: 8,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   void showWarningDialog(String msg) {

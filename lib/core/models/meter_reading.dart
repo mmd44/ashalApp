@@ -23,19 +23,19 @@ class MeterReading
   String prepaid;
 
 
-  MeterReading(this.id, this.referenceId, this.reading, this.date,
-       this.subType, this.amp, this.lineStatus, this.prepaid,this.meterImage);
+  MeterReading({this.id, this.referenceId, this.reading, this.date,
+       this.subType, this.amp, this.lineStatus, this.prepaid,this.meterImage});
 
   factory MeterReading.fromJson(Map<String, dynamic> json) => new MeterReading(
-      json["id"],
-      json["referenceId"],
-      json["reading"],
-      DateTime.fromMillisecondsSinceEpoch(json["date"]),
-      json["subType"],
-      json["amp"],
-      json["lineStatus"],
-      json["prepaid"],
-      json["meterImage"]);
+      id: json["id"],
+      referenceId: json["referenceId"],
+      reading: json["reading"],
+      date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
+      subType: json["subType"],
+      amp: json["amp"],
+      lineStatus: json["lineStatus"],
+      prepaid: json["prepaid"],
+      meterImage: json["meterImage"]);
 
   Map<String, dynamic> toJson() => {
     "id": id,
