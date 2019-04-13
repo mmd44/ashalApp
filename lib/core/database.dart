@@ -68,7 +68,7 @@ class DBProvider {
         '`amp` INTEGER,'
         '`flatPrice` DOUBLE,'
         '`oldMeter` DOUBLE,'
-        '`newMeter` DOUBLE),'
+        '`newMeter` DOUBLE,'
         '`subscription` VARCHAR(800),'
         '`discount` DOUBLE,'
         '`bill` DOUBLE,'

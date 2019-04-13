@@ -98,7 +98,7 @@ class Client {
       json["dateTimeDeleted"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"]):null,
       json["outstanding"],
       json["comment"],
-      (jsonDecode(json["monthlyDataReferences"]) as List<dynamic>).cast<String>()
+      json["monthlyDataReferences"]!=null?(jsonDecode(json["monthlyDataReferences"]) as List<dynamic>).cast<String>():List<String>()
       );
 
   Map<String, dynamic> toJson() => {
