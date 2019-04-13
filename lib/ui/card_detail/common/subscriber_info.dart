@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 
 class SubscriberInfo extends StatefulWidget {
-  SubscriberInfo(this._controller, {this.children = const <Widget>[]});
+  SubscriberInfo(this.client, this.onEditingDone, {this.children = const <Widget>[]});
 
-  final InputPagesController _controller;
+  final String Function(String item) onEditingDone;
+  final Client client;
+  
   final List<Widget> children;
 
   @override
@@ -43,7 +45,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         child: TextFormField(
                           enabled: false,
                           decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget._controller.clientArea, helperText: 'Area', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                              .copyWith(hintText: widget.client?.area, helperText: 'Area', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                         ),
                       ),
                     ),
@@ -54,7 +56,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         child: TextFormField(
                           enabled: false,
                           decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget._controller.clientStreet, helperText: 'Street', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                              .copyWith(hintText: widget.client?.streetAddress, helperText: 'Street', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                         ),
                       ),
                     ),
@@ -69,7 +71,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         child: TextFormField(
                           enabled: false,
                           decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget._controller.clientBldg, helperText: 'Building', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                              .copyWith(hintText: widget.client?.building, helperText: 'Building', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                         ),
                       ),
                     ),
@@ -80,7 +82,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         child: TextFormField(
                           enabled: false,
                           decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget._controller.clientFloor, helperText: 'Floor', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                              .copyWith(hintText: widget.client?.floor, helperText: 'Floor', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                         ),
                       ),
                     ),
@@ -92,7 +94,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                   child: TextFormField(
                     enabled: false,
                     decoration: Theme.TextStyles.textField
-                        .copyWith(hintText: widget._controller.clientPhone, helperText: 'Phone', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                        .copyWith(hintText: widget.client?.phone, helperText: 'Phone', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
                   ),
                 ),
               ],
@@ -105,8 +107,11 @@ class _SubscriberInfoState extends State<SubscriberInfo>
 
   @override
   void onEditingCompleted(String value) {
+
+    widget.onEditingDone (value);
+
+    /* ToDo
     widget._controller.referenceID = value;
-    widget._controller.setClientByReference();
-    setState(() {});
+    widget._controller.setClientByReference(); */
   }
 }

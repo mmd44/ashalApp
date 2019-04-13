@@ -1,4 +1,4 @@
-import 'package:ashal/core/controllers/shared_perferences.dart';
+import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';

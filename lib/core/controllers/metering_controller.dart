@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/ui/models/card_item.dart';
 
-class InputPagesController {
+class MeteringController {
   final int maxInputDigits = 8;
 
   CardItem _cardItem;
@@ -27,16 +28,12 @@ class InputPagesController {
 
   DateTime todayDate;
 
-  bool get isCollectionValid => _amountCollection?.amount != null;
-
   bool get isMeteringValid =>
       _meterReading?.reading != null && _meterReading?.meterImage != null;
 
-  InputPagesController(CardItem cardItem, InputPageView view)
+  MeteringController(CardItem cardItem, InputPageView view)
       : _cardItem = cardItem,
         _view = view;
-
-  bool get isMetering => _cardItem.id == '2';
 
 
   Client get client => _client;
@@ -49,6 +46,7 @@ class InputPagesController {
 
   init() {
     setupDB();
+    //initDummy();
     resetFields();
   }
 
@@ -105,7 +103,7 @@ class InputPagesController {
     if (id != null) {
       DBProvider.db.getClient(id).then((client) {
         _client = client;
-        isMetering ? _meterReading.referenceId = id : _amountCollection.referenceId = id;
+        _meterReading.referenceId = id;
         _view.onSetClientSuccess();
       }).catchError((error) {
         print('DBGetClient: $error');
@@ -134,7 +132,7 @@ class InputPagesController {
       input = double.tryParse(value);
     }
     if (input != null) {
-      isMetering ? _meterReading.reading = input : _amountCollection.amount = input;
+     _meterReading.reading = input;
     } else {
       _view.onReadingsError('Invalid Input!');
     }
@@ -145,7 +143,7 @@ class InputPagesController {
       _view..showWarningDialog ('Invalid reference id!\nAre you sure you want to proceed?');
     } else {
       isLoading = true;
-      isMetering ? insertReading () : insertCollection();
+     insertReading ();
     }
   }
 
@@ -160,17 +158,6 @@ class InputPagesController {
     });
   }
 
-  void insertCollection() {
-    DBProvider.db.insertAmountCollection(_amountCollection).then((result) {
-      _view.onSuccess('Collection saved successfully!');
-    }).catchError((error) {
-      print('DBinsertCollectionError: $error');
-      _view.onError('Failed to save collection!');
-    }).whenComplete(() {
-      isLoading = false;
-    });
-  }
-
   void resetFields() {
     _client = null;
     referenceID = null;
@@ -178,14 +165,6 @@ class InputPagesController {
     _amountCollection = AmountCollection();
     meteringCollectionDates = DateTime.now();
   }
-  
+
 }
 
-abstract class InputPageView {
-  void onSetClientSuccess();
-  void onSetClientError(String msg);
-  void onReadingsError(String msg);
-  void onError(String error);
-  void onSuccess(String msg);
-  void showWarningDialog(String msg);
-}

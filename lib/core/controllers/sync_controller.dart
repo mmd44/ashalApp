@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ashal/core/controllers/shared_perferences.dart';
+import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';

@@ -1,5 +1,6 @@
-import 'package:ashal/core/controllers/shared_perferences.dart';
+import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/localization.dart';
+import 'package:ashal/ui/card_detail/metering_page.dart';
 import 'package:ashal/ui/card_detail/sync_page.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -37,9 +38,9 @@ class _CardInfoPageState extends State<CardInfoPage> {
     if( (ProjectSharedPreferences.instance.isMeterReadingSync() || ProjectSharedPreferences.instance.isCollectionSync()) && widget.cardItem.id!='1' )
       return SyncPage ('1',true);
     else if (widget.cardItem.id=='1')
-      return SyncPage (widget.cardItem.id,false);
+      return SyncPage (widget.cardItem.id, false);
     else if (widget.cardItem.id=='2')
-      return MeteringCollectionPage(widget.cardItem.id);
+      return MeteringPage(widget.cardItem.id);
     else if (widget.cardItem.id=='3')
       return MeteringCollectionPage(widget.cardItem.id);
 

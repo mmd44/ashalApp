@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ashal/core/controllers/shared_perferences.dart';
+import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/history.dart';
@@ -68,7 +68,7 @@ class DBProvider {
         '`amp` INTEGER,'
         '`flatPrice` DOUBLE,'
         '`oldMeter` DOUBLE,'
-        '`newMeter` DOUBLE),'
+        '`newMeter` DOUBLE,'
         '`subscription` VARCHAR(800),'
         '`discount` DOUBLE,'
         '`bill` DOUBLE,'

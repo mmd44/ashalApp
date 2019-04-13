@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:ashal/core/controllers/input_pages_controller.dart';
-import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
+import 'package:ashal/core/controllers/metering_controller.dart';
 import 'package:ashal/ui/card_detail/common/subscriber_info.dart';
+import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -12,21 +11,20 @@ import 'package:ashal/ui/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class MeteringCollectionPage extends StatefulWidget {
-
+class MeteringPage extends StatefulWidget {
   final CardItem cardItem;
 
-  MeteringCollectionPage(String id) : cardItem = CardItemsDao.getCardByID(id);
+  MeteringPage(String id) : cardItem = CardItemsDao.getCardByID(id);
 
   @override
-  _MeteringCollectionPageState createState() => _MeteringCollectionPageState();
+  _MeteringPageState createState() => _MeteringPageState();
 }
 
-class _MeteringCollectionPageState extends State<MeteringCollectionPage>
+class _MeteringPageState extends State<MeteringPage>
     with SingleTickerProviderStateMixin
     implements ImagePickerListener, InputPageView {
 
-  InputPagesController _controller;
+  MeteringController _controller;
 
   AnimationController _animationController;
   ImagePickerHandler _imagePickerHandler;
@@ -38,7 +36,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
   }
 
   void _init() async {
-    _controller = new InputPagesController(widget.cardItem, this);
+    _controller =  MeteringController (widget.cardItem, this);
     _controller.init();
 
     _animationController =
@@ -63,10 +61,12 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               ),
             ),
           ),
-          _controller.isMetering
-              ? _buildTodayDate()
-              : Container(width: 0, height: 0),
-          //SubscriberInfo(_controller),
+          _buildTodayDate(),
+          SubscriberInfo(_controller.client, (value) {
+            _controller.referenceID = value;
+            _controller.setClientByReference();
+            setState(() {});
+          }),
           _buildLineStatusSwitchTile(),
           _buildInputField(),
           _buildConfirmButton(),
@@ -92,7 +92,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               child: TextField(
                 keyboardType: TextInputType.numberWithOptions(),
                 decoration: Theme.TextStyles.textField.copyWith(
-                    hintText: _controller.isMetering ? 'Reading' : 'Amount'),
+                    hintText: 'Reading'),
                 onChanged: (value) => _controller.setInput(value),
               ),
             ),
@@ -101,13 +101,13 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 20),
-              child: Text(_controller.isMetering ? 'Kwh' : 'L.L',
+              child: Text( 'Kwh',
                   textAlign: TextAlign.center),
             ),
           ),
           Expanded(
               flex: 3,
-              child: _controller.isMetering ? _buildCamButton() : Container()),
+              child: _buildCamButton()),
         ],
       ),
     );
@@ -137,9 +137,7 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
             padding: const EdgeInsets.only(top: 16, left: 40, right: 40),
             child: CustomButton(
               onPressed: _onSubmit,
-              disabled: _controller.isMetering
-                  ? !_controller.isMeteringValid
-                  : !_controller.isCollectionValid,
+              disabled: !_controller.isMeteringValid,
               loading: _controller.isLoading,
               label: Text(
                 'Confirm',
