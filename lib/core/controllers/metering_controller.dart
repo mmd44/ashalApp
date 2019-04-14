@@ -120,6 +120,7 @@ class MeteringController {
         else
           throw Exception('No history available!');
       }).then((history) {
+        print('history found $history');
         _clientLastHistory = history;
       }).catchError((error) {
         print('DBGetClient: $error');
