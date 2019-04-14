@@ -324,7 +324,7 @@ class DBProvider {
 
   Future<List<History>> getHistoryList(List<String> historyIdList) async {
     final db = await database;
-    String ids = historyIdList.join(', ');
+    String ids = '\''+historyIdList.join('\',\'')+'\'';
     var res = await db.rawQuery(
         "SELECT * FROM $HISTORY_TABLE WHERE historyId IN ($ids) ORDER BY entryDateTime DESC;");
     return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
