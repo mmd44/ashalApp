@@ -61,7 +61,7 @@ class MeteringController {
     await DBProvider.db.insertClient(Client.from('1', 1222, 'test', true, true,
         DateTime.now(), DateTime.now(), '03040404'));
     await DBProvider.db
-        .insertHistory([History.from(id: '1', historyId: 'ref1'), ]);
+        .insertHistory([History.from(id: '1', historyId: 'ref1'),]);
   }
 
   set meteringDate(DateTime dateTime) {

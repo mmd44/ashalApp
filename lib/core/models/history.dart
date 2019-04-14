@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:ashal/core/models/parse_utils.dart';
@@ -26,6 +24,8 @@ class History {
   var newMeter;
   var subscription;
   double discount;
+  String lineStatus;
+  String prepaid;
   var bill;
   var dependentsBill;
   var collected;
@@ -36,31 +36,66 @@ class History {
   var collector;
   List<String> payers;
 
-  History(this.id, this.historyId, this.entryDateTime, this.parentId,
-      this.subType, this.amp, this.flatPrice, this.oldMeter, this.newMeter,
-      this.subscription, this.discount, this.bill, this.dependentsBill, this.collected, this.forgiven,
-      this.receiptIssued, this.category, this.meterReader, this.collector,
-      this.payers);
+  History(
+      this.id,
+      this.historyId,
+      this.entryDateTime,
+      this.parentId,
+      this.subType,
+      this.amp,
+      this.flatPrice,
+      this.oldMeter,
+      this.newMeter,
+      this.subscription,
+      this.discount,
+      this.bill,
+      this.dependentsBill,
+      this.collected,
+      this.forgiven,
+      this.receiptIssued,
+      this.category,
+      this.meterReader,
+      this.collector,
+      this.payers,
+      this.lineStatus,
+      this.prepaid);
 
-  History.from({this.id, this.historyId, this.entryDateTime, this.parentId,
-      this.subType, this.amp, this.flatPrice, this.oldMeter, this.newMeter,
-      this.subscription, this.discount, this.bill, this.dependentsBill, this.collected, this.forgiven,
-      this.receiptIssued, this.category, this.meterReader, this.collector,
+  History.from(
+      {this.id,
+      this.historyId,
+      this.entryDateTime,
+      this.parentId,
+      this.subType,
+      this.amp,
+      this.flatPrice,
+      this.oldMeter,
+      this.newMeter,
+      this.subscription,
+      this.discount,
+      this.bill,
+      this.dependentsBill,
+      this.collected,
+      this.forgiven,
+      this.receiptIssued,
+      this.category,
+      this.meterReader,
+      this.collector,
       this.payers});
 
-
-  static List<History> fromJsonList (List<dynamic> json) {
+  static List<History> fromJsonList(List<dynamic> json) {
     return json.map((history) => History.fromJson(history)).toList();
   }
 
-  static List<Map<String, dynamic>> toJsonList (List<History> historyList) {
+  static List<Map<String, dynamic>> toJsonList(List<History> historyList) {
     return historyList.map((history) => history.toJson()).toList();
   }
 
   factory History.fromJson(Map<String, dynamic> json) => new History(
       json["id"],
       json["historyId"],
-      json["entryDateTime"]!=null?DateTime.fromMillisecondsSinceEpoch(json["entryDateTime"]):null,
+      json["entryDateTime"] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json["entryDateTime"])
+          : null,
       json["parentId"],
       json["subType"],
       json["amp"],
@@ -72,38 +107,37 @@ class History {
       json["bill"],
       json["dependentsBill"],
       json["collected"],
-      toBoolean(json["forgiven"],false),
+      toBoolean(json["forgiven"], false),
       json["receiptIssued"],
       json["category"],
       json["meterReader"],
       json["collector"],
-    List.from(json['payers'] != null
-        ? jsonDecode(json["payers"])
-        : []),
-    );
+      List.from(json['payers'] != null ? jsonDecode(json["payers"]) : []),
+      json["lineStatus"],
+      json["prepaid"]);
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "historyId": historyId,
-    "entryDateTime": entryDateTime?.millisecondsSinceEpoch,
-    "parentId": parentId,
-    "subType": subType,
-    "amp": amp,
-    "flatPrice": flatPrice,
-    "oldMeter": oldMeter,
-    "newMeter": newMeter,
-    "subscription": subscription,
-    "discount": discount,
-    "bill": bill,
-    "dependentsBill": dependentsBill,
-    "collected": collected,
-    "forgiven": forgiven,
-    "receiptIssued": receiptIssued,
-    "category": category,
-    "meterReader": meterReader,
-    "collector": collector,
-    "payers": jsonEncode(payers ?? []),
-  };
-
-
+        "id": id,
+        "historyId": historyId,
+        "entryDateTime": entryDateTime?.millisecondsSinceEpoch,
+        "parentId": parentId,
+        "subType": subType,
+        "amp": amp,
+        "flatPrice": flatPrice,
+        "oldMeter": oldMeter,
+        "newMeter": newMeter,
+        "subscription": subscription,
+        "discount": discount,
+        "bill": bill,
+        "dependentsBill": dependentsBill,
+        "collected": collected,
+        "forgiven": forgiven,
+        "receiptIssued": receiptIssued,
+        "category": category,
+        "meterReader": meterReader,
+        "collector": collector,
+        "payers": jsonEncode(payers ?? []),
+        "lineStatus": lineStatus,
+        "prepaid": prepaid
+      };
 }
