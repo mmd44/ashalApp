@@ -8,7 +8,7 @@ import 'package:ashal/ui/theme.dart' as Theme;
 class SubscriberInfo extends StatefulWidget {
   SubscriberInfo(this.client, this.onEditingDone, {this.children = const <Widget>[]});
 
-  final String Function(String item) onEditingDone;
+  final void Function(String item) onEditingDone;
   final Client client;
   
   final List<Widget> children;
@@ -107,11 +107,6 @@ class _SubscriberInfoState extends State<SubscriberInfo>
 
   @override
   void onEditingCompleted(String value) {
-
     widget.onEditingDone (value);
-
-    /* ToDo
-    widget._controller.referenceID = value;
-    widget._controller.setClientByReference(); */
   }
 }

@@ -42,6 +42,13 @@ class History {
       this.receiptIssued, this.category, this.meterReader, this.collector,
       this.payers);
 
+  History.from({this.id, this.historyId, this.entryDateTime, this.parentId,
+      this.subType, this.amp, this.flatPrice, this.oldMeter, this.newMeter,
+      this.subscription, this.discount, this.bill, this.dependentsBill, this.collected, this.forgiven,
+      this.receiptIssued, this.category, this.meterReader, this.collector,
+      this.payers});
+
+
   static List<History> fromJsonList (List<dynamic> json) {
     return json.map((history) => History.fromJson(history)).toList();
   }
@@ -70,7 +77,9 @@ class History {
       json["category"],
       json["meterReader"],
       json["collector"],
-      (jsonDecode(json["payers"]) as List<dynamic>).cast<String>()
+    List.from(json['payers'] != null
+        ? jsonDecode(json["payers"])
+        : []),
     );
 
   Map<String, dynamic> toJson() => {
@@ -93,7 +102,7 @@ class History {
     "category": category,
     "meterReader": meterReader,
     "collector": collector,
-    "payers": jsonEncode(payers)
+    "payers": jsonEncode(payers ?? []),
   };
 
 

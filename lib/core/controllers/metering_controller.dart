@@ -1,22 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
-import 'package:ashal/core/models/amount_collection.dart';
+import 'package:ashal/core/models/history.dart';
 import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/ui/models/card_item.dart';
 
 class MeteringController {
   final int maxInputDigits = 8;
 
-  CardItem _cardItem;
-
-  AmountCollection _amountCollection;
   MeterReading _meterReading;
 
   Client _client;
+  History _clientLastHistory;
 
   String referenceID;
 
@@ -31,10 +28,7 @@ class MeteringController {
   bool get isMeteringValid =>
       _meterReading?.reading != null && _meterReading?.meterImage != null;
 
-  MeteringController(CardItem cardItem, InputPageView view)
-      : _cardItem = cardItem,
-        _view = view;
-
+  MeteringController(CardItem cardItem, InputPageView view) : _view = view;
 
   Client get client => _client;
 
@@ -46,15 +40,16 @@ class MeteringController {
 
   init() {
     setupDB();
-    //initDummy();
+    initDummy();
     resetFields();
   }
 
   initDummy() async {
     await DBProvider.db.reCreateDatabase();
 
-    await DBProvider.db.insertClient(Client.from('1', 2, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03030303'));
+    await DBProvider.db.insertClient(Client.from(
+        '1', 2, 'test', true, true, DateTime.now(), DateTime.now(), '03030303',
+        monthlyDataReferences: ['ref1', 'ref2']));
     await DBProvider.db.insertClient(Client.from('1', 234, 'test', true, true,
         DateTime.now(), DateTime.now(), '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 4564, 'test', true, true,
@@ -65,16 +60,17 @@ class MeteringController {
         DateTime.now(), DateTime.now(), '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 1222, 'test', true, true,
         DateTime.now(), DateTime.now(), '03040404'));
+    await DBProvider.db
+        .insertHistory([History.from(id: '1', historyId: 'ref1'), ]);
   }
 
-  set meteringCollectionDates (DateTime dateTime) {
+  set meteringDate(DateTime dateTime) {
     todayDate = dateTime;
     _meterReading.date = dateTime;
-    _amountCollection.date = dateTime;
   }
 
-  set meteringLineStatus (bool val) {
-    switch (val){
+  set meteringLineStatus(bool val) {
+    switch (val) {
       case true:
         _meterReading.lineStatus = 'on';
         break;
@@ -85,7 +81,7 @@ class MeteringController {
 
   get meteringLineStatus {
     if (_meterReading.lineStatus == null) return false;
-    switch (_meterReading.lineStatus){
+    switch (_meterReading.lineStatus) {
       case 'on':
         return true;
       case 'off':
@@ -93,25 +89,28 @@ class MeteringController {
     }
   }
 
-  void setClientByReference() {
-    int id;
-
-    if (referenceID != null) {
-      id = int.tryParse(referenceID);
-    }
-
+  void setClientByReference(String ref) {
+    referenceID = ref;
+    int id = int.tryParse(referenceID);
     if (id != null) {
       DBProvider.db.getClient(id).then((client) {
         _client = client;
         _meterReading.referenceId = id;
         _view.onSetClientSuccess();
+
+        if (_client.monthlyDataReferences != null &&
+            _client.monthlyDataReferences[0] != null)
+          return DBProvider.db.getLastHistory(id);
+        else
+          throw Exception('No history available!');
+      }).then((history) {
+        _clientLastHistory = history;
       }).catchError((error) {
         print('DBGetClient: $error');
       });
     } else {
       _client = null;
       _meterReading.referenceId = null;
-      _amountCollection.referenceId = null;
     }
   }
 
@@ -132,18 +131,20 @@ class MeteringController {
       input = double.tryParse(value);
     }
     if (input != null) {
-     _meterReading.reading = input;
+      _meterReading.reading = input;
     } else {
       _view.onReadingsError('Invalid Input!');
     }
   }
 
-  void submit({bypassChecks=false}) {
+  void submit({bypassChecks = false}) {
     if (!bypassChecks && (_client == null || referenceID == null)) {
-      _view..showWarningDialog ('Invalid reference id!\nAre you sure you want to proceed?');
+      _view
+        ..showWarningDialog(
+            'Invalid reference id!\nAre you sure you want to proceed?');
     } else {
       isLoading = true;
-     insertReading ();
+      insertReading();
     }
   }
 
@@ -162,9 +163,6 @@ class MeteringController {
     _client = null;
     referenceID = null;
     _meterReading = MeterReading();
-    _amountCollection = AmountCollection();
-    meteringCollectionDates = DateTime.now();
+    meteringDate = DateTime.now();
   }
-
 }
-

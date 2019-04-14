@@ -63,8 +63,7 @@ class _MeteringPageState extends State<MeteringPage>
           ),
           _buildTodayDate(),
           SubscriberInfo(_controller.client, (value) {
-            _controller.referenceID = value;
-            _controller.setClientByReference();
+            _controller.setClientByReference(value);
             setState(() {});
           }),
           _buildLineStatusSwitchTile(),

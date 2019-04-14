@@ -330,8 +330,7 @@ class DBProvider {
   }
 
 
-  Future<History> getLastHistory(int referenceId) async
-  {
+  Future<History> getLastHistory(int referenceId) async {
     Client client=await getClient(referenceId);
     List<History> historyList= await getHistoryList(client.monthlyDataReferences);
     if(historyList.isEmpty)

@@ -39,7 +39,8 @@ class Client {
   List<String> monthlyDataReferences;
 
   Client.from(this.id, this.referenceId, this.category, this.deleted,
-      this.purged, this.dateTimeAdded, this.dateTimeDeleted, this.phone);
+      this.purged, this.dateTimeAdded, this.dateTimeDeleted, this.phone,
+      {this.monthlyDataReferences});
 
   Client(
       this.id,
@@ -64,41 +65,46 @@ class Client {
       this.dateTimeDeleted,
       this.outstanding,
       this.comment,
-      this.monthlyDataReferences
-      );
+      this.monthlyDataReferences);
 
-  static List<Client> fromJsonList (List<dynamic> json) {
+  static List<Client> fromJsonList(List<dynamic> json) {
     return json.map((client) => Client.fromJson(client)).toList();
   }
 
-  static List<Map<String, dynamic>> toJsonList (List<Client> clients) {
+  static List<Map<String, dynamic>> toJsonList(List<Client> clients) {
     return clients.map((client) => client.toJson()).toList();
   }
 
-  factory Client.fromJson(Map<String, dynamic> json) => new Client(
-      json["id"],
-      json["referenceId"],
-      json["category"],
-      json["organizationName"],
-      json["sharedDescription"],
-      json["prefix"],
-      json["firstName"],
-      json["familyName"],
-      json["name"],
-      json["area"],
-      json["streetAddress"],
-      json["building"],
-      json["floor"],
-      json["phone"],
-      json["email"],
-      json["meterId"],
-      toBoolean(json["deleted"].toString()),
-      toBoolean(json["purged"].toString()),
-      json["dateTimeAdded"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"]):null,
-      json["dateTimeDeleted"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"]):null,
-      json["outstanding"],
-      json["comment"],
-      json["monthlyDataReferences"]!=null?(jsonDecode(json["monthlyDataReferences"]) as List<dynamic>).cast<String>():List<String>()
+  factory Client.fromJson(Map<String, dynamic> json) => Client(
+        json["id"],
+        json["referenceId"],
+        json["category"],
+        json["organizationName"],
+        json["sharedDescription"],
+        json["prefix"],
+        json["firstName"],
+        json["familyName"],
+        json["name"],
+        json["area"],
+        json["streetAddress"],
+        json["building"],
+        json["floor"],
+        json["phone"],
+        json["email"],
+        json["meterId"],
+        toBoolean(json["deleted"].toString()),
+        toBoolean(json["purged"].toString()),
+        json["dateTimeAdded"] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"])
+            : null,
+        json["dateTimeDeleted"] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"])
+            : null,
+        json["outstanding"],
+        json["comment"],
+        List.from(json['monthlyDataReferences'] != null
+            ? jsonDecode(json["monthlyDataReferences"])
+            : []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -124,6 +130,6 @@ class Client {
         "dateTimeDeleted": dateTimeDeleted?.millisecondsSinceEpoch,
         "outstanding": outstanding,
         "comment": comment,
-        "monthlyDataReferences":jsonEncode(monthlyDataReferences)
+        "monthlyDataReferences": jsonEncode(monthlyDataReferences ?? []),
       };
 }
