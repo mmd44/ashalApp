@@ -71,6 +71,8 @@ class DBProvider {
         '`newMeter` DOUBLE,'
         '`subscription` VARCHAR(800),'
         '`discount` DOUBLE,'
+        '`lineStatus` TEXT,'
+        '`prepaid` TEXT,'
         '`bill` DOUBLE,'
         '`dependentsBill` DOUBLE,'
         '`collected` DOUBLE,'

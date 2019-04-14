@@ -124,6 +124,6 @@ class Client {
         "dateTimeDeleted": dateTimeDeleted?.millisecondsSinceEpoch,
         "outstanding": outstanding,
         "comment": comment,
-        "monthlyDataReferences":jsonEncode(monthlyDataReferences)
+        "monthlyDataReferences":monthlyDataReferences!=null?jsonEncode(monthlyDataReferences):null
       };
 }
