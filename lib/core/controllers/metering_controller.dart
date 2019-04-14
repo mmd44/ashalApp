@@ -31,6 +31,7 @@ class MeteringController {
   MeteringController(CardItem cardItem, InputPageView view) : _view = view;
 
   Client get client => _client;
+  History get lastHistory => _clientLastHistory;
 
   String get clientArea => _client?.area;
   String get clientStreet => _client?.streetAddress;
@@ -60,8 +61,23 @@ class MeteringController {
         DateTime.now(), DateTime.now(), '03040404'));
     await DBProvider.db.insertClient(Client.from('1', 1222, 'test', true, true,
         DateTime.now(), DateTime.now(), '03040404'));
-    await DBProvider.db
-        .insertHistory([History.from(id: '1', historyId: 'ref1'),]);
+
+    ///Dummy History
+    await DBProvider.db.insertHistory([
+      History.from(
+        id: '1',
+        historyId: 'ref1',
+        entryDateTime: DateTime.now(),
+        parentId: 2,
+        subType: 'AMP',
+        amp: 20,
+        lineStatus: 'on',
+        prepaid: 'yes',
+        oldMeter: 170,
+        newMeter: 270,
+        payers: ['Ali', 'Hussein'],
+      ),
+    ]);
   }
 
   set meteringDate(DateTime dateTime) {
@@ -69,7 +85,7 @@ class MeteringController {
     _meterReading.date = dateTime;
   }
 
-  set meteringLineStatus(bool val) {
+  set lineStatus(bool val) {
     switch (val) {
       case true:
         _meterReading.lineStatus = 'on';
@@ -79,9 +95,9 @@ class MeteringController {
     }
   }
 
-  get meteringLineStatus {
-    if (_meterReading.lineStatus == null) return false;
-    switch (_meterReading.lineStatus) {
+  get lineStatus {
+    if (_clientLastHistory?.lineStatus == null) return false;
+    switch (_clientLastHistory?.lineStatus) {
       case 'on':
         return true;
       case 'off':
@@ -98,8 +114,8 @@ class MeteringController {
         _meterReading.referenceId = id;
         _view.onSetClientSuccess();
 
-        if (_client.monthlyDataReferences != null &&
-            _client.monthlyDataReferences[0] != null)
+        if (_client?.monthlyDataReferences != null &&
+            _client?.monthlyDataReferences[0] != null)
           return DBProvider.db.getLastHistory(id);
         else
           throw Exception('No history available!');

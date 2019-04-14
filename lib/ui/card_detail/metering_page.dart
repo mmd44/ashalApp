@@ -243,10 +243,10 @@ class _MeteringPageState extends State<MeteringPage>
       padding: const EdgeInsets.only(top: 8, left: 32, right: 32),
       child: SwitchListTile(
         title: Text('Line Status'),
-        value: _controller.meteringLineStatus,
+        value: _controller.lineStatus,
         onChanged: (val) {
           setState(() {
-            _controller.meteringLineStatus = val;
+            _controller.lineStatus = val;
           });
         },
       ),

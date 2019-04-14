@@ -80,7 +80,9 @@ class History {
       this.category,
       this.meterReader,
       this.collector,
-      this.payers});
+      this.payers,
+      this.lineStatus,
+      this.prepaid});
 
   static List<History> fromJsonList(List<dynamic> json) {
     return json.map((history) => History.fromJson(history)).toList();
