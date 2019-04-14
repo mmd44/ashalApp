@@ -22,20 +22,20 @@ class DBProvider {
   static final DBProvider db = DBProvider._();
   static Database _database;
 
-  Future<Database> get database async {
+  Future<Database> get databaseInit async {
     if (_database == null) _database = await initDB();
     // Delete the database
     return _database;
   }
 
   reCreateDatabase() async {
-    await DBProvider.db.database;
+    await DBProvider.db.databaseInit;
     if (_database != null) {
       var result = await deleteDatabase(_database.path);
       await _database.close();
       _database = null;
     }
-    await DBProvider.db.database;
+    await DBProvider.db.databaseInit;
   }
 
   changeDatabaseVesion() async {
@@ -146,7 +146,7 @@ class DBProvider {
   }
 
   Future<int> insertClient(Client newUser) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.insert("$CLIENT_TABLE", newUser.toJson());
     return res;
   }
@@ -161,7 +161,7 @@ class DBProvider {
   }
 
   Future<Client> getClient(int referenceId) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$CLIENT_TABLE",
         where: "referenceId = ?",
         whereArgs: [referenceId]); //ToDo removed a check
@@ -170,37 +170,37 @@ class DBProvider {
 
   Future<List<Client>> getClients(String startWith) async {
     if (startWith == null || startWith.isEmpty) return [];
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.rawQuery(
         "SELECT * FROM $CLIENT_TABLE WHERE referenceId LIKE '$startWith%';");
     return res.isNotEmpty ? res.map((c) => Client.fromJson(c)).toList() : [];
   }
 
   Future<List<Client>> getAllClients() async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$CLIENT_TABLE");
     return res.isNotEmpty ? res.map((c) => Client.fromJson(c)).toList() : [];
   }
 
   Future<int> updateClient(Client newClient) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.update("$CLIENT_TABLE", newClient.toJson(),
         where: "id = ?", whereArgs: [newClient.id]);
     return res;
   }
 
   Future<int> deleteClient(int id) async {
-    final db = await database;
+    final db = await databaseInit;
     return db.delete("$CLIENT_TABLE", where: "id = ?", whereArgs: [id]);
   }
 
   Future<int> deleteAllClient() async {
-    final db = await database;
+    final db = await databaseInit;
     return db.rawDelete("Delete from $CLIENT_TABLE");
   }
 
   Future<int> insertMeterReading(MeterReading newUser) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.insert("`$METER_READING_TABLE`", newUser.toJson());
     if (res <= 0)
       throw new APIException("database.insert_meter_readin_error", "");
@@ -208,14 +208,14 @@ class DBProvider {
   }
 
   Future<MeterReading> getMeterReading(int referenceId) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$METER_READING_TABLE",
         where: "referenceId = ?", whereArgs: [referenceId]);
     return res.isNotEmpty ? MeterReading.fromJson(res.first) : null;
   }
 
   Future<List<MeterReading>> getAllMeterReading() async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$METER_READING_TABLE");
     return res.isNotEmpty
         ? res.map((c) => MeterReading.fromJson(c)).toList()
@@ -223,7 +223,7 @@ class DBProvider {
   }
 
   Future<int> updateMeterReading(MeterReading newMeterReadingModel) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.update(
         "$METER_READING_TABLE", newMeterReadingModel.toJson(),
         where: "referenceId = ?",
@@ -232,19 +232,19 @@ class DBProvider {
   }
 
   Future<int> deleteMeterReading(int referenceId) async {
-    final db = await database;
+    final db = await databaseInit;
     return db.delete("$METER_READING_TABLE",
         where: "referenceId = ?", whereArgs: [referenceId]);
   }
 
   Future<int> deleteAllMeterReading() async {
-    final db = await database;
+    final db = await databaseInit;
     return db.rawDelete("Delete from $METER_READING_TABLE");
   }
 
   Future<int> insertAmountCollection(
       AmountCollection newMeterCollectionModel) async {
-    final db = await database;
+    final db = await databaseInit;
     int res = await db.insert(
         "`$METER_COLLECTION_TABLE`", newMeterCollectionModel.toJson());
     if (res <= 0)
@@ -253,7 +253,7 @@ class DBProvider {
   }
 
   Future<AmountCollection> getMeterCollection(int referenceId) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$METER_COLLECTION_TABLE",
         where: "referenceId = ?", whereArgs: [referenceId]);
     print(res.first);
@@ -261,7 +261,7 @@ class DBProvider {
   }
 
   Future<List<AmountCollection>> getAllMeterCollection() async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$METER_COLLECTION_TABLE");
     return res.isNotEmpty
         ? res.map((c) => AmountCollection.fromJson(c)).toList()
@@ -270,7 +270,7 @@ class DBProvider {
 
   Future<int> updateMeterCollection(
       AmountCollection newMeterCollectionModel) async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.update(
         "$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),
         where: "referenceId = ?",
@@ -279,30 +279,30 @@ class DBProvider {
   }
 
   Future<int> deleteMetereCollection(int referenceId) async {
-    final db = await database;
+    final db = await databaseInit;
     return db.delete("$METER_COLLECTION_TABLE",
         where: "referenceId = ?", whereArgs: [referenceId]);
   }
 
   Future<int> deleteAllMeterCollection() async {
-    final db = await database;
+    final db = await databaseInit;
     return db.rawDelete("Delete from $METER_COLLECTION_TABLE");
   }
 
   Future<int> insertRequest(Request newRequest) async {
-    final db = await database;
+    final db = await databaseInit;
     int res = await db.insert("`$REQUEST_TABLE`", newRequest.toJson());
     if (res <= 0) throw new APIException("database.insert_request_error", "");
     return res;
   }
 
   Future<int> deleteAllRequest() async {
-    final db = await database;
+    final db = await databaseInit;
     return db.rawDelete("Delete from $REQUEST_TABLE");
   }
 
   Future<List<Request>> getAllRequest() async {
-    final db = await database;
+    final db = await databaseInit;
     var res = await db.query("$REQUEST_TABLE");
     return res.isNotEmpty ? res.map((c) => Request.fromJson(c)).toList() : [];
   }
@@ -318,12 +318,12 @@ class DBProvider {
   }
 
   Future<int> deleteAllHistory() async {
-    final db = await database;
+    final db = await databaseInit;
     return db.rawDelete("Delete from $HISTORY_TABLE");
   }
 
   Future<List<History>> getHistoryList(List<String> historyIdList) async {
-    final db = await database;
+    final db = await databaseInit;
     String ids = historyIdList.join(', ');
     var res = await db.rawQuery(
         "SELECT * FROM $HISTORY_TABLE WHERE historyId IN ($ids) ORDER BY entryDateTime DESC;");
