@@ -103,7 +103,7 @@ class DBProvider {
         '`dateTimeAdded` INTEGER,'
         '`dateTimeDeleted` INTEGER,'
         '`outstanding` DOUBLE,'
-        '`comment` VARCHAR(800)'
+        '`comment` VARCHAR(800),'
         '`monthlyDataReferences` TEXT);');
     await db.execute('CREATE TABLE `$METER_READING_TABLE` ('
         '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
