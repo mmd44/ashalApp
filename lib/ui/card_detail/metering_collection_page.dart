@@ -67,7 +67,6 @@ class _MeteringCollectionPageState extends State<MeteringCollectionPage>
               ? _buildTodayDate()
               : Container(width: 0, height: 0),
           //SubscriberInfo(_controller),
-          _buildLineStatusSwitchTile(),
           _buildInputField(),
           _buildConfirmButton(),
         ],

@@ -80,9 +80,9 @@ class MeteringController {
   }
 
   bool get isMeteringValid =>
-      (isMetered &&
+      ((isMetered &&
               _meterReading?.reading != null &&
-              _meterReading?.meterImage != null ||
+              _meterReading?.meterImage != null) ||
           !isMetered) &&
       _meterReading?.subType != null &&
       _meterReading?.lineStatus != null &&
@@ -115,7 +115,14 @@ class MeteringController {
 
   String get ampStr => _meterReading?.amp?.toString() ?? '';
 
-  set subType(SubscriptionType val) => _meterReading.subType = val;
+  set subType(SubscriptionType val) {
+    _meterReading.subType = val;
+    if (!isMetered) {
+      _meterReading.meterImage = null;
+      _meterReading.reading = null;
+    }
+  }
+
   SubscriptionType get subType => _meterReading?.subType ?? null;
 
   set isPrepaid(String val) => _meterReading.prepaid = val;
