@@ -80,8 +80,10 @@ class MeteringController {
   }
 
   bool get isMeteringValid =>
-      (isMetered && _meterReading?.reading != null &&
-      _meterReading?.meterImage != null || !isMetered) &&
+      (isMetered &&
+              _meterReading?.reading != null &&
+              _meterReading?.meterImage != null ||
+          !isMetered) &&
       _meterReading?.subType != null &&
       _meterReading?.lineStatus != null &&
       _meterReading?.amp != null;
@@ -102,10 +104,11 @@ class MeteringController {
   }
 
   set amp(int val) {
-    if (val>=0) {
+    if (val != null && val >= 0) {
       _meterReading.amp = val;
       isValidAMPField = true;
     } else {
+      _meterReading.amp = null;
       isValidAMPField = false;
     }
   }
@@ -146,7 +149,7 @@ class MeteringController {
         else
           return null;
       }).then((history) {
-        print('history found $history');
+        print('history $history');
         if (history != null) setupHistoryFields(history);
         _view.onSetClientSuccess();
       }).catchError((error) {
@@ -180,8 +183,9 @@ class MeteringController {
       isValidReading = true;
       _meterReading.reading = input;
     } else {
+      _meterReading.reading = null;
       isValidReading = false;
-      _view.onReadingsError('Invalid Input!');
+      _view.onReadingsError(null);
     }
   }
 
@@ -217,9 +221,9 @@ class MeteringController {
 
   void setupHistoryFields(History history) {
     _clientLastHistory = history;
-     subType = history.subType;
-     amp = history.amp;
-     isPrepaid = history.prepaid;
-     _meterReading.lineStatus = history.lineStatus;
+    subType = history.subType;
+    amp = history.amp;
+    isPrepaid = history.prepaid;
+    _meterReading.lineStatus = history.lineStatus;
   }
 }

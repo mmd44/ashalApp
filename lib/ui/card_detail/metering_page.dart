@@ -230,11 +230,9 @@ class _MeteringPageState extends State<MeteringPage>
               _controller.isValidAMPField ? null : 'Must be greater than 0'),
       onChanged: (val) {
         int value = int.tryParse(val);
-        if (value != null) {
-          setState(() {
-            _controller.amp = value;
-          });
-        }
+        setState(() {
+          _controller.amp = value;
+        });
       },
     );
   }

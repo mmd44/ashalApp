@@ -6,6 +6,7 @@ void showErrorSnackbar(String text,
     {BuildContext context,
       GlobalKey<ScaffoldState> key,
       SnackBarAction action}) {
+  if (text == null) return;
   final snackBar = SnackBar(
     content: Text(text),
     duration: Duration(milliseconds: 1700),
