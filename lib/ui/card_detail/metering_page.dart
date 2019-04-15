@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/controllers/metering_controller.dart';
+import 'package:ashal/core/models/history.dart';
 import 'package:ashal/ui/card_detail/common/subscriber_info.dart';
 import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
@@ -23,8 +24,10 @@ class MeteringPage extends StatefulWidget {
 class _MeteringPageState extends State<MeteringPage>
     with SingleTickerProviderStateMixin
     implements ImagePickerListener, InputPageView {
-
   MeteringController _controller;
+
+  TextEditingController _ampController;
+  TextEditingController _oldMeterController;
 
   AnimationController _animationController;
   ImagePickerHandler _imagePickerHandler;
@@ -36,13 +39,15 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   void _init() async {
-    _controller =  MeteringController (widget.cardItem, this);
+    _controller = MeteringController(widget.cardItem, this);
     _controller.init();
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
     _imagePickerHandler = ImagePickerHandler(this, _animationController);
     _imagePickerHandler.init();
+
+    _initTextFieldControllers();
   }
 
   @override
@@ -66,66 +71,12 @@ class _MeteringPageState extends State<MeteringPage>
             _controller.setClientByReference(value);
             setState(() {});
           }),
-          _buildLineStatusSwitchTile(),
-          _buildInputField(),
+          _buildHistoryFields(),
+          _buildNewMeteringField(),
           _buildConfirmButton(),
         ],
       ),
     );
-  }
-
-  Widget _buildInputField() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: TextField(
-                keyboardType: TextInputType.numberWithOptions(),
-                decoration: Theme.TextStyles.textField.copyWith(
-                    hintText: 'Reading'),
-                onChanged: (value) => _controller.setInput(value),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text( 'Kwh',
-                  textAlign: TextAlign.center),
-            ),
-          ),
-          Expanded(
-              flex: 3,
-              child: _buildCamButton()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCamButton() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: GestureDetector(
-        child: _controller.meterImageFile != null
-            ? _buildImageCaptured()
-            : Container(child: (CircleAvatar(child: Icon(Icons.camera)))),
-        onTap: _openCam,
-      ),
-    );
-  }
-
-  void _openCam() {
-    _imagePickerHandler.getImageFromCamera();
   }
 
   Widget _buildConfirmButton() {
@@ -185,12 +136,15 @@ class _MeteringPageState extends State<MeteringPage>
 
   @override
   void onSetClientSuccess() {
+    _initTextFieldControllers();
     setState(() {});
   }
 
   @override
   void onSetClientError(String msg) {
-    showErrorSnackbar(msg, context: context);
+    _initTextFieldControllers();
+    setState(() {});
+    if (msg != null) showErrorSnackbar(msg, context: context);
   }
 
   _buildTodayDate() {
@@ -238,18 +192,199 @@ class _MeteringPageState extends State<MeteringPage>
     );
   }
 
-  _buildLineStatusSwitchTile() {
+  Widget _buildHistoryFields() {
     return Padding(
-      padding: const EdgeInsets.only(top: 8, left: 32, right: 32),
-      child: SwitchListTile(
-        title: Text('Line Status'),
-        value: _controller.lineStatus,
-        onChanged: (val) {
-          setState(() {
-            _controller.lineStatus = val;
-          });
-        },
+      padding: const EdgeInsets.symmetric(horizontal: 46),
+      child: Column(
+        children: <Widget>[
+          _buildLineStatusSwitchTile(),
+          _buildSubType(),
+          _buildAMPField(),
+          _buildIsPrepaid(),
+          _buildOldMeter(),
+        ],
       ),
     );
+  }
+
+  _buildLineStatusSwitchTile() {
+    return SwitchListTile(
+      title: Text('Line Status'),
+      value: _controller.lineStatus,
+      onChanged: (val) {
+        setState(() {
+          _controller.lineStatus = val;
+        });
+      },
+    );
+  }
+
+  Widget _buildAMPField() {
+    return TextField(
+      controller: _ampController,
+      keyboardType: TextInputType.numberWithOptions(),
+      decoration: Theme.TextStyles.textField.copyWith(
+          hintText: 'AMPs',
+          helperText: 'AMPs',
+          errorText:
+              _controller.isValidAMPField ? null : 'Must be greater than 0'),
+      onChanged: (val) {
+        int value = int.tryParse(val);
+        if (value != null) {
+          setState(() {
+            _controller.amp = value;
+          });
+        }
+      },
+    );
+  }
+
+  Widget _buildSubType() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          flex: 1,
+          child: Text('Subscription Type'),
+        ),
+        Expanded(
+          flex: 1,
+          child: Center(
+            child: DropdownButton<SubscriptionType>(
+                value: _controller.subType,
+                items: SubscriptionType.values.map((SubscriptionType val) {
+                  return new DropdownMenuItem<SubscriptionType>(
+                    value: val,
+                    child: Text(val.value),
+                  );
+                }).toList(),
+                hint: Text("Type"),
+                onChanged: (newVal) {
+                  _controller.subType = newVal;
+                  setState(() {});
+                }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _initTextFieldControllers() {
+    _ampController = TextEditingController(text: _controller.ampStr);
+    _oldMeterController = TextEditingController(text: _controller.oldMetering);
+  }
+
+  Widget _buildIsPrepaid() {
+    return Visibility(
+      visible: _controller.isMetered,
+      child: Row(
+        children: <Widget>[
+          Text('Is Prepaid?'),
+          Radio(
+              value: 'yes',
+              groupValue: _controller.isPrepaid,
+              onChanged: (value) {
+                setState(() {
+                  _controller.isPrepaid = value;
+                });
+              }),
+          Text('Yes'),
+          Radio(
+              value: 'no',
+              groupValue: _controller.isPrepaid,
+              onChanged: (value) {
+                setState(() {
+                  _controller.isPrepaid = value;
+                });
+              }),
+          Text('No'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOldMeter() {
+    return Visibility(
+      visible: _controller.isMetered,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Text(
+                'Old Metering',
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: TextField(
+              controller: _oldMeterController,
+              enabled: false,
+              decoration: Theme.TextStyles.textField
+                  .copyWith(helperText: 'Old Metering'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNewMeteringField() {
+    return Visibility(
+      visible: _controller.isMetered,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: TextField(
+                  keyboardType: TextInputType.numberWithOptions(),
+                  decoration: Theme.TextStyles.textField.copyWith(
+                    hintText: 'Reading',
+                    errorText: _controller.isValidReading
+                        ? null
+                        : 'Must be greater than or equal old metering',
+                  ),
+                  onChanged: (value) => _controller.setNewMetering(value),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Text('Kwh', textAlign: TextAlign.center),
+              ),
+            ),
+            Expanded(flex: 3, child: _buildCamButton()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCamButton() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: GestureDetector(
+        child: _controller.meterImageFile != null
+            ? _buildImageCaptured()
+            : Container(child: (CircleAvatar(child: Icon(Icons.camera)))),
+        onTap: _openCam,
+      ),
+    );
+  }
+
+  void _openCam() {
+    _imagePickerHandler.getImageFromCamera();
   }
 }

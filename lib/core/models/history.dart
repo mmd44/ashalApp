@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ashal/core/enum.dart';
 import 'package:ashal/core/models/parse_utils.dart';
 
 History historyFromJson(String str) {
@@ -17,7 +18,7 @@ class History {
   String historyId;
   DateTime entryDateTime;
   int parentId;
-  String subType;
+  SubscriptionType subType;
   var amp;
   var flatPrice;
   var oldMeter;
@@ -99,7 +100,7 @@ class History {
           ? DateTime.fromMillisecondsSinceEpoch(json["entryDateTime"])
           : null,
       json["parentId"],
-      json["subType"],
+      SubscriptionType(json["subType"]),
       json["amp"],
       json["flatPrice"],
       json["oldMeter"],
@@ -123,7 +124,7 @@ class History {
         "historyId": historyId,
         "entryDateTime": entryDateTime?.millisecondsSinceEpoch,
         "parentId": parentId,
-        "subType": subType,
+        "subType": subType?.value ?? '',
         "amp": amp,
         "flatPrice": flatPrice,
         "oldMeter": oldMeter,
@@ -142,4 +143,17 @@ class History {
         "lineStatus": lineStatus,
         "prepaid": prepaid
       };
+}
+
+class SubscriptionType extends Enum {
+  static const amp = SubscriptionType._internal('AMP');
+  static const flat = SubscriptionType._internal('Flat Price');
+  static const meter = SubscriptionType._internal('Metered');
+
+  static const List<SubscriptionType> values = [amp, flat, meter];
+
+  const SubscriptionType._internal(String value) : super.internal(value);
+
+  factory SubscriptionType(String raw) =>
+      values.singleWhere((val) => val.value == raw, orElse: () => null);
 }

@@ -20,13 +20,12 @@ class MeteringController {
   InputPageView _view;
 
   bool isLoading = false;
+  bool isValidAMPField = false;
+  bool isValidReading = false;
 
   File meterImageFile;
 
   DateTime todayDate;
-
-  bool get isMeteringValid =>
-      _meterReading?.reading != null && _meterReading?.meterImage != null;
 
   MeteringController(CardItem cardItem, InputPageView view) : _view = view;
 
@@ -69,16 +68,23 @@ class MeteringController {
         historyId: 'ref1',
         entryDateTime: DateTime.now(),
         parentId: 2,
-        subType: 'AMP',
+        subType: SubscriptionType('Metered'),
         amp: 20,
         lineStatus: 'on',
-        prepaid: 'yes',
+        prepaid: 'no',
         oldMeter: 170,
         newMeter: 270,
         payers: ['Ali', 'Hussein'],
       ),
     ]);
   }
+
+  bool get isMeteringValid =>
+      (isMetered && _meterReading?.reading != null &&
+      _meterReading?.meterImage != null || !isMetered) &&
+      _meterReading?.subType != null &&
+      _meterReading?.lineStatus != null &&
+      _meterReading?.amp != null;
 
   set meteringDate(DateTime dateTime) {
     todayDate = dateTime;
@@ -95,6 +101,27 @@ class MeteringController {
     }
   }
 
+  set amp(int val) {
+    if (val>=0) {
+      _meterReading.amp = val;
+      isValidAMPField = true;
+    } else {
+      isValidAMPField = false;
+    }
+  }
+
+  String get ampStr => _meterReading?.amp?.toString() ?? '';
+
+  set subType(SubscriptionType val) => _meterReading.subType = val;
+  SubscriptionType get subType => _meterReading?.subType ?? null;
+
+  set isPrepaid(String val) => _meterReading.prepaid = val;
+  String get isPrepaid => _meterReading?.prepaid ?? '';
+
+  String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
+
+  bool get isMetered => _meterReading.subType == SubscriptionType.meter;
+
   get lineStatus {
     if (_clientLastHistory?.lineStatus == null) return false;
     switch (_clientLastHistory?.lineStatus) {
@@ -106,28 +133,30 @@ class MeteringController {
   }
 
   void setClientByReference(String ref) {
+    resetFields();
     referenceID = ref;
     int id = int.tryParse(referenceID);
     if (id != null) {
       DBProvider.db.getClient(id).then((client) {
         _client = client;
         _meterReading.referenceId = id;
-        _view.onSetClientSuccess();
-
         if (_client?.monthlyDataReferences != null &&
-            _client?.monthlyDataReferences[0] != null)
+            _client.monthlyDataReferences.length > 0)
           return DBProvider.db.getLastHistory(id);
         else
-          throw Exception('No history available!');
+          return null;
       }).then((history) {
         print('history found $history');
-        _clientLastHistory = history;
+        if (history != null) setupHistoryFields(history);
+        _view.onSetClientSuccess();
       }).catchError((error) {
-        print('DBGetClient: $error');
+        resetFields();
+        _view.onSetClientError(error.toString());
+        print('DBGetClient: ${error.toString()}');
       });
     } else {
-      _client = null;
-      _meterReading.referenceId = null;
+      _view.onSetClientError(null);
+      resetFields();
     }
   }
 
@@ -142,14 +171,16 @@ class MeteringController {
     _meterReading.meterImage = base64Image;
   }
 
-  void setInput(String value) {
+  void setNewMetering(String value) {
     double input;
     if (value != null) {
       input = double.tryParse(value);
     }
-    if (input != null) {
+    if (input != null && input >= (_clientLastHistory?.oldMeter ?? 0)) {
+      isValidReading = true;
       _meterReading.reading = input;
     } else {
+      isValidReading = false;
       _view.onReadingsError('Invalid Input!');
     }
   }
@@ -178,8 +209,17 @@ class MeteringController {
 
   void resetFields() {
     _client = null;
+    _clientLastHistory = null;
     referenceID = null;
     _meterReading = MeterReading();
     meteringDate = DateTime.now();
+  }
+
+  void setupHistoryFields(History history) {
+    _clientLastHistory = history;
+     subType = history.subType;
+     amp = history.amp;
+     isPrepaid = history.prepaid;
+     _meterReading.lineStatus = history.lineStatus;
   }
 }

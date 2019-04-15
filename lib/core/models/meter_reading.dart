@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ashal/core/models/history.dart';
+
 MeterReading meterReadingFromJson(String str) {
   final jsonData = json.decode(str);
   return MeterReading.fromJson(jsonData);
@@ -17,7 +19,7 @@ class MeterReading
   double reading;
   DateTime date;
   String meterImage;
-  String subType;
+  SubscriptionType subType;
   int amp;
   String lineStatus;
   String prepaid;
@@ -31,7 +33,7 @@ class MeterReading
       referenceId: json["referenceId"],
       reading: json["reading"],
       date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
-      subType: json["subType"],
+      subType: SubscriptionType(json["subType"]),
       amp: json["amp"],
       lineStatus: json["lineStatus"],
       prepaid: json["prepaid"],
@@ -43,7 +45,7 @@ class MeterReading
     "reading": reading,
     "date": date?.millisecondsSinceEpoch,
     "meterImage": meterImage,
-    "subType": subType,
+    "subType": subType.value,
     "amp": amp,
     "lineStatus": lineStatus,
     "prepaid": prepaid,

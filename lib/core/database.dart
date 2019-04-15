@@ -199,9 +199,9 @@ class DBProvider {
     return db.rawDelete("Delete from $CLIENT_TABLE");
   }
 
-  Future<int> insertMeterReading(MeterReading newUser) async {
+  Future<int> insertMeterReading(MeterReading newMeterReading) async {
     final db = await databaseInit;
-    var res = await db.insert("`$METER_READING_TABLE`", newUser.toJson());
+    var res = await db.insert("`$METER_READING_TABLE`", newMeterReading.toJson());
     if (res <= 0)
       throw new APIException("database.insert_meter_readin_error", "");
     return res;
