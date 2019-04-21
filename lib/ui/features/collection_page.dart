@@ -75,29 +75,6 @@ class _CollectionPageState extends State<CollectionPage>
     );
   }
 
-  Widget _buildConfirmButton() {
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16, left: 40, right: 40),
-            child: CustomButton(
-              onPressed: _onSubmit,
-              disabled: !_controller.isCollectionValid,
-              loading: _controller.isLoading,
-              label: Text(
-                'Confirm',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   void _onSubmit() {
     _controller.submit();
   }
@@ -163,7 +140,7 @@ class _CollectionPageState extends State<CollectionPage>
     //_subFeeController = TextEditingController(text: _controller.subFee);
     _discountController = TextEditingController(text: _controller.discount);
     _flatPriceController = TextEditingController(text: _controller.flatPrice);
-    _billController = TextEditingController(text: _controller.newMetering);
+    _billController = TextEditingController(text: _controller.bill);
   }
 
   Widget _buildHistoryFields() {
@@ -295,43 +272,63 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   Widget _buildAmountTBC() {
-    return Visibility(
-      visible: _controller.isSubMetered,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(),
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(),
+          ),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: TextField(
+                keyboardType: TextInputType.numberWithOptions(),
+                decoration: Theme.TextStyles.textField.copyWith(
+                  hintText: 'Amount',
+                  errorText: _controller.isValidCollection
+                      ? null
+                      : 'Must be less than or equal bill',
+                ),
+                onChanged: (value) => _controller.setCollection(value),
+              ),
             ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: TextField(
-                  keyboardType: TextInputType.numberWithOptions(),
-                  decoration: Theme.TextStyles.textField.copyWith(
-                    hintText: 'Reading',
-                    errorText: _controller.isValidCollection
-                        ? null
-                        : 'Must be less than or equal bill',
-                  ),
-                  onChanged: (value) => _controller.setCollection,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 40),
+              child: Text('L.L', textAlign: TextAlign.center),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16, left: 40, right: 40),
+            child: CustomButton(
+              onPressed: _onSubmit,
+              disabled: !_controller.isCollectionValid,
+              loading: _controller.isLoading,
+              label: Text(
+                'Confirm',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text('Kwh', textAlign: TextAlign.center),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

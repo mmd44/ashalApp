@@ -20,6 +20,12 @@ class CardItemsDao {
       description: "Collect your Money!",
       image: "assets/img/bill_tools.png",
     ),
+    const CardItem(
+      id: "4",
+      name: "requests",
+      description: "Any Suggestions?",
+      image: "assets/img/bill_tools.png",
+    ),
   ];
 
   static CardItem getCardByID(id) {

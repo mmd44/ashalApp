@@ -15,6 +15,7 @@ class Routes {
     _router.define("/sync/:id", handler: inputPageHandler);
     _router.define("/metering/:id", handler: inputPageHandler);
     _router.define("/collection/:id", handler: inputPageHandler);
+    _router.define("/requests/:id", handler: inputPageHandler);
   }
 
   static void navigateTo(context, String route, {TransitionType transition}) {

@@ -60,8 +60,11 @@ class CollectionController {
         historyId: 'ref1',
         entryDateTime: DateTime.now(),
         parentId: 2,
-        subType: SubscriptionType('Metered'),
+        subType: SubscriptionType('Flat Price'),
+        flatPrice: 50000,
         amp: 20,
+        discount: 10,
+        bill: 80000,
         lineStatus: 'on',
         prepaid: 'no',
         oldMeter: 170,
@@ -71,7 +74,7 @@ class CollectionController {
     ]);
   }
 
-  bool get isCollectionValid => true;
+  bool get isCollectionValid => isValidCollection;
 
   set collectionDate(DateTime dateTime) {
     todayDate = dateTime;
@@ -86,6 +89,8 @@ class CollectionController {
   String get discount => _clientLastHistory?.discount?.toString() ?? '';
 
   String get flatPrice => _clientLastHistory?.flatPrice?.toString() ?? '';
+
+  String get bill => _clientLastHistory?.bill?.toString() ?? '';
 
   String get isPrepaid => _clientLastHistory?.prepaid ?? '';
 
@@ -118,7 +123,7 @@ class CollectionController {
     } else {
       _collection.amount = null;
       isValidCollection = false;
-      _view.onReadingsError(null);
+      _view.onError(null);
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:ashal/localization.dart';
 import 'package:ashal/ui/features/collection_page.dart';
 import 'package:ashal/ui/features/metering_collection_page.dart';
 import 'package:ashal/ui/features/metering_page.dart';
+import 'package:ashal/ui/features/requests_page.dart';
 import 'package:ashal/ui/features/sync_page.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -44,6 +45,8 @@ class _CardInfoPageState extends State<CardInfoPage> {
       return MeteringPage(widget.cardItem.id);
     else if (widget.cardItem.id == '3')
       return CollectionPage(widget.cardItem.id);
+    else if (widget.cardItem.id == '4')
+      return RequestsPage (widget.cardItem.id);
 
     return Container();
   }
