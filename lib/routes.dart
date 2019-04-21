@@ -1,4 +1,4 @@
-import 'package:ashal/ui/card_detail/common/card_info_page.dart';
+import 'package:ashal/ui/helpers/common/card_info_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 

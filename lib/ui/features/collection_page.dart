@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/controllers/metering_controller.dart';
 import 'package:ashal/core/models/history.dart';
-import 'package:ashal/ui/card_detail/common/subscriber_info.dart';
-import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
+import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -12,25 +10,23 @@ import 'package:ashal/ui/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class MeteringPage extends StatefulWidget {
+class CollectionPage extends StatefulWidget {
   final CardItem cardItem;
 
-  MeteringPage(String id) : cardItem = CardItemsDao.getCardByID(id);
+  CollectionPage(String id) : cardItem = CardItemsDao.getCardByID(id);
 
   @override
-  _MeteringPageState createState() => _MeteringPageState();
+  _CollectionPageState createState() => _CollectionPageState();
 }
 
-class _MeteringPageState extends State<MeteringPage>
+class _CollectionPageState extends State<CollectionPage>
     with SingleTickerProviderStateMixin
-    implements ImagePickerListener, InputPageView {
+    implements InputPageView {
   MeteringController _controller;
 
   TextEditingController _ampController;
   TextEditingController _oldMeterController;
 
-  AnimationController _animationController;
-  ImagePickerHandler _imagePickerHandler;
 
   @override
   void initState() {
@@ -41,11 +37,6 @@ class _MeteringPageState extends State<MeteringPage>
   void _init() async {
     _controller = MeteringController(widget.cardItem, this);
     _controller.init();
-
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _imagePickerHandler = ImagePickerHandler(this, _animationController);
-    _imagePickerHandler.init();
 
     _initTextFieldControllers();
   }
@@ -107,12 +98,6 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   @override
-  userImage(File image) {
-    _controller.setImage(image);
-    setState(() {});
-  }
-
-  @override
   void onSuccess(String msg) {
     setState(() {});
 
@@ -152,34 +137,6 @@ class _MeteringPageState extends State<MeteringPage>
       child: Text(DateFormat('dd-MM-yyyy').format(
         _controller.todayDate,
       )),
-    );
-  }
-
-  _buildImageCaptured() {
-    return InkWell(
-      onTap: _openCam,
-      child: Center(
-        child: _buildImageFile(),
-      ),
-    );
-  }
-
-  _buildImageFile() {
-    return new Container(
-      width: 70,
-      height: 70,
-      decoration: new BoxDecoration(
-        color: const Color(0xff7c94b6),
-        image: new DecorationImage(
-          image: new FileImage(_controller.meterImageFile),
-          fit: BoxFit.fill,
-        ),
-        borderRadius: new BorderRadius.all(new Radius.circular(150.0)),
-        border: new Border.all(
-          color: Theme.Colors.primary,
-          width: 0.0,
-        ),
-      ),
     );
   }
 
@@ -227,7 +184,7 @@ class _MeteringPageState extends State<MeteringPage>
           hintText: 'AMPs',
           helperText: 'AMPs',
           errorText:
-              _controller.isValidAMPField ? null : 'Must be greater than 0'),
+          _controller.isValidAMPField ? null : 'Must be greater than 0'),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {
@@ -363,26 +320,11 @@ class _MeteringPageState extends State<MeteringPage>
                 child: Text('Kwh', textAlign: TextAlign.center),
               ),
             ),
-            Expanded(flex: 3, child: _buildCamButton()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCamButton() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: GestureDetector(
-        child: _controller.meterImageFile != null
-            ? _buildImageCaptured()
-            : Container(child: (CircleAvatar(child: Icon(Icons.camera)))),
-        onTap: _openCam,
-      ),
-    );
-  }
 
-  void _openCam() {
-    _imagePickerHandler.getImageFromCamera();
-  }
 }

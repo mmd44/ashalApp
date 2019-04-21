@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:ashal/ui/card_detail/image_ui/image_picker_dialog.dart';
+import 'package:ashal/ui/helpers/image_ui/image_picker_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
