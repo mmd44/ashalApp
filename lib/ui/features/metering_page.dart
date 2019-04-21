@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/controllers/metering_controller.dart';
 import 'package:ashal/core/models/history.dart';
@@ -273,7 +274,7 @@ class _MeteringPageState extends State<MeteringPage>
 
   Widget _buildIsPrepaid() {
     return Visibility(
-      visible: _controller.isMetered,
+      visible: _controller.isSubMetered,
       child: Row(
         children: <Widget>[
           Text('Is Prepaid?'),
@@ -302,7 +303,7 @@ class _MeteringPageState extends State<MeteringPage>
 
   Widget _buildOldMeter() {
     return Visibility(
-      visible: _controller.isMetered,
+      visible: _controller.isSubMetered,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -330,7 +331,7 @@ class _MeteringPageState extends State<MeteringPage>
 
   Widget _buildNewMeteringField() {
     return Visibility(
-      visible: _controller.isMetered,
+      visible: _controller.isSubMetered,
       child: Padding(
         padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
         child: Row(

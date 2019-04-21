@@ -1,6 +1,5 @@
+import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
-import 'package:ashal/core/controllers/metering_controller.dart';
-import 'package:ashal/core/models/history.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
@@ -22,11 +21,17 @@ class CollectionPage extends StatefulWidget {
 class _CollectionPageState extends State<CollectionPage>
     with SingleTickerProviderStateMixin
     implements InputPageView {
-  MeteringController _controller;
+  CollectionController _controller;
 
   TextEditingController _ampController;
   TextEditingController _oldMeterController;
-
+  TextEditingController _newMeterController;
+  TextEditingController _lineStatusController;
+  TextEditingController _subTypeController;
+  TextEditingController _subFeeController;
+  TextEditingController _discountController;
+  TextEditingController _flatPriceController;
+  TextEditingController _billController;
 
   @override
   void initState() {
@@ -35,7 +40,7 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   void _init() async {
-    _controller = MeteringController(widget.cardItem, this);
+    _controller = CollectionController(widget.cardItem, this);
     _controller.init();
 
     _initTextFieldControllers();
@@ -63,7 +68,7 @@ class _CollectionPageState extends State<CollectionPage>
             setState(() {});
           }),
           _buildHistoryFields(),
-          _buildNewMeteringField(),
+          _buildAmountTBC(),
           _buildConfirmButton(),
         ],
       ),
@@ -78,7 +83,7 @@ class _CollectionPageState extends State<CollectionPage>
             padding: const EdgeInsets.only(top: 16, left: 40, right: 40),
             child: CustomButton(
               onPressed: _onSubmit,
-              disabled: !_controller.isMeteringValid,
+              disabled: !_controller.isCollectionValid,
               loading: _controller.isLoading,
               label: Text(
                 'Confirm',
@@ -149,145 +154,149 @@ class _CollectionPageState extends State<CollectionPage>
     );
   }
 
+  void _initTextFieldControllers() {
+    _ampController = TextEditingController(text: _controller.ampStr);
+    _oldMeterController = TextEditingController(text: _controller.oldMetering);
+    _newMeterController = TextEditingController(text: _controller.newMetering);
+    _lineStatusController = TextEditingController(text: _controller.lineStatus);
+    _subTypeController = TextEditingController(text: _controller.subType);
+    //_subFeeController = TextEditingController(text: _controller.subFee);
+    _discountController = TextEditingController(text: _controller.discount);
+    _flatPriceController = TextEditingController(text: _controller.flatPrice);
+    _billController = TextEditingController(text: _controller.newMetering);
+  }
+
   Widget _buildHistoryFields() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 46),
       child: Column(
         children: <Widget>[
-          _buildLineStatusSwitchTile(),
-          _buildSubType(),
+          _buildLineStatusField(),
+          _buildSubTypeField(),
+          _buildSubFeeField(),
+          _buildDiscountField(),
+          _buildFlatPriceField(),
           _buildAMPField(),
-          _buildIsPrepaid(),
-          _buildOldMeter(),
+          _buildOldMeteringField(),
+          _buildNewMeteringField(),
+          _buildBillField(),
         ],
       ),
     );
   }
 
-  _buildLineStatusSwitchTile() {
-    return SwitchListTile(
-      title: Text('Line Status'),
-      value: _controller.lineStatus,
-      onChanged: (val) {
-        setState(() {
-          _controller.lineStatus = val;
-        });
-      },
-    );
+  Widget _buildLineStatusField() {
+    return TextField(
+        enabled: false,
+        controller: _lineStatusController,
+        decoration: Theme.TextStyles.textField.copyWith(
+          hintText: 'Line Status',
+          helperText: 'Line Status',
+        ));
   }
 
   Widget _buildAMPField() {
-    return TextField(
-      controller: _ampController,
-      keyboardType: TextInputType.numberWithOptions(),
-      decoration: Theme.TextStyles.textField.copyWith(
+    return Visibility(
+      visible: false,
+      child: TextField(
+        controller: _ampController,
+        keyboardType: TextInputType.numberWithOptions(),
+        decoration: Theme.TextStyles.textField.copyWith(
           hintText: 'AMPs',
           helperText: 'AMPs',
-          errorText:
-          _controller.isValidAMPField ? null : 'Must be greater than 0'),
-      onChanged: (val) {
-        int value = int.tryParse(val);
-        setState(() {
-          _controller.amp = value;
-        });
-      },
-    );
-  }
-
-  Widget _buildSubType() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Text('Subscription Type'),
         ),
-        Expanded(
-          flex: 1,
-          child: Center(
-            child: DropdownButton<SubscriptionType>(
-                value: _controller.subType,
-                items: SubscriptionType.values.map((SubscriptionType val) {
-                  return new DropdownMenuItem<SubscriptionType>(
-                    value: val,
-                    child: Text(val.value),
-                  );
-                }).toList(),
-                hint: Text("Type"),
-                onChanged: (newVal) {
-                  _controller.subType = newVal;
-                  setState(() {});
-                }),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _initTextFieldControllers() {
-    _ampController = TextEditingController(text: _controller.ampStr);
-    _oldMeterController = TextEditingController(text: _controller.oldMetering);
-  }
-
-  Widget _buildIsPrepaid() {
-    return Visibility(
-      visible: _controller.isMetered,
-      child: Row(
-        children: <Widget>[
-          Text('Is Prepaid?'),
-          Radio(
-              value: 'yes',
-              groupValue: _controller.isPrepaid,
-              onChanged: (value) {
-                setState(() {
-                  _controller.isPrepaid = value;
-                });
-              }),
-          Text('Yes'),
-          Radio(
-              value: 'no',
-              groupValue: _controller.isPrepaid,
-              onChanged: (value) {
-                setState(() {
-                  _controller.isPrepaid = value;
-                });
-              }),
-          Text('No'),
-        ],
       ),
     );
   }
 
-  Widget _buildOldMeter() {
+  Widget _buildSubTypeField() {
+    return TextField(
+        enabled: false,
+        controller: _subTypeController,
+        decoration: Theme.TextStyles.textField.copyWith(
+          hintText: 'Sub Type',
+          helperText: 'Subscription Type',
+        ));
+  }
+
+  Widget _buildSubFeeField() {
     return Visibility(
-      visible: _controller.isMetered,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                'Old Metering',
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: TextField(
-              controller: _oldMeterController,
-              enabled: false,
-              decoration: Theme.TextStyles.textField
-                  .copyWith(helperText: 'Old Metering'),
-            ),
-          ),
-        ],
-      ),
+      visible: _controller.isSubMetered,
+      child: TextField(
+          enabled: false,
+          controller: _subFeeController,
+          decoration: Theme.TextStyles.textField.copyWith(
+            hintText: 'Sub Fee',
+            helperText: 'Subscription Fee',
+          )),
+    );
+  }
+
+  Widget _buildDiscountField() {
+    return Visibility(
+      visible: !_controller.isSubFlatPrice,
+      child: TextField(
+          enabled: false,
+          controller: _discountController,
+          decoration: Theme.TextStyles.textField.copyWith(
+            hintText: 'Discount',
+            helperText: 'Discount',
+          )),
+    );
+  }
+
+  Widget _buildFlatPriceField() {
+    return Visibility(
+      visible: _controller.isSubFlatPrice,
+      child: TextField(
+          enabled: false,
+          controller: _flatPriceController,
+          decoration: Theme.TextStyles.textField.copyWith(
+            hintText: 'Flat Price',
+            helperText: 'Flat Price',
+          )),
+    );
+  }
+
+  Widget _buildOldMeteringField() {
+    return Visibility(
+      visible: _controller.isSubMetered,
+      child: TextField(
+          enabled: false,
+          controller: _oldMeterController,
+          decoration: Theme.TextStyles.textField.copyWith(
+            hintText: 'Old Meter',
+            helperText: 'Old Meter',
+          )),
     );
   }
 
   Widget _buildNewMeteringField() {
     return Visibility(
-      visible: _controller.isMetered,
+      visible: _controller.isSubMetered,
+      child: TextField(
+          enabled: false,
+          controller: _newMeterController,
+          decoration: Theme.TextStyles.textField.copyWith(
+            hintText: 'New Meter',
+            helperText: 'New Meter',
+          )),
+    );
+  }
+
+  Widget _buildBillField() {
+    return TextField(
+        enabled: false,
+        controller: _billController,
+        decoration: Theme.TextStyles.textField.copyWith(
+          hintText: 'Bill',
+          helperText: 'Bill',
+        ));
+  }
+
+  Widget _buildAmountTBC() {
+    return Visibility(
+      visible: _controller.isSubMetered,
       child: Padding(
         padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
         child: Row(
@@ -305,11 +314,11 @@ class _CollectionPageState extends State<CollectionPage>
                   keyboardType: TextInputType.numberWithOptions(),
                   decoration: Theme.TextStyles.textField.copyWith(
                     hintText: 'Reading',
-                    errorText: _controller.isValidReading
+                    errorText: _controller.isValidCollection
                         ? null
-                        : 'Must be greater than or equal old metering',
+                        : 'Must be less than or equal bill',
                   ),
-                  onChanged: (value) => _controller.setNewMetering(value),
+                  onChanged: (value) => _controller.setCollection,
                 ),
               ),
             ),
@@ -325,6 +334,4 @@ class _CollectionPageState extends State<CollectionPage>
       ),
     );
   }
-
-
 }

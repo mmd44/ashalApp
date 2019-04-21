@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/amount_collection.dart';
@@ -181,11 +182,4 @@ class InputPagesController {
   
 }
 
-abstract class InputPageView {
-  void onSetClientSuccess();
-  void onSetClientError(String msg);
-  void onReadingsError(String msg);
-  void onError(String error);
-  void onSuccess(String msg);
-  void showWarningDialog(String msg);
-}
+

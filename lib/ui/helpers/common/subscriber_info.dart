@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 
 class SubscriberInfo extends StatefulWidget {
-  SubscriberInfo(this.client, this.onEditingDone, {this.children = const <Widget>[]});
+  SubscriberInfo(this.client, this.onEditingDone,
+      {this.children = const <Widget>[]});
 
   final void Function(String item) onEditingDone;
   final Client client;
-  
+
   final List<Widget> children;
 
   @override
@@ -19,7 +20,6 @@ class SubscriberInfo extends StatefulWidget {
 
 class _SubscriberInfoState extends State<SubscriberInfo>
     implements TextFieldWithSelectionView {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,9 +31,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
             return clients
                 .map((client) => client.referenceId.toString())
                 .toList();
-          },
-              this,
-              children: [
+          }, this, children: [
             Column(
               children: <Widget>[
                 Row(
@@ -44,8 +42,10 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           enabled: false,
-                          decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget.client?.area, helperText: 'Area', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                          decoration: Theme.TextStyles.textField.copyWith(
+                            hintText: widget.client?.area,
+                            helperText: 'Area',
+                          ),
                         ),
                       ),
                     ),
@@ -55,8 +55,10 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           enabled: false,
-                          decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget.client?.streetAddress, helperText: 'Street', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                          decoration: Theme.TextStyles.textField.copyWith(
+                            hintText: widget.client?.streetAddress,
+                            helperText: 'Street',
+                          ),
                         ),
                       ),
                     ),
@@ -70,8 +72,10 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           enabled: false,
-                          decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget.client?.building, helperText: 'Building', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                          decoration: Theme.TextStyles.textField.copyWith(
+                            hintText: widget.client?.building,
+                            helperText: 'Building',
+                          ),
                         ),
                       ),
                     ),
@@ -81,20 +85,23 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           enabled: false,
-                          decoration: Theme.TextStyles.textField
-                              .copyWith(hintText: widget.client?.floor, helperText: 'Floor', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                          decoration: Theme.TextStyles.textField.copyWith(
+                            hintText: widget.client?.floor,
+                            helperText: 'Floor',
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     enabled: false,
-                    decoration: Theme.TextStyles.textField
-                        .copyWith(hintText: widget.client?.phone, helperText: 'Phone', helperStyle: TextStyle(color: Colors.black, height: 0.5)),
+                    decoration: Theme.TextStyles.textField.copyWith(
+                      hintText: widget.client?.phone,
+                      helperText: 'Phone',
+                    ),
                   ),
                 ),
               ],
@@ -107,6 +114,6 @@ class _SubscriberInfoState extends State<SubscriberInfo>
 
   @override
   void onEditingCompleted(String value) {
-    widget.onEditingDone (value);
+    widget.onEditingDone(value);
   }
 }

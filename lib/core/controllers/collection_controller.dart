@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/history.dart';
-import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/ui/models/card_item.dart';
 
 class CollectionController {
@@ -19,10 +15,7 @@ class CollectionController {
   InputPageView _view;
 
   bool isLoading = false;
-  bool isValidAMPField = false;
-  bool isValidReading = false;
-
-  File meterImageFile;
+  bool isValidCollection = false;
 
   DateTime todayDate;
 
@@ -83,6 +76,50 @@ class CollectionController {
   set collectionDate(DateTime dateTime) {
     todayDate = dateTime;
     _collection.date = dateTime;
+  }
+
+  String get ampStr => _clientLastHistory?.amp?.toString() ?? '';
+
+  String get subType => _clientLastHistory?.subType?.value ?? '';
+  //ToDo add sub feeSubscriptionType get subFee => _clientLastHistory?. ?? null;
+
+  String get discount => _clientLastHistory?.discount?.toString() ?? '';
+
+  String get flatPrice => _clientLastHistory?.flatPrice?.toString() ?? '';
+
+  String get isPrepaid => _clientLastHistory?.prepaid ?? '';
+
+  String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
+  String get newMetering => _clientLastHistory?.newMeter?.toString() ?? '';
+
+  bool get isSubMetered => _clientLastHistory?.subType == SubscriptionType.meter;
+
+  bool get isSubFlatPrice => _clientLastHistory?.subType == SubscriptionType.flat;
+
+  String get lineStatus {
+    if (_clientLastHistory?.lineStatus == null) return '';
+    switch (_clientLastHistory?.lineStatus) {
+      case 'on':
+        return 'On';
+      case 'off':
+        return 'Off';
+    }
+    return '';
+  }
+
+  void setCollection (String value) {
+    double input;
+    if (value != null) {
+      input = double.tryParse(value);
+    }
+    if (input != null && input <= (_clientLastHistory?.bill ?? 0)) {
+      isValidCollection = true;
+      _collection.amount = input;
+    } else {
+      _collection.amount = null;
+      isValidCollection = false;
+      _view.onReadingsError(null);
+    }
   }
 
   void setClientByReference(String ref) {
@@ -150,4 +187,13 @@ class CollectionController {
   void setupHistoryFields(History history) {
     _clientLastHistory = history;
   }
+}
+
+abstract class InputPageView {
+  void onSetClientSuccess();
+  void onSetClientError(String msg);
+  void onReadingsError(String msg);
+  void onError(String error);
+  void onSuccess(String msg);
+  void showWarningDialog(String msg);
 }

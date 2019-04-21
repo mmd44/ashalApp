@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
@@ -80,10 +81,10 @@ class MeteringController {
   }
 
   bool get isMeteringValid =>
-      ((isMetered &&
+      ((isSubMetered &&
               _meterReading?.reading != null &&
               _meterReading?.meterImage != null) ||
-          !isMetered) &&
+          !isSubMetered) &&
       _meterReading?.subType != null &&
       _meterReading?.lineStatus != null &&
       _meterReading?.amp != null;
@@ -100,6 +101,7 @@ class MeteringController {
         break;
       case false:
         _meterReading.lineStatus = 'off';
+        break;
     }
   }
 
@@ -117,7 +119,7 @@ class MeteringController {
 
   set subType(SubscriptionType val) {
     _meterReading.subType = val;
-    if (!isMetered) {
+    if (!isSubMetered) {
       _meterReading.meterImage = null;
       _meterReading.reading = null;
     }
@@ -130,7 +132,7 @@ class MeteringController {
 
   String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
 
-  bool get isMetered => _meterReading.subType == SubscriptionType.meter;
+  bool get isSubMetered => _meterReading?.subType == SubscriptionType.meter;
 
   get lineStatus {
     if (_clientLastHistory?.lineStatus == null) return false;
