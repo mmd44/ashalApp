@@ -60,7 +60,7 @@ class CollectionController {
         historyId: 'ref1',
         entryDateTime: DateTime.now(),
         parentId: 2,
-        subType: SubscriptionType('Flat Price'),
+        subType: SubscriptionType('Metered'),
         flatPrice: 50000,
         amp: 20,
         discount: 10,
@@ -111,6 +111,8 @@ class CollectionController {
     }
     return '';
   }
+
+  double get amount => _collection.amount;
 
   void setCollection (String value) {
     double input;
