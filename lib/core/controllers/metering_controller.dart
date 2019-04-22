@@ -132,7 +132,9 @@ class MeteringController {
 
   String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
 
-  bool get isSubMetered => _meterReading?.subType == SubscriptionType.meter;
+  bool get isTypePrepaid => [SubscriptionType.amp,SubscriptionType.flat].contains(_meterReading?.subType);
+
+  bool get isSubMetered => _meterReading?.subType==SubscriptionType.meter;
 
   get lineStatus {
     if (_clientLastHistory?.lineStatus == null) return false;

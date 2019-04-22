@@ -1,6 +1,15 @@
+import 'package:ashal/core/controllers/collection_controller.dart';
+import 'package:ashal/core/controllers/requests_controller.dart';
+import 'package:ashal/core/models/history.dart';
+import 'package:ashal/ui/helpers/common/subscriber_info.dart';
+import 'package:ashal/ui/helpers/ui_helpers.dart';
+import 'package:ashal/ui/models/custom_button.dart';
+import 'package:ashal/ui/theme.dart' as Theme;
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RequestsPage extends StatefulWidget {
 
@@ -12,9 +21,227 @@ class RequestsPage extends StatefulWidget {
   _RequestsPageState createState() => _RequestsPageState();
 }
 
-class _RequestsPageState extends State<RequestsPage> {
+class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
+  RequestsController _controller;
+
+  TextEditingController _ampController;
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() async {
+    _controller = RequestsController(widget.cardItem,this);
+    _controller.init();
+
+    _initTextFieldControllers();
+  }
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return new Container(
+      color: Theme.Colors.cardPageBackground,
+      child: ListView(
+        children: <Widget>[
+          new Center(
+            child: new Hero(
+              tag: 'card-icon-${widget.cardItem.id}',
+              child: new Image(
+                image: new AssetImage(widget.cardItem.image),
+                height: Theme.Dimens.cardHeight,
+                width: Theme.Dimens.cardWidth,
+              ),
+            ),
+          ),
+          _buildTodayDate(),
+          SubscriberInfo(_controller.client, (value) {
+            _controller.setClientByReference(value);
+            setState(() {});
+          }),
+          _buildHistoryFields(),
+          _buildConfirmButton()
+        ],
+      ),
+    );
+  }
+  _buildTodayDate() {
+    return Center(
+      child: Text(DateFormat('dd-MM-yyyy').format(
+        DateTime.now(),
+      )),
+    );
+  }
+  Widget _buildHistoryFields() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 46),
+      child: Column(
+        children: <Widget>[
+          _buildLineStatusSwitchTile(),
+          _buildSubType(),
+          _buildAMPField(),
+          _buildIsPrepaid(),
+        ],
+      ),
+    );
+  }
+  _buildLineStatusSwitchTile() {
+    return SwitchListTile(
+      title: Text('Line Status'),
+      value: _controller.lineStatus,
+      onChanged: (val) {
+        setState(() {
+          _controller.lineStatus = val;
+        });
+      },
+    );
+  }
+
+  Widget _buildAMPField() {
+    return TextField(
+      controller: _ampController,
+      keyboardType: TextInputType.numberWithOptions(),
+      decoration: Theme.TextStyles.textField.copyWith(
+          hintText: 'AMPs',
+          helperText: 'AMPs',
+          errorText:
+          _controller.isValidAMPField ? null : 'Must be greater than 0'),
+      onChanged: (val) {
+        int value = int.tryParse(val);
+        setState(() {
+          _controller.amp = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildSubType() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          flex: 1,
+          child: Text('Subscription Type'),
+        ),
+        Expanded(
+          flex: 1,
+          child: Center(
+            child: DropdownButton<SubscriptionType>(
+                value: _controller.subType,
+                items: SubscriptionType.values.map((SubscriptionType val) {
+                  return new DropdownMenuItem<SubscriptionType>(
+                    value: val,
+                    child: Text(val.value),
+                  );
+                }).toList(),
+                hint: Text("Type"),
+                onChanged: (newVal) {
+                  _controller.subType = newVal;
+                  setState(() {});
+                }),
+          ),
+        ),
+      ],
+    );
+  }
+  void _initTextFieldControllers() {
+    _ampController = TextEditingController(text: _controller.ampStr);
+  }
+
+  Widget _buildIsPrepaid() {
+    return Visibility(
+      visible: _controller.isTypePrepaid,
+      child: Row(
+        children: <Widget>[
+          Text('Is Prepaid?'),
+          Radio(
+              value: 'yes',
+              groupValue: _controller.isPrepaid,
+              onChanged: (value) {
+                setState(() {
+                  _controller.isPrepaid = value;
+                });
+              }),
+          Text('Yes'),
+          Radio(
+              value: 'no',
+              groupValue: _controller.isPrepaid,
+              onChanged: (value) {
+                setState(() {
+                  _controller.isPrepaid = value;
+                });
+              }),
+          Text('No'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16, left: 40, right: 40),
+            child: CustomButton(
+              onPressed: _onSubmit,
+              //disabled: !_controller.isMeteringValid,
+              loading: _controller.isLoading,
+              label: Text(
+                'Confirm',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  void _onSubmit() {
+    _controller.submit();
+  }
+
+  @override
+  void onError(String error) {
+    setState(() {});
+    showErrorSnackbar(error, context: context);
+  }
+
+  @override
+  void onReadingsError(String msg) {
+    setState(() {});
+    showErrorSnackbar(msg, context: context);
+  }
+
+  @override
+  void onSetClientError(String msg) {
+    _initTextFieldControllers();
+    setState(() {});
+    if (msg != null) showErrorSnackbar(msg, context: context);
+  }
+
+  @override
+  void onSetClientSuccess() {
+    _initTextFieldControllers();
+    setState(() {});
+  }
+
+  @override
+  void onSuccess(String msg) {
+    setState(() {});
+
+    showDialogMessage(context,
+        title: 'Success',
+        message: msg,
+        onConfirm: () => Navigator.of(context).pop());
+  }
+
+  @override
+  void showWarningDialog(String msg) {
+    showDialogConfirm(
+      context,
+      message: msg,
+      onConfirm: () => _controller.submit(bypassChecks: true),
+    );
   }
 }

@@ -127,7 +127,7 @@ class DBProvider {
         '`referenceId` INTEGER NOT NULL,'
         '`lineStatus` TEXT,'
         '`amp` INTEGER,'
-        '`subscriptionType` TEXT,'
+        '`subType` TEXT,'
         '`comment` TEXT,'
         '`prepaid` TEXT,'
         '`date` INTEGER);');

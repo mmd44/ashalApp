@@ -274,7 +274,7 @@ class _MeteringPageState extends State<MeteringPage>
 
   Widget _buildIsPrepaid() {
     return Visibility(
-      visible: _controller.isSubMetered,
+      visible: _controller.isTypePrepaid,
       child: Row(
         children: <Widget>[
           Text('Is Prepaid?'),
