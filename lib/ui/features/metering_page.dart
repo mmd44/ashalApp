@@ -227,8 +227,7 @@ class _MeteringPageState extends State<MeteringPage>
       decoration: Theme.TextStyles.textField.copyWith(
           hintText: 'AMPs',
           helperText: 'AMPs',
-          errorText:
-              _controller.isValidAMPField ? null : 'Must be greater than 0'),
+          errorText: _controller.isValidAMPField ? null : 'Must be greater than 0'),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {

@@ -1,11 +1,13 @@
 import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/controllers/input_pages_controller.dart';
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
+import 'package:ashal/ui/helpers/string_helper.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
 import 'package:ashal/ui/models/custom_button.dart';
-import 'package:ashal/ui/theme.dart' as Theme;
+import 'package:ashal/ui/theme.dart' as cTheme;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -32,6 +34,7 @@ class _CollectionPageState extends State<CollectionPage>
   TextEditingController _discountController;
   TextEditingController _flatPriceController;
   TextEditingController _billController;
+  TextEditingController _amountController;
 
   @override
   void initState() {
@@ -49,7 +52,7 @@ class _CollectionPageState extends State<CollectionPage>
   @override
   Widget build(BuildContext context) {
     return new Container(
-      color: Theme.Colors.cardPageBackground,
+      color: cTheme.Colors.cardPageBackground,
       child: ListView(
         children: <Widget>[
           new Center(
@@ -57,8 +60,8 @@ class _CollectionPageState extends State<CollectionPage>
               tag: 'card-icon-${widget.cardItem.id}',
               child: new Image(
                 image: new AssetImage(widget.cardItem.image),
-                height: Theme.Dimens.cardHeight,
-                width: Theme.Dimens.cardWidth,
+                height: cTheme.Dimens.cardHeight,
+                width: cTheme.Dimens.cardWidth,
               ),
             ),
           ),
@@ -141,6 +144,8 @@ class _CollectionPageState extends State<CollectionPage>
     _discountController = TextEditingController(text: _controller.discount);
     _flatPriceController = TextEditingController(text: _controller.flatPrice);
     _billController = TextEditingController(text: _controller.bill);
+    _amountController = TextEditingController(
+        text: formatAmountWithCurrency(_controller.amount));
   }
 
   Widget _buildHistoryFields() {
@@ -148,14 +153,28 @@ class _CollectionPageState extends State<CollectionPage>
       padding: const EdgeInsets.symmetric(horizontal: 46),
       child: Column(
         children: <Widget>[
-          _buildLineStatusField(),
-          _buildSubTypeField(),
+          Row(
+            children: <Widget>[
+              Expanded(flex: 1, child: _buildLineStatusField()),
+              Expanded(flex: 1, child: _buildSubTypeField()),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(flex: 1, child: _buildAMPField()),
+              Visibility(
+                  visible: _controller.isSubFlatPrice,
+                  child: Expanded(flex: 1, child: _buildFlatPriceField())),
+            ],
+          ),
           _buildSubFeeField(),
           _buildDiscountField(),
-          _buildFlatPriceField(),
-          _buildAMPField(),
-          _buildOldMeteringField(),
-          _buildNewMeteringField(),
+          Row(
+            children: <Widget>[
+              Expanded(flex: 1, child: _buildOldMeteringField()),
+              Expanded(flex: 1, child: _buildNewMeteringField()),
+            ],
+          ),
           _buildBillField(),
         ],
       ),
@@ -163,22 +182,25 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   Widget _buildLineStatusField() {
-    return TextField(
-        enabled: false,
-        controller: _lineStatusController,
-        decoration: Theme.TextStyles.textField.copyWith(
-          hintText: 'Line Status',
-          helperText: 'Line Status',
-        ));
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+          enabled: false,
+          controller: _lineStatusController,
+          decoration: cTheme.TextStyles.textField.copyWith(
+            hintText: 'Line Status',
+            helperText: 'Line Status',
+          )),
+    );
   }
 
   Widget _buildAMPField() {
-    return Visibility(
-      visible: false,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: TextField(
+        enabled: false,
         controller: _ampController,
-        keyboardType: TextInputType.numberWithOptions(),
-        decoration: Theme.TextStyles.textField.copyWith(
+        decoration: cTheme.TextStyles.textField.copyWith(
           hintText: 'AMPs',
           helperText: 'AMPs',
         ),
@@ -187,95 +209,115 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   Widget _buildSubTypeField() {
-    return TextField(
-        enabled: false,
-        controller: _subTypeController,
-        decoration: Theme.TextStyles.textField.copyWith(
-          hintText: 'Sub Type',
-          helperText: 'Subscription Type',
-        ));
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+          enabled: false,
+          controller: _subTypeController,
+          decoration: cTheme.TextStyles.textField.copyWith(
+            hintText: 'Sub Type',
+            helperText: 'Sub Type',
+          )),
+    );
   }
 
   Widget _buildSubFeeField() {
-    return Visibility(
-      visible: _controller.isSubMetered,
-      child: TextField(
-          enabled: false,
-          controller: _subFeeController,
-          decoration: Theme.TextStyles.textField.copyWith(
-            hintText: 'Sub Fee',
-            helperText: 'Subscription Fee',
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Visibility(
+        visible: _controller.isSubMetered,
+        child: TextField(
+            enabled: false,
+            controller: _subFeeController,
+            decoration: cTheme.TextStyles.textField.copyWith(
+              hintText: 'Sub Fee',
+              helperText: 'Subscription Fee',
+            )),
+      ),
     );
   }
 
   Widget _buildDiscountField() {
-    return Visibility(
-      visible: !_controller.isSubFlatPrice,
-      child: TextField(
-          enabled: false,
-          controller: _discountController,
-          decoration: Theme.TextStyles.textField.copyWith(
-            hintText: 'Discount',
-            helperText: 'Discount',
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Visibility(
+        visible: !_controller.isSubFlatPrice,
+        child: TextField(
+            enabled: false,
+            controller: _discountController,
+            decoration: cTheme.TextStyles.textField.copyWith(
+              hintText: 'Discount',
+              helperText: 'Discount',
+            )),
+      ),
     );
   }
 
   Widget _buildFlatPriceField() {
-    return Visibility(
-      visible: _controller.isSubFlatPrice,
-      child: TextField(
-          enabled: false,
-          controller: _flatPriceController,
-          decoration: Theme.TextStyles.textField.copyWith(
-            hintText: 'Flat Price',
-            helperText: 'Flat Price',
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Visibility(
+        visible: _controller.isSubFlatPrice,
+        child: TextField(
+            enabled: false,
+            controller: _flatPriceController,
+            decoration: cTheme.TextStyles.textField.copyWith(
+              hintText: 'Flat Price',
+              helperText: 'Flat Price',
+            )),
+      ),
     );
   }
 
   Widget _buildOldMeteringField() {
-    return Visibility(
-      visible: _controller.isSubMetered,
-      child: TextField(
-          enabled: false,
-          controller: _oldMeterController,
-          decoration: Theme.TextStyles.textField.copyWith(
-            hintText: 'Old Meter',
-            helperText: 'Old Meter',
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Visibility(
+        visible: _controller.isSubMetered,
+        child: TextField(
+            enabled: false,
+            controller: _oldMeterController,
+            decoration: cTheme.TextStyles.textField.copyWith(
+              hintText: 'Old Meter',
+              helperText: 'Old Meter',
+            )),
+      ),
     );
   }
 
   Widget _buildNewMeteringField() {
-    return Visibility(
-      visible: _controller.isSubMetered,
-      child: TextField(
-          enabled: false,
-          controller: _newMeterController,
-          decoration: Theme.TextStyles.textField.copyWith(
-            hintText: 'New Meter',
-            helperText: 'New Meter',
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Visibility(
+        visible: _controller.isSubMetered,
+        child: TextField(
+            enabled: false,
+            controller: _newMeterController,
+            decoration: cTheme.TextStyles.textField.copyWith(
+              hintText: 'New Meter',
+              helperText: 'New Meter',
+            )),
+      ),
     );
   }
 
   Widget _buildBillField() {
-    return TextField(
-        enabled: false,
-        controller: _billController,
-        decoration: Theme.TextStyles.textField.copyWith(
-          hintText: 'Bill',
-          helperText: 'Bill',
-        ));
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+          enabled: false,
+          controller: _billController,
+          decoration: cTheme.TextStyles.textField.copyWith(
+            hintText: 'Bill',
+            helperText: 'Bill',
+          )),
+    );
   }
 
   Widget _buildAmountTBC() {
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
             flex: 1,
@@ -283,31 +325,35 @@ class _CollectionPageState extends State<CollectionPage>
           ),
           Expanded(
             flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: TextField(
-                keyboardType: TextInputType.numberWithOptions(),
-                decoration: Theme.TextStyles.textField.copyWith(
-                  hintText: 'Amount',
-                  errorText: _controller.isValidCollection
-                      ? null
-                      : 'Must be less than or equal bill',
-                ),
-                onChanged: (value) => _controller.setCollection(value),
-              ),
-            ),
+            child: _buildAmount(),
           ),
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 40),
-              child: Text('L.L', textAlign: TextAlign.center),
-            ),
+            child: Container(),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildAmount() {
+    return TextField(
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      controller: _amountController,
+      onChanged: (value){
+        _controller.setCollection(value);
+      },
+      style: TextStyle(fontSize: 16),
+      decoration: cTheme.TextStyles.textField.copyWith(
+        hintText: 'Enter Amount',
+        errorText: _amountController.text.isEmpty || _controller.isValidCollection
+            ? null
+            : 'Must be less than or equal bill',
+        prefixText:'LBP ',
+      ),
+    );
+  }
+
 
   Widget _buildConfirmButton() {
     return Row(

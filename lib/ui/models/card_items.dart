@@ -24,7 +24,7 @@ class CardItemsDao {
       id: "4",
       name: "requests",
       description: "Any Suggestions?",
-      image: "assets/img/bill_tools.png",
+      image: "assets/img/requests.png",
     ),
   ];
 
