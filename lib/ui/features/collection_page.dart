@@ -1,6 +1,4 @@
 import 'package:ashal/core/controllers/collection_controller.dart';
-import 'package:ashal/core/controllers/input_pages_controller.dart';
-import 'package:ashal/localization.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/string_helper.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
@@ -94,14 +92,9 @@ class _CollectionPageState extends State<CollectionPage>
 
   @override
   void onError(String error) {
+    _initTextFieldControllers();
     setState(() {});
-    showErrorSnackbar(error, context: context);
-  }
-
-  @override
-  void onReadingsError(String msg) {
-    setState(() {});
-    showErrorSnackbar(msg, context: context);
+    showErrorSnackBar(error, context: context);
   }
 
   @override
@@ -110,27 +103,11 @@ class _CollectionPageState extends State<CollectionPage>
     setState(() {});
   }
 
-  @override
-  void onSetClientError(String msg) {
-    _initTextFieldControllers();
-    setState(() {});
-    if (msg != null) showErrorSnackbar(msg, context: context);
-  }
-
   _buildTodayDate() {
     return Center(
       child: Text(DateFormat('dd-MM-yyyy').format(
         _controller.todayDate,
       )),
-    );
-  }
-
-  @override
-  void showWarningDialog(String msg) {
-    showDialogConfirm(
-      context,
-      message: msg,
-      onConfirm: () => _controller.submit(bypassChecks: true),
     );
   }
 

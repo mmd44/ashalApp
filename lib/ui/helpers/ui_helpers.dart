@@ -2,10 +2,10 @@ import 'package:ashal/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
 
-void showErrorSnackbar(String text,
+void showErrorSnackBar(String text,
     {BuildContext context,
-      GlobalKey<ScaffoldState> key,
-      SnackBarAction action}) {
+    GlobalKey<ScaffoldState> key,
+    SnackBarAction action}) {
   if (text == null) return;
   final snackBar = SnackBar(
     content: Text(text),
@@ -20,10 +20,9 @@ void showErrorSnackbar(String text,
   }
 }
 
-void showSnackbar(String text,
-    BuildContext context,
-    {GlobalKey<ScaffoldState> key,
-      SnackBarAction action}) {
+void showSnackBar(String text, BuildContext context,
+    {GlobalKey<ScaffoldState> key, SnackBarAction action}) {
+  if (text == null) return;
   final snackBar = SnackBar(
     content: Text(
       text,
@@ -39,39 +38,40 @@ void showSnackbar(String text,
     Scaffold.of(context).showSnackBar(snackBar);
   }
 }
-void showLoader(BuildContext context)
-{
+
+void showLoader(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
           content: Container(
-            width: 200,
-            height: 100,
-            child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: new CircularProgressIndicator(),
-                    ),
-                    new Text("Loading")
-                  ],
-                )),
-          ));
+        width: 200,
+        height: 100,
+        child: Center(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new CircularProgressIndicator(),
+            ),
+            new Text("Loading")
+          ],
+        )),
+      ));
     },
   );
 }
+
 void showDialogMessage(
-    BuildContext context, {
-      String title,
-      String message,
-      String buttonText,
-      VoidCallback onConfirm,
-      bool dismissible = false,
-    }) {
+  BuildContext context, {
+  String title,
+  String message,
+  String buttonText,
+  VoidCallback onConfirm,
+  bool dismissible = false,
+}) {
   List<Widget> children = [];
   EdgeInsets verticalPadding = EdgeInsets.symmetric(vertical: 10);
   if (title != null) {
@@ -120,12 +120,11 @@ void showDialogMessage(
 }
 
 void showDialogConfirm(
-    BuildContext context, {
-      String message,
-      VoidCallback onConfirm,
-      VoidCallback onDismiss,
-    }) {
-
+  BuildContext context, {
+  String message,
+  VoidCallback onConfirm,
+  VoidCallback onDismiss,
+}) {
   message ??= Localization.of(context, 'are_you_sure');
 
   showDialog(
@@ -141,13 +140,12 @@ void showDialogConfirm(
           FlatButton(
               child: Text('No'), //Text(Localization.of(context, 'no')),
               onPressed: () {
-                if (onDismiss!=null) {
+                if (onDismiss != null) {
                   onDismiss();
                 } else {
                   Navigator.pop(context);
                 }
-              }
-          ),
+              }),
           FlatButton(
             child: Text('Yes'), //Text(Localization.of(context, 'yes')),
             onPressed: () {
@@ -161,7 +159,7 @@ void showDialogConfirm(
   );
 }
 
-Widget buildLoader (BuildContext context) {
+Widget buildLoader(BuildContext context) {
   return Container(
     alignment: Alignment.topCenter,
     child: Padding(

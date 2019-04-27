@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:ashal/core/controllers/collection_controller.dart';
-import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/history.dart';
-import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/core/models/request.dart';
 import 'package:ashal/ui/models/card_item.dart';
 
@@ -29,7 +26,7 @@ class RequestsController {
 
   DateTime todayDate;
 
-  RequestsController(CardItem cardItem, InputPageView view): _view = view;
+  RequestsController(CardItem cardItem, InputPageView view) : _view = view;
 
   Client get client => _client;
   History get lastHistory => _clientLastHistory;
@@ -120,9 +117,10 @@ class RequestsController {
 
   String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
 
-  bool get isTypePrepaid => [SubscriptionType.amp,SubscriptionType.flat].contains(_request?.subType);
+  bool get isTypePrepaid =>
+      [SubscriptionType.amp, SubscriptionType.flat].contains(_request?.subType);
 
-  bool get isSubMetered => _request?.subType==SubscriptionType.meter;
+  bool get isSubMetered => _request?.subType == SubscriptionType.meter;
 
   get lineStatus {
     if (_clientLastHistory?.lineStatus == null) return false;
@@ -153,11 +151,11 @@ class RequestsController {
         _view.onSetClientSuccess();
       }).catchError((error) {
         resetFields();
-        _view.onSetClientError(error.toString());
+        _view.onError(error.toString());
         print('DBGetClient: ${error.toString()}');
       });
     } else {
-      _view.onSetClientError(null);
+      _view.onError(null);
       resetFields();
     }
   }
@@ -167,14 +165,8 @@ class RequestsController {
   }
 
   void submit({bypassChecks = false}) {
-    if (!bypassChecks && (_client == null || referenceID == null)) {
-      _view
-        ..showWarningDialog(
-            'Invalid reference id!\nAre you sure you want to proceed?');
-    } else {
-      isLoading = true;
-      insertRequest();
-    }
+    isLoading = true;
+    insertRequest();
   }
 
   void insertRequest() {

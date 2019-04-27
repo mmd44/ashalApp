@@ -127,13 +127,13 @@ class _MeteringPageState extends State<MeteringPage>
   @override
   void onError(String error) {
     setState(() {});
-    showErrorSnackbar(error, context: context);
+    showErrorSnackBar(error, context: context);
   }
 
   @override
   void onReadingsError(String msg) {
     setState(() {});
-    showErrorSnackbar(msg, context: context);
+    showErrorSnackBar(msg, context: context);
   }
 
   @override
@@ -146,7 +146,7 @@ class _MeteringPageState extends State<MeteringPage>
   void onSetClientError(String msg) {
     _initTextFieldControllers();
     setState(() {});
-    if (msg != null) showErrorSnackbar(msg, context: context);
+    if (msg != null) showErrorSnackBar(msg, context: context);
   }
 
   _buildTodayDate() {
@@ -182,15 +182,6 @@ class _MeteringPageState extends State<MeteringPage>
           width: 0.0,
         ),
       ),
-    );
-  }
-
-  @override
-  void showWarningDialog(String msg) {
-    showDialogConfirm(
-      context,
-      message: msg,
-      onConfirm: () => _controller.submit(bypassChecks: true),
     );
   }
 

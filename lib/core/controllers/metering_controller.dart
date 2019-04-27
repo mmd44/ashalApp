@@ -79,7 +79,7 @@ class MeteringController {
     ]);
   }
 
-  bool get isMeteringValid =>
+  bool get isMeteringValid => (referenceID?.isNotEmpty ?? false) &&
       ((isSubMetered &&
               _meterReading?.reading != null &&
               _meterReading?.meterImage != null) ||
@@ -166,11 +166,11 @@ class MeteringController {
         _view.onSetClientSuccess();
       }).catchError((error) {
         resetFields();
-        _view.onSetClientError(error.toString());
+        _view.onError(error.toString());
         print('DBGetClient: ${error.toString()}');
       });
     } else {
-      _view.onSetClientError(null);
+      _view.onError(null);
       resetFields();
     }
   }
@@ -197,19 +197,13 @@ class MeteringController {
     } else {
       _meterReading.reading = null;
       isValidReading = false;
-      _view.onReadingsError(null);
+      _view.onError(null);
     }
   }
 
-  void submit({bypassChecks = false}) {
-    if (!bypassChecks && (_client == null || referenceID == null)) {
-      _view
-        ..showWarningDialog(
-            'Invalid reference id!\nAre you sure you want to proceed?');
-    } else {
-      isLoading = true;
-      insertReading();
-    }
+  void submit() {
+    isLoading = true;
+    insertReading();
   }
 
   void insertReading() {

@@ -205,20 +205,20 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
   @override
   void onError(String error) {
     setState(() {});
-    showErrorSnackbar(error, context: context);
+    showErrorSnackBar(error, context: context);
   }
 
   @override
   void onReadingsError(String msg) {
     setState(() {});
-    showErrorSnackbar(msg, context: context);
+    showErrorSnackBar(msg, context: context);
   }
 
   @override
   void onSetClientError(String msg) {
     _initTextFieldControllers();
     setState(() {});
-    if (msg != null) showErrorSnackbar(msg, context: context);
+    if (msg != null) showErrorSnackBar(msg, context: context);
   }
 
   @override

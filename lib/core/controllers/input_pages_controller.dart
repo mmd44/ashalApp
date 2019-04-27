@@ -39,7 +39,6 @@ class InputPagesController {
 
   bool get isMetering => _cardItem.id == '2';
 
-
   Client get client => _client;
 
   String get clientArea => _client?.area;
@@ -70,14 +69,14 @@ class InputPagesController {
         DateTime.now(), DateTime.now(), '03040404'));
   }
 
-  set meteringCollectionDates (DateTime dateTime) {
+  set meteringCollectionDates(DateTime dateTime) {
     todayDate = dateTime;
     _meterReading.date = dateTime;
     _amountCollection.date = dateTime;
   }
 
-  set meteringLineStatus (bool val) {
-    switch (val){
+  set meteringLineStatus(bool val) {
+    switch (val) {
       case true:
         _meterReading.lineStatus = 'on';
         break;
@@ -88,7 +87,7 @@ class InputPagesController {
 
   get meteringLineStatus {
     if (_meterReading.lineStatus == null) return false;
-    switch (_meterReading.lineStatus){
+    switch (_meterReading.lineStatus) {
       case 'on':
         return true;
       case 'off':
@@ -106,7 +105,9 @@ class InputPagesController {
     if (id != null) {
       DBProvider.db.getClient(id).then((client) {
         _client = client;
-        isMetering ? _meterReading.referenceId = id : _amountCollection.referenceId = id;
+        isMetering
+            ? _meterReading.referenceId = id
+            : _amountCollection.referenceId = id;
         _view.onSetClientSuccess();
       }).catchError((error) {
         print('DBGetClient: $error');
@@ -135,19 +136,17 @@ class InputPagesController {
       input = double.tryParse(value);
     }
     if (input != null) {
-      isMetering ? _meterReading.reading = input : _amountCollection.amount = input;
+      isMetering
+          ? _meterReading.reading = input
+          : _amountCollection.amount = input;
     } else {
-      _view.onReadingsError('Invalid Input!');
+      _view.onError('Invalid Input!');
     }
   }
 
-  void submit({bypassChecks=false}) {
-    if (!bypassChecks && (_client == null || referenceID == null)) {
-      _view..showWarningDialog ('Invalid reference id!\nAre you sure you want to proceed?');
-    } else {
-      isLoading = true;
-      isMetering ? insertReading () : insertCollection();
-    }
+  void submit({bypassChecks = false}) {
+    isLoading = true;
+    isMetering ? insertReading() : insertCollection();
   }
 
   void insertReading() {
@@ -179,7 +178,4 @@ class InputPagesController {
     _amountCollection = AmountCollection();
     meteringCollectionDates = DateTime.now();
   }
-  
 }
-
-

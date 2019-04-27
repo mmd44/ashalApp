@@ -74,7 +74,7 @@ class CollectionController {
     ]);
   }
 
-  bool get isCollectionValid => isValidCollection;
+  bool get isCollectionValid => isValidCollection && (referenceID?.isNotEmpty ?? false);
 
   set collectionDate(DateTime dateTime) {
     todayDate = dateTime;
@@ -148,11 +148,11 @@ class CollectionController {
         _view.onSetClientSuccess();
       }).catchError((error) {
         resetFields();
-        _view.onSetClientError(error.toString());
+        _view.onError(error.toString());
         print('DBGetClient: ${error.toString()}');
       });
     } else {
-      _view.onSetClientError(null);
+      _view.onError(null);
       resetFields();
     }
   }
@@ -162,14 +162,8 @@ class CollectionController {
   }
 
   void submit({bypassChecks = false}) {
-    if (!bypassChecks && (_client == null || referenceID == null)) {
-      _view
-        ..showWarningDialog(
-            'Invalid reference id!\nAre you sure you want to proceed?');
-    } else {
-      isLoading = true;
-      insertCollection();
-    }
+    isLoading = true;
+    insertCollection();
   }
 
   void insertCollection() {
@@ -198,9 +192,6 @@ class CollectionController {
 
 abstract class InputPageView {
   void onSetClientSuccess();
-  void onSetClientError(String msg);
-  void onReadingsError(String msg);
   void onError(String error);
   void onSuccess(String msg);
-  void showWarningDialog(String msg);
 }

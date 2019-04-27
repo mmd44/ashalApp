@@ -1,7 +1,6 @@
 import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/localization.dart';
 import 'package:ashal/ui/features/collection_page.dart';
-import 'package:ashal/ui/features/metering_collection_page.dart';
 import 'package:ashal/ui/features/metering_page.dart';
 import 'package:ashal/ui/features/requests_page.dart';
 import 'package:ashal/ui/features/sync_page.dart';
