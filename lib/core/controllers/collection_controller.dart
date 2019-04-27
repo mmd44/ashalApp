@@ -9,7 +9,7 @@ class CollectionController {
 
   Client _client;
   History _clientLastHistory;
-
+  List<History> clientHistoryList;
   String referenceID;
 
   InputPageView _view;
@@ -23,6 +23,8 @@ class CollectionController {
 
   Client get client => _client;
   History get lastHistory => _clientLastHistory;
+
+  set clientLastHistory(History value) {_clientLastHistory = value;}
 
   String get clientArea => _client?.area;
   String get clientStreet => _client?.streetAddress;
@@ -122,6 +124,7 @@ class CollectionController {
     if (input != null && input <= (_clientLastHistory?.bill ?? 0)) {
       isValidCollection = true;
       _collection.amount = input;
+      _view.updateView();
     } else {
       _collection.amount = null;
       isValidCollection = false;
@@ -139,12 +142,12 @@ class CollectionController {
         _collection.referenceId = id;
         if (_client?.monthlyDataReferences != null &&
             _client.monthlyDataReferences.length > 0)
-          return DBProvider.db.getLastHistory(id);
+          return DBProvider.db.getUnpaidHistory(id);
         else
           return null;
-      }).then((history) {
-        print('history $history');
-        if (history != null) setupHistoryFields(history);
+      }).then((historyList) {
+        clientHistoryList=historyList;
+        //if (history != null) setupHistoryFields(history);
         _view.onSetClientSuccess();
       }).catchError((error) {
         resetFields();
@@ -194,4 +197,5 @@ abstract class InputPageView {
   void onSetClientSuccess();
   void onError(String error, {bool initTextControllers = true});
   void onSuccess(String msg);
+  void updateView();
 }

@@ -228,4 +228,8 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
         message: msg,
         onConfirm: () => Navigator.of(context).pop());
   }
+  @override
+  void updateView() {
+    setState(() {});
+  }
 }

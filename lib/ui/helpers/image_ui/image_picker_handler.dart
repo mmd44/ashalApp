@@ -30,6 +30,8 @@ class ImagePickerHandler {
   }
 
   Future cropImage(File image) async {
+    if(image==null)
+      return;
     File croppedFile = await ImageCropper.cropImage(
       sourcePath: image.path,
       toolbarTitle: 'Cropper',

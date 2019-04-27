@@ -92,8 +92,8 @@ class Client {
         json["phone"],
         json["email"],
         json["meterId"],
-        toBoolean(json["deleted"].toString()),
-        toBoolean(json["purged"].toString()),
+        toBoolean(json["deleted"].toString(),false),
+        toBoolean(json["purged"].toString(),false),
         json["dateTimeAdded"] != null
             ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"])
             : null,

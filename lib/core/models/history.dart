@@ -110,7 +110,7 @@ class History {
       json["bill"],
       json["dependentsBill"],
       json["collected"],
-      toBoolean(json["forgiven"], false),
+      toBoolean(json["forgiven"]?.toString()??null, false),
       json["receiptIssued"],
       json["category"],
       json["meterReader"],

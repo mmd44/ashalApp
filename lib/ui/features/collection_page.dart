@@ -1,4 +1,5 @@
 import 'package:ashal/core/controllers/collection_controller.dart';
+import 'package:ashal/core/models/history.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/string_helper.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
@@ -68,6 +69,7 @@ class _CollectionPageState extends State<CollectionPage>
             _controller.setClientByReference(value);
             setState(() {});
           }),
+          _buildDate(),
           _buildHistoryFields(),
           _buildAmountTBC(),
           _buildConfirmButton(),
@@ -353,5 +355,44 @@ class _CollectionPageState extends State<CollectionPage>
         ),
       ],
     );
+  }
+  DateFormat dateFormater=new DateFormat("y-M-d");
+  Widget _buildDate() {
+    List<DropdownMenuItem<History>> defaultV=new List();
+    defaultV.add(new DropdownMenuItem<History>(value: null,child: Text("")));
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 55),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Text('Select Date'),
+          ),
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: DropdownButton<History>(
+                  value: _controller.lastHistory,
+                  items: _controller.clientHistoryList==null?defaultV:_controller.clientHistoryList.map((History val) {
+                    return new DropdownMenuItem<History>(
+                      value: val,
+                      child: Text(dateFormater.format(val.entryDateTime)),
+                    );
+                  }).toList(),
+                  hint: Text("Date"),
+                  onChanged: (newVal) {
+                    _controller.clientLastHistory=newVal;
+                    setState(() {});
+                  }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void updateView() {
+    setState(() {});
   }
 }

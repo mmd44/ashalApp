@@ -309,7 +309,7 @@ class DBProvider {
 
   Future<bool> insertHistory(List<History> historyList) async {
     var batch = _database.batch();
-    historyList
+     historyList
         .forEach((history) => batch.insert("$HISTORY_TABLE", history.toJson()));
     List<dynamic> results = await batch.commit();
     if (results.length < historyList.length)
@@ -341,5 +341,25 @@ class DBProvider {
         chosen = historyList[i];
     }
     return chosen;
+  }
+
+  Future<List<History>> getUnpaidHistory(int referenceId) async {
+    Client client = await getClient(referenceId);
+    List<History> historyList = await getHistoryList(client.monthlyDataReferences);
+    if (historyList.isEmpty) return null;
+    List<History> unpaidHistories=new List();
+    List<DateTime> dates=new List();
+    for (var i = 0; i < historyList.length; i++) {
+      double collected=historyList[i].collected==null?0:historyList[i].collected;
+      double bill=historyList[i].bill==null?0:historyList[i].bill;
+      bool forgiven=historyList[i]?.forgiven==null?false:historyList[i].forgiven;
+      if (collected!=bill && !forgiven && historyList[i].entryDateTime!=null) {
+        if(!dates.contains(historyList[i].entryDateTime)) {
+          dates.add(historyList[i].entryDateTime);
+          unpaidHistories.add(historyList[i]);
+        }
+      }
+    }
+    return unpaidHistories;
   }
 }

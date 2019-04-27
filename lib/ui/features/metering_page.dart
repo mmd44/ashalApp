@@ -370,4 +370,8 @@ class _MeteringPageState extends State<MeteringPage>
   void _openCam() {
     _imagePickerHandler.getImageFromCamera();
   }
+  @override
+  void updateView() {
+    setState(() {});
+  }
 }
