@@ -7,8 +7,10 @@ import 'package:ashal/ui/models/card_item.dart';
 class CollectionController {
   AmountCollection _collection;
 
+  AmountCollection _collectedAmount;
+
   Client _client;
-  History _clientLastHistory;
+  History _clientSelectedHistory;
   List<History> clientHistoryList;
   String referenceID;
 
@@ -22,9 +24,14 @@ class CollectionController {
   CollectionController(CardItem cardItem, InputPageView view) : _view = view;
 
   Client get client => _client;
-  History get lastHistory => _clientLastHistory;
+  History get selectedHistory => _clientSelectedHistory;
 
-  set clientLastHistory(History value) {_clientLastHistory = value;}
+   setupClientSelectedHistory(History value) async {
+    _clientSelectedHistory = value;
+    _collection.historyId=_clientSelectedHistory.historyId;
+    _collectedAmount= await DBProvider.db.getMeterCollectionByHistroyId(client?.referenceId,_clientSelectedHistory?.historyId );
+   }
+
 
   String get clientArea => _client?.area;
   String get clientStreet => _client?.streetAddress;
@@ -74,6 +81,7 @@ class CollectionController {
         payers: ['Ali', 'Hussein'],
       ),
     ]);
+    await DBProvider.db.insertAmountCollection(AmountCollection(referenceId: 2,historyId: "ref1",date: DateTime.now(),amount: 5000,id: 1));
   }
 
   bool get isCollectionValid => isValidCollection && (referenceID?.isNotEmpty ?? false);
@@ -83,29 +91,33 @@ class CollectionController {
     _collection.date = dateTime;
   }
 
-  String get ampStr => _clientLastHistory?.amp?.toString() ?? '';
+  String get ampStr => _clientSelectedHistory?.amp?.toString() ?? '';
 
-  String get subType => _clientLastHistory?.subType?.value ?? '';
+  String get subType => _clientSelectedHistory?.subType?.value ?? '';
   //ToDo add sub feeSubscriptionType get subFee => _clientLastHistory?. ?? null;
 
-  String get discount => _clientLastHistory?.discount?.toString() ?? '';
+  String get discount => _clientSelectedHistory?.discount?.toString() ?? '';
 
-  String get flatPrice => _clientLastHistory?.flatPrice?.toString() ?? '';
+  String get flatPrice => _clientSelectedHistory?.flatPrice?.toString() ?? '';
 
-  String get bill => _clientLastHistory?.bill?.toString() ?? '';
+  String get bill => _clientSelectedHistory?.bill?.toString() ?? '';
 
-  String get isPrepaid => _clientLastHistory?.prepaid ?? '';
+  String get collectedAmount {
+    return _collectedAmount?.amount?.toString() ?? '';
+  }
 
-  String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
-  String get newMetering => _clientLastHistory?.newMeter?.toString() ?? '';
+  String get isPrepaid => _clientSelectedHistory?.prepaid ?? '';
 
-  bool get isSubMetered => _clientLastHistory?.subType == SubscriptionType.meter;
+  String get oldMetering => _clientSelectedHistory?.oldMeter?.toString() ?? '';
+  String get newMetering => _clientSelectedHistory?.newMeter?.toString() ?? '';
 
-  bool get isSubFlatPrice => _clientLastHistory?.subType == SubscriptionType.flat;
+  bool get isSubMetered => _clientSelectedHistory?.subType == SubscriptionType.meter;
+
+  bool get isSubFlatPrice => _clientSelectedHistory?.subType == SubscriptionType.flat;
 
   String get lineStatus {
-    if (_clientLastHistory?.lineStatus == null) return '';
-    switch (_clientLastHistory?.lineStatus) {
+    if (_clientSelectedHistory?.lineStatus == null) return '';
+    switch (_clientSelectedHistory?.lineStatus) {
       case 'on':
         return 'On';
       case 'off':
@@ -121,7 +133,8 @@ class CollectionController {
     if (value != null) {
       input = double.tryParse(value);
     }
-    if (input != null && input <= (_clientLastHistory?.bill ?? 0)) {
+    double test=double.parse('${_clientSelectedHistory?.bill ?? 0}')-_collectedAmount?.amount??0;
+    if (input != null && input <= test) {
       isValidCollection = true;
       _collection.amount = input;
       _view.updateView();
@@ -137,13 +150,13 @@ class CollectionController {
     referenceID = ref;
     int id = int.tryParse(referenceID);
     if (id != null) {
-      DBProvider.db.getClient(id).then((client) {
+      DBProvider.db.getClient(id).then((client) async{
         _client = client;
         _collection.referenceId = id;
         if (_client?.monthlyDataReferences != null &&
-            _client.monthlyDataReferences.length > 0)
+            _client.monthlyDataReferences.length > 0) {
           return DBProvider.db.getUnpaidHistory(id);
-        else
+        }else
           return null;
       }).then((historyList) {
         clientHistoryList=historyList;
@@ -182,14 +195,11 @@ class CollectionController {
 
   void resetFields() {
     _client = null;
-    _clientLastHistory = null;
+    _clientSelectedHistory = null;
     referenceID = null;
     _collection = AmountCollection();
     collectionDate = DateTime.now();
-  }
-
-  void setupHistoryFields(History history) {
-    _clientLastHistory = history;
+    _collectedAmount=null;
   }
 }
 

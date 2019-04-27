@@ -119,6 +119,7 @@ class DBProvider {
     await db.execute('CREATE TABLE `$METER_COLLECTION_TABLE` ('
         '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
         '`referenceId` INTEGER NOT NULL,'
+        '`historyId` TEXT,'
         '`amount` DOUBLE,'
         '`date` INTEGER);');
 
@@ -256,7 +257,15 @@ class DBProvider {
     final db = await databaseInit;
     var res = await db.query("$METER_COLLECTION_TABLE",
         where: "referenceId = ?", whereArgs: [referenceId]);
-    print(res.first);
+    return res.isNotEmpty ? AmountCollection.fromJson(res.first) : null;
+  }
+
+  Future<AmountCollection> getMeterCollectionByHistroyId(int referenceId,String histroyId) async {
+    if(histroyId==null)
+      return null;
+    final db = await databaseInit;
+    var res = await db.query("$METER_COLLECTION_TABLE",
+        where: "referenceId = ? and historyId = ?", whereArgs: [referenceId,histroyId]);
     return res.isNotEmpty ? AmountCollection.fromJson(res.first) : null;
   }
 

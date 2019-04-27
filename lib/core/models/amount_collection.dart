@@ -15,20 +15,22 @@ String meterReadingToJson(AmountCollection data) {
 class AmountCollection {
   int id;
   int referenceId;
+  String historyId;
   double amount;
   DateTime date;
 
 
-  AmountCollection({this.id,this.referenceId, this.amount, this.date});
+  AmountCollection({this.id,this.referenceId,this.historyId, this.amount, this.date});
 
 
-  AmountCollection.amountCollectionModel(this.referenceId, this.amount, this.date);
+  AmountCollection.amountCollectionModel(this.referenceId,this.historyId, this.amount, this.date);
 
 
 
   factory AmountCollection.fromJson(Map<String, dynamic> json) => new AmountCollection(
       id:json["id"],
       referenceId: json["referenceId"],
+      historyId: json["historyId"],
       amount: json["amount"],
       date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
   );
@@ -36,6 +38,7 @@ class AmountCollection {
   Map<String, dynamic> toJson() => {
         "id":id,
         "referenceId": referenceId,
+        "historyId":historyId,
         "amount": amount,
         "date": date?.millisecondsSinceEpoch,
       };
