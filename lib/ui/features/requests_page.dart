@@ -24,6 +24,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   RequestsController _controller;
 
   TextEditingController _ampController;
+  TextEditingController _commentController;
   @override
   void initState() {
     super.initState();
@@ -82,6 +83,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
           _buildSubType(),
           _buildAMPField(),
           _buildIsPrepaid(),
+          _buildCommentField()
         ],
       ),
     );
@@ -117,6 +119,26 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
     );
   }
 
+  Widget _buildCommentField() {
+    return Padding(
+      padding: const EdgeInsets.only(top:10.0),
+      child: TextField(
+        controller: _commentController,
+        keyboardType: TextInputType.multiline,
+        maxLines:null,
+        decoration: Theme.TextStyles.textField.copyWith(
+            hintText: 'Comment',
+            helperText: 'Comment',
+            errorText:null),
+        onChanged: (val) {
+          setState(() {
+            _controller.comment = val;
+          });
+        },
+      ),
+    );
+  }
+
   Widget _buildSubType() {
     return Row(
       children: <Widget>[
@@ -148,6 +170,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
 
   void _initTextFieldControllers() {
     _ampController = TextEditingController(text: _controller.ampStr);
+    _commentController=TextEditingController();
   }
 
   Widget _buildIsPrepaid() {

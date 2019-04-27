@@ -104,6 +104,10 @@ class RequestsController {
     }
   }
 
+  set comment(String val) {
+    _request.comment=val;
+  }
+
   String get ampStr => _request?.amp?.toString() ?? '';
 
   set subType(SubscriptionType val) {
