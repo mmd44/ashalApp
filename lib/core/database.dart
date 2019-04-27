@@ -284,6 +284,8 @@ class DBProvider {
         "$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),
         where: "referenceId = ?",
         whereArgs: [newMeterCollectionModel.referenceId]);
+    if (res <= 0)
+      throw new APIException("database.update_meter_collection_error", "");
     return res;
   }
 

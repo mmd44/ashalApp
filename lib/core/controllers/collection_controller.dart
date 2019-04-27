@@ -179,7 +179,24 @@ class CollectionController {
 
   void submit({bypassChecks = false}) {
     isLoading = true;
-    insertCollection();
+    if(_collectedAmount!=null) {
+      _collectedAmount.amount = _collectedAmount.amount + _collection.amount;
+      _collectedAmount.date=DateTime.now();
+      updateCollection();
+    }else {
+      insertCollection();
+    }
+  }
+
+  void updateCollection() {
+    DBProvider.db.updateMeterCollection(_collectedAmount).then((result) {
+      _view.onSuccess('Collection Updated successfully!');
+    }).catchError((error) {
+      print('DBinsertCollectionError: $error');
+      _view.onError('Failed to Updated collection!');
+    }).whenComplete(() {
+      isLoading = false;
+    });
   }
 
   void insertCollection() {
