@@ -90,14 +90,19 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   }
 
   _buildLineStatusSwitchTile() {
-    return SwitchListTile(
-      title: Text('Line Status'),
-      value: _controller.lineStatus,
-      onChanged: (val) {
-        setState(() {
-          _controller.lineStatus = val;
-        });
+    return GestureDetector(
+      onTap: ()=>{
+        print("tap")
       },
+      child: SwitchListTile.adaptive(
+        title: Text('Line Status'),
+        value: _controller.lineStatus,
+        onChanged: (val) {
+          setState(() {
+            _controller.lineStatus = !_controller.lineStatus;
+          });
+        },
+      ),
     );
   }
 

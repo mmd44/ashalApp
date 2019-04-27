@@ -200,7 +200,9 @@ class _MeteringPageState extends State<MeteringPage>
       value: _controller.lineStatus,
       onChanged: (val) {
         setState(() {
-          _controller.lineStatus = val;
+          setState(() {
+            _controller.lineStatus = !_controller.lineStatus;
+          });
         });
       },
     );

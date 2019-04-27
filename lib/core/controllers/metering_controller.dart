@@ -138,8 +138,8 @@ class MeteringController {
   bool get isSubMetered => _meterReading?.subType==SubscriptionType.meter;
 
   get lineStatus {
-    if (_clientLastHistory?.lineStatus == null) return false;
-    switch (_clientLastHistory?.lineStatus) {
+    if (_meterReading?.lineStatus == null) return false;
+    switch (_meterReading?.lineStatus) {
       case 'on':
         return true;
       case 'off':

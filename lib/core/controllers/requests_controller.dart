@@ -127,8 +127,8 @@ class RequestsController {
   bool get isSubMetered => _request?.subType == SubscriptionType.meter;
 
   get lineStatus {
-    if (_clientLastHistory?.lineStatus == null) return false;
-    switch (_clientLastHistory?.lineStatus) {
+    if (_request?.lineStatus == null) return false;
+    switch (_request?.lineStatus) {
       case 'on':
         return true;
       case 'off':
