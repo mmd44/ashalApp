@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ashal/core/controllers/collection_controller.dart';
-import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/models/history.dart';
@@ -131,6 +130,8 @@ class MeteringController {
   String get isPrepaid => _meterReading?.prepaid ?? '';
 
   String get oldMetering => _clientLastHistory?.oldMeter?.toString() ?? '';
+
+  double get newMetering => _meterReading?.reading;
 
   bool get isTypePrepaid => [SubscriptionType.amp,SubscriptionType.flat].contains(_meterReading?.subType);
 

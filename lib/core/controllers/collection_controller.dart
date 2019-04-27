@@ -112,7 +112,7 @@ class CollectionController {
     return '';
   }
 
-  double get amount => _collection.amount;
+  double get amount => _collection?.amount;
 
   void setCollection (String value) {
     double input;

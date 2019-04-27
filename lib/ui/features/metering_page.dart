@@ -29,6 +29,7 @@ class _MeteringPageState extends State<MeteringPage>
 
   TextEditingController _ampController;
   TextEditingController _oldMeterController;
+  TextEditingController _newMeterController;
 
   AnimationController _animationController;
   ImagePickerHandler _imagePickerHandler;
@@ -73,7 +74,7 @@ class _MeteringPageState extends State<MeteringPage>
             setState(() {});
           }),
           _buildHistoryFields(),
-          _buildNewMeteringField(),
+          _buildNewMeteringRow(),
           _buildConfirmButton(),
         ],
       ),
@@ -200,9 +201,15 @@ class _MeteringPageState extends State<MeteringPage>
         children: <Widget>[
           _buildLineStatusSwitchTile(),
           _buildSubType(),
-          _buildAMPField(),
+          Padding(
+            padding: const EdgeInsets.only(top:8, bottom: 8),
+            child: _buildAMPField(),
+          ),
           _buildIsPrepaid(),
-          _buildOldMeter(),
+          Padding(
+            padding: const EdgeInsets.only(top:8, bottom: 8),
+            child: _buildOldMeter(),
+          ),
         ],
       ),
     );
@@ -269,6 +276,7 @@ class _MeteringPageState extends State<MeteringPage>
   void _initTextFieldControllers() {
     _ampController = TextEditingController(text: _controller.ampStr);
     _oldMeterController = TextEditingController(text: _controller.oldMetering);
+    _newMeterController = TextEditingController(text: _controller?.newMetering?.toString());
   }
 
   Widget _buildIsPrepaid() {
@@ -307,15 +315,6 @@ class _MeteringPageState extends State<MeteringPage>
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                'Old Metering',
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
             child: TextField(
               controller: _oldMeterController,
               enabled: false,
@@ -328,46 +327,52 @@ class _MeteringPageState extends State<MeteringPage>
     );
   }
 
+  Widget _buildNewMeteringRow() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(),
+          ),
+          Expanded(
+            flex: 4,
+            child: _buildNewMeteringField(),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildNewMeteringField() {
     return Visibility(
       visible: _controller.isSubMetered,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: TextField(
-                  keyboardType: TextInputType.numberWithOptions(),
-                  decoration: Theme.TextStyles.textField.copyWith(
-                    hintText: 'Reading',
-                    errorText: _controller.isValidReading
-                        ? null
-                        : 'Must be greater than or equal old metering',
-                  ),
-                  onChanged: (value) => _controller.setNewMetering(value),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text('Kwh', textAlign: TextAlign.center),
-              ),
-            ),
-            Expanded(flex: 3, child: _buildCamButton()),
-          ],
+      child: TextField(
+        keyboardType: TextInputType.number,
+        controller: _newMeterController,
+        onChanged: _controller.setNewMetering,
+        style: TextStyle(fontSize: 16),
+        decoration: Theme.TextStyles.textField.copyWith(
+          hintText: 'Enter New Reading',
+          errorText: _newMeterController.text.isEmpty || _controller.isValidReading
+              ? null
+              : 'Must be greater than or equal old metering',
+          prefixText:'KWH ',
         ),
       ),
     );
+  }
+
+
+
+  //ToDo
+  Widget _buildCamField() {
+     return _buildCamButton();
   }
 
   Widget _buildCamButton() {

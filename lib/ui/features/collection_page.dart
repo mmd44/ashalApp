@@ -144,8 +144,7 @@ class _CollectionPageState extends State<CollectionPage>
     _discountController = TextEditingController(text: _controller.discount);
     _flatPriceController = TextEditingController(text: _controller.flatPrice);
     _billController = TextEditingController(text: _controller.bill);
-    _amountController = TextEditingController(
-        text: formatAmountWithCurrency(_controller.amount));
+    _amountController = TextEditingController(text: formatAmountWithCurrency(_controller.amount));
   }
 
   Widget _buildHistoryFields() {
@@ -338,7 +337,7 @@ class _CollectionPageState extends State<CollectionPage>
 
   Widget _buildAmount() {
     return TextField(
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      keyboardType: TextInputType.number,
       controller: _amountController,
       onChanged: (value){
         _controller.setCollection(value);
