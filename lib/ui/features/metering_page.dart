@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:ashal/core/controllers/collection_controller.dart';
-import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/controllers/metering_controller.dart';
 import 'package:ashal/core/models/history.dart';
-import 'package:ashal/ui/helpers/image_ui/image_picker_handler.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
+import 'package:ashal/ui/helpers/image_ui/image_picker_handler.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -74,6 +73,7 @@ class _MeteringPageState extends State<MeteringPage>
             setState(() {});
           }),
           _buildHistoryFields(),
+          _buildCamButton(),
           _buildNewMeteringRow(),
           _buildConfirmButton(),
         ],
@@ -126,27 +126,15 @@ class _MeteringPageState extends State<MeteringPage>
 
   @override
   void onError(String error) {
+    _initTextFieldControllers();
     setState(() {});
     showErrorSnackBar(error, context: context);
-  }
-
-  @override
-  void onReadingsError(String msg) {
-    setState(() {});
-    showErrorSnackBar(msg, context: context);
   }
 
   @override
   void onSetClientSuccess() {
     _initTextFieldControllers();
     setState(() {});
-  }
-
-  @override
-  void onSetClientError(String msg) {
-    _initTextFieldControllers();
-    setState(() {});
-    if (msg != null) showErrorSnackBar(msg, context: context);
   }
 
   _buildTodayDate() {
@@ -193,12 +181,12 @@ class _MeteringPageState extends State<MeteringPage>
           _buildLineStatusSwitchTile(),
           _buildSubType(),
           Padding(
-            padding: const EdgeInsets.only(top:8, bottom: 8),
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: _buildAMPField(),
           ),
           _buildIsPrepaid(),
           Padding(
-            padding: const EdgeInsets.only(top:8, bottom: 8),
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: _buildOldMeter(),
           ),
         ],
@@ -225,7 +213,8 @@ class _MeteringPageState extends State<MeteringPage>
       decoration: Theme.TextStyles.textField.copyWith(
           hintText: 'AMPs',
           helperText: 'AMPs',
-          errorText: _controller.isValidAMPField ? null : 'Must be greater than 0'),
+          errorText:
+              _controller.isValidAMPField ? null : 'Must be greater than 0'),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {
@@ -267,7 +256,8 @@ class _MeteringPageState extends State<MeteringPage>
   void _initTextFieldControllers() {
     _ampController = TextEditingController(text: _controller.ampStr);
     _oldMeterController = TextEditingController(text: _controller.oldMetering);
-    _newMeterController = TextEditingController(text: _controller?.newMetering?.toString());
+    _newMeterController =
+        TextEditingController(text: _controller?.newMetering?.toString());
   }
 
   Widget _buildIsPrepaid() {
@@ -350,20 +340,19 @@ class _MeteringPageState extends State<MeteringPage>
         style: TextStyle(fontSize: 16),
         decoration: Theme.TextStyles.textField.copyWith(
           hintText: 'Enter New Reading',
-          errorText: _newMeterController.text.isEmpty || _controller.isValidReading
-              ? null
-              : 'Must be greater than or equal old metering',
-          prefixText:'KWH ',
+          errorText:
+              _newMeterController.text.isEmpty || _controller.isValidReading
+                  ? null
+                  : 'Must be greater than or equal old metering',
+          prefixText: 'KWH ',
         ),
       ),
     );
   }
 
-
-
   //ToDo
   Widget _buildCamField() {
-     return _buildCamButton();
+    return _buildCamButton();
   }
 
   Widget _buildCamButton() {

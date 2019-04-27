@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class RequestsPage extends StatefulWidget {
-
   final CardItem cardItem;
 
   RequestsPage(String id) : cardItem = CardItemsDao.getCardByID(id);
@@ -21,8 +20,7 @@ class RequestsPage extends StatefulWidget {
   _RequestsPageState createState() => _RequestsPageState();
 }
 
-
-class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
+class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   RequestsController _controller;
 
   TextEditingController _ampController;
@@ -33,11 +31,12 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
   }
 
   void _init() async {
-    _controller = RequestsController(widget.cardItem,this);
+    _controller = RequestsController(widget.cardItem, this);
     _controller.init();
 
     _initTextFieldControllers();
   }
+
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -65,6 +64,7 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
       ),
     );
   }
+
   _buildTodayDate() {
     return Center(
       child: Text(DateFormat('dd-MM-yyyy').format(
@@ -72,6 +72,7 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
       )),
     );
   }
+
   Widget _buildHistoryFields() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 46),
@@ -85,6 +86,7 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
       ),
     );
   }
+
   _buildLineStatusSwitchTile() {
     return SwitchListTile(
       title: Text('Line Status'),
@@ -105,7 +107,7 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
           hintText: 'AMPs',
           helperText: 'AMPs',
           errorText:
-          _controller.isValidAMPField ? null : 'Must be greater than 0'),
+              _controller.isValidAMPField ? null : 'Must be greater than 0'),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {
@@ -143,6 +145,7 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
       ],
     );
   }
+
   void _initTextFieldControllers() {
     _ampController = TextEditingController(text: _controller.ampStr);
   }
@@ -198,27 +201,16 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
       ],
     );
   }
+
   void _onSubmit() {
     _controller.submit();
   }
 
   @override
   void onError(String error) {
-    setState(() {});
-    showErrorSnackBar(error, context: context);
-  }
-
-  @override
-  void onReadingsError(String msg) {
-    setState(() {});
-    showErrorSnackBar(msg, context: context);
-  }
-
-  @override
-  void onSetClientError(String msg) {
     _initTextFieldControllers();
     setState(() {});
-    if (msg != null) showErrorSnackBar(msg, context: context);
+    showErrorSnackBar(error, context: context);
   }
 
   @override
@@ -235,14 +227,5 @@ class _RequestsPageState extends State<RequestsPage>implements  InputPageView  {
         title: 'Success',
         message: msg,
         onConfirm: () => Navigator.of(context).pop());
-  }
-
-  @override
-  void showWarningDialog(String msg) {
-    showDialogConfirm(
-      context,
-      message: msg,
-      onConfirm: () => _controller.submit(bypassChecks: true),
-    );
   }
 }

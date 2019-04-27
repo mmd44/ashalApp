@@ -121,7 +121,8 @@ class _CollectionPageState extends State<CollectionPage>
     _discountController = TextEditingController(text: _controller.discount);
     _flatPriceController = TextEditingController(text: _controller.flatPrice);
     _billController = TextEditingController(text: _controller.bill);
-    _amountController = TextEditingController(text: formatAmountWithCurrency(_controller.amount));
+    _amountController = TextEditingController(
+        text: formatAmountWithCurrency(_controller.amount));
   }
 
   Widget _buildHistoryFields() {
@@ -316,20 +317,20 @@ class _CollectionPageState extends State<CollectionPage>
     return TextField(
       keyboardType: TextInputType.number,
       controller: _amountController,
-      onChanged: (value){
+      onChanged: (value) {
         _controller.setCollection(value);
       },
       style: TextStyle(fontSize: 16),
       decoration: cTheme.TextStyles.textField.copyWith(
         hintText: 'Enter Amount',
-        errorText: _amountController.text.isEmpty || _controller.isValidCollection
-            ? null
-            : 'Must be less than or equal bill',
-        prefixText:'LBP ',
+        errorText:
+            _amountController.text.isEmpty || _controller.isValidCollection
+                ? null
+                : 'Must be less than or equal bill',
+        prefixText: 'LBP ',
       ),
     );
   }
-
 
   Widget _buildConfirmButton() {
     return Row(
