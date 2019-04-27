@@ -207,8 +207,8 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   }
 
   @override
-  void onError(String error) {
-    _initTextFieldControllers();
+  void onError(String error, {bool initTextControllers = true}) {
+    if (initTextControllers) _initTextFieldControllers();
     setState(() {});
     showErrorSnackBar(error, context: context);
   }

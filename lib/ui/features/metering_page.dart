@@ -125,8 +125,8 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   @override
-  void onError(String error) {
-    _initTextFieldControllers();
+  void onError(String error, {bool initTextControllers = true}) {
+    if (initTextControllers) _initTextFieldControllers();
     setState(() {});
     showErrorSnackBar(error, context: context);
   }
@@ -257,7 +257,7 @@ class _MeteringPageState extends State<MeteringPage>
     _ampController = TextEditingController(text: _controller.ampStr);
     _oldMeterController = TextEditingController(text: _controller.oldMetering);
     _newMeterController =
-        TextEditingController(text: _controller?.newMetering?.toString());
+        TextEditingController(text: _controller?.newMetering?.toString() ?? '');
   }
 
   Widget _buildIsPrepaid() {

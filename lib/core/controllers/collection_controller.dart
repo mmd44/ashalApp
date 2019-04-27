@@ -125,7 +125,7 @@ class CollectionController {
     } else {
       _collection.amount = null;
       isValidCollection = false;
-      _view.onError(null);
+      _view.onError(null, initTextControllers: false);
     }
   }
 
@@ -192,6 +192,6 @@ class CollectionController {
 
 abstract class InputPageView {
   void onSetClientSuccess();
-  void onError(String error);
+  void onError(String error, {bool initTextControllers = true});
   void onSuccess(String msg);
 }

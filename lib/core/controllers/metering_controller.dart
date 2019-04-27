@@ -197,7 +197,7 @@ class MeteringController {
     } else {
       _meterReading.reading = null;
       isValidReading = false;
-      _view.onError(null);
+      _view.onError(null, initTextControllers: false);
     }
   }
 
@@ -218,9 +218,10 @@ class MeteringController {
   }
 
   void resetFields() {
+    referenceID = null;
+    meterImageFile = null;
     _client = null;
     _clientLastHistory = null;
-    referenceID = null;
     _meterReading = MeterReading();
     meteringDate = DateTime.now();
   }
