@@ -90,11 +90,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   }
 
   _buildLineStatusSwitchTile() {
-    return GestureDetector(
-      onTap: ()=>{
-        print("tap")
-      },
-      child: SwitchListTile.adaptive(
+    return SwitchListTile.adaptive(
         title: Text('Line Status'),
         value: _controller.lineStatus,
         onChanged: (val) {
@@ -102,7 +98,6 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
             _controller.lineStatus = !_controller.lineStatus;
           });
         },
-      ),
     );
   }
 
