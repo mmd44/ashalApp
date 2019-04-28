@@ -197,8 +197,8 @@ class _CollectionPageState extends State<CollectionPage>
           enabled: false,
           controller: _subTypeController,
           decoration: cTheme.TextStyles.textField.copyWith(
-            hintText: Localization.of(context, 'subscription_type'),
-            helperText: Localization.of(context, 'subscription_type'),
+            hintText: Localization.of(context, 'sub_type'),
+            helperText: Localization.of(context, 'sub_type'),
           )),
     );
   }
