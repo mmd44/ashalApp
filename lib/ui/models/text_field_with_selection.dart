@@ -1,3 +1,4 @@
+import 'package:ashal/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
@@ -59,7 +60,8 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
         textAlign: TextAlign.center,
         decoration: Theme.TextStyles.textField.copyWith(
             errorText: null,
-            hintText: 'Reference ID',
+            counterText: '',
+            hintText: Localization.of(context, 'reference_id'),
             helperText: !isVisible && isVisibleOnTap
                 ? 'Please enter a reference ID in order to proceed'
                 : null,

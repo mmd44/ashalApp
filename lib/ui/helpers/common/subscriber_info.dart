@@ -1,6 +1,7 @@
 import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/models/text_field_with_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
@@ -46,7 +47,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                             enabled: false,
                             decoration: Theme.TextStyles.textField.copyWith(
                               hintText: widget.client?.area,
-                              helperText: 'Area',
+                              helperText: Localization.of(context, 'area'),
                             ),
                           ),
                         ),
@@ -59,7 +60,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                             enabled: false,
                             decoration: Theme.TextStyles.textField.copyWith(
                               hintText: widget.client?.streetAddress,
-                              helperText: 'Street',
+                              helperText: Localization.of(context, 'street'),
                             ),
                           ),
                         ),
@@ -76,7 +77,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                             enabled: false,
                             decoration: Theme.TextStyles.textField.copyWith(
                               hintText: widget.client?.building,
-                              helperText: 'Building',
+                              helperText: Localization.of(context, 'building'),
                             ),
                           ),
                         ),
@@ -89,7 +90,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                             enabled: false,
                             decoration: Theme.TextStyles.textField.copyWith(
                               hintText: widget.client?.floor,
-                              helperText: 'Floor',
+                              helperText: Localization.of(context, 'floor'),
                             ),
                           ),
                         ),
@@ -102,10 +103,10 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                       enabled: false,
                       decoration: Theme.TextStyles.textField.copyWith(
                         hintText: widget.client?.phone,
-                        helperText: 'Phone',
+                        helperText: Localization.of(context, 'phone'),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),

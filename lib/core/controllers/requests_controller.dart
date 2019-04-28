@@ -175,10 +175,10 @@ class RequestsController {
 
   void insertRequest() {
     DBProvider.db.insertRequest(_request).then((result) {
-      _view.onSuccess('Request saved successfully!');
+      _view.onSuccess('requests_success');
     }).catchError((error) {
       print('DBinsertRequestError: $error');
-      _view.onError('Failed to save request!');
+      _view.onError('requests_error');
     }).whenComplete(() {
       isLoading = false;
     });

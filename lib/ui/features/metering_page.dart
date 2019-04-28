@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/controllers/metering_controller.dart';
 import 'package:ashal/core/models/history.dart';
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/image_ui/image_picker_handler.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
@@ -99,7 +100,7 @@ class _MeteringPageState extends State<MeteringPage>
               disabled: !_controller.isMeteringValid,
               loading: _controller.isLoading,
               label: Text(
-                'Confirm',
+                Localization.of(context, 'confirm'),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -126,8 +127,8 @@ class _MeteringPageState extends State<MeteringPage>
     setState(() {});
 
     showDialogMessage(context,
-        title: 'Success',
-        message: msg,
+        title: Localization.of(context, 'success'),
+        message: Localization.of(context, msg),
         onConfirm: () => Navigator.of(context).pop());
   }
 
@@ -135,7 +136,7 @@ class _MeteringPageState extends State<MeteringPage>
   void onError(String error, {bool initTextControllers = true}) {
     if (initTextControllers) _initTextFieldControllers();
     setState(() {});
-    showErrorSnackBar(error, context: context);
+    showErrorSnackBar(Localization.of(context, error), context: context);
   }
 
   @override
@@ -203,7 +204,7 @@ class _MeteringPageState extends State<MeteringPage>
 
   _buildLineStatusSwitchTile() {
     return SwitchListTile(
-      title: Text('Line Status'),
+      title: Text(Localization.of(context, 'line_status')),
       value: _controller.lineStatus,
       onChanged: (val) {
         setState(() {
@@ -218,10 +219,10 @@ class _MeteringPageState extends State<MeteringPage>
       controller: _ampController,
       keyboardType: TextInputType.numberWithOptions(),
       decoration: Theme.TextStyles.textField.copyWith(
-          hintText: 'AMPs',
-          helperText: 'AMPs',
+          hintText: Localization.of(context, 'amp'),
+          helperText: Localization.of(context, 'amp'),
           errorText:
-              _controller.isValidAMPField ? null : 'Must be greater than 0'),
+              _controller.isValidAMPField ? null : Localization.of(context, 'amp_input_error')),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {
@@ -236,7 +237,7 @@ class _MeteringPageState extends State<MeteringPage>
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: Text('Subscription Type'),
+          child: Text(Localization.of(context, 'subscription_type')),
         ),
         Expanded(
           flex: 1,
@@ -249,7 +250,7 @@ class _MeteringPageState extends State<MeteringPage>
                     child: Text(val.value),
                   );
                 }).toList(),
-                hint: Text("Type"),
+                hint: Text(Localization.of(context, 'type')),
                 onChanged: (newVal) {
                   _controller.subType = newVal;
                   setState(() {});
@@ -272,7 +273,7 @@ class _MeteringPageState extends State<MeteringPage>
       visible: _controller.isTypePrepaid,
       child: Row(
         children: <Widget>[
-          Text('Is Prepaid?'),
+          Text(Localization.of(context, 'is_prepaid')),
           Radio(
               value: 'yes',
               groupValue: _controller.isPrepaid,
@@ -281,7 +282,7 @@ class _MeteringPageState extends State<MeteringPage>
                   _controller.isPrepaid = value;
                 });
               }),
-          Text('Yes'),
+          Text(Localization.of(context, 'yes')),
           Radio(
               value: 'no',
               groupValue: _controller.isPrepaid,
@@ -290,7 +291,7 @@ class _MeteringPageState extends State<MeteringPage>
                   _controller.isPrepaid = value;
                 });
               }),
-          Text('No'),
+          Text(Localization.of(context, 'no')),
         ],
       ),
     );
@@ -307,7 +308,7 @@ class _MeteringPageState extends State<MeteringPage>
               controller: _oldMeterController,
               enabled: false,
               decoration: Theme.TextStyles.textField
-                  .copyWith(helperText: 'Old Metering'),
+                  .copyWith(helperText: Localization.of(context, 'old_metering')),
             ),
           ),
         ],
@@ -346,12 +347,11 @@ class _MeteringPageState extends State<MeteringPage>
         onChanged: _controller.setNewMetering,
         style: TextStyle(fontSize: 16),
         decoration: Theme.TextStyles.textField.copyWith(
-          hintText: 'Enter New Reading',
+          hintText: Localization.of(context, 'reading_new_input'),
           errorText:
               _newMeterController.text.isEmpty || _controller.isValidReading
-                  ? null
-                  : 'Must be greater than or equal old metering',
-          prefixText: 'KWH ',
+                  ? null : Localization.of(context, 'reading_new_input_error'),
+          prefixText: Localization.of(context, 'kwh'),
           border: OutlineInputBorder(),
         ),
       ),

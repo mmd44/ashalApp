@@ -198,10 +198,10 @@ class CollectionController {
 
   void updateCollection() {
     DBProvider.db.updateMeterCollection(_collectedAmount).then((result) {
-      _view.onSuccess('Collection Updated successfully!');
+      _view.onSuccess('collection_success');
     }).catchError((error) {
       print('DBinsertCollectionError: $error');
-      _view.onError('Failed to Updated collection!');
+      _view.onError('collection_error');
     }).whenComplete(() {
       isLoading = false;
     });
@@ -209,10 +209,10 @@ class CollectionController {
 
   void insertCollection() {
     DBProvider.db.insertAmountCollection(_collection).then((result) {
-      _view.onSuccess('Collection saved successfully!');
+      _view.onSuccess('collection_success');
     }).catchError((error) {
       print('DBinsertCollectionError: $error');
-      _view.onError('Failed to save collection!');
+      _view.onError('collection_error');
     }).whenComplete(() {
       isLoading = false;
     });

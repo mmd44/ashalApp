@@ -1,5 +1,6 @@
 import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/models/history.dart';
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/string_helper.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
@@ -94,8 +95,8 @@ class _CollectionPageState extends State<CollectionPage>
     setState(() {});
 
     showDialogMessage(context,
-        title: 'Success',
-        message: msg,
+        title: Localization.of(context, 'success'),
+        message: Localization.of(context, msg),
         onConfirm: () => Navigator.of(context).pop());
   }
 
@@ -103,7 +104,7 @@ class _CollectionPageState extends State<CollectionPage>
   void onError(String error, {bool initTextControllers = true}) {
     if (initTextControllers) _initTextFieldControllers();
     setState(() {});
-    showErrorSnackBar(error, context: context);
+    showErrorSnackBar(Localization.of(context, error), context: context);
   }
 
   @override
@@ -177,8 +178,8 @@ class _CollectionPageState extends State<CollectionPage>
           enabled: false,
           controller: _lineStatusController,
           decoration: cTheme.TextStyles.textField.copyWith(
-            hintText: 'Line Status',
-            helperText: 'Line Status',
+            hintText: Localization.of(context, 'line_status'),
+            helperText: Localization.of(context, 'line_status'),
           )),
     );
   }
@@ -190,8 +191,8 @@ class _CollectionPageState extends State<CollectionPage>
         enabled: false,
         controller: _ampController,
         decoration: cTheme.TextStyles.textField.copyWith(
-          hintText: 'AMPs',
-          helperText: 'AMPs',
+          hintText: Localization.of(context, 'amp'),
+          helperText: Localization.of(context, 'amp'),
         ),
       ),
     );
@@ -204,8 +205,8 @@ class _CollectionPageState extends State<CollectionPage>
           enabled: false,
           controller: _subTypeController,
           decoration: cTheme.TextStyles.textField.copyWith(
-            hintText: 'Sub Type',
-            helperText: 'Sub Type',
+            hintText: Localization.of(context, 'sub_type'),
+            helperText: Localization.of(context, 'sub_type'),
           )),
     );
   }
@@ -219,8 +220,8 @@ class _CollectionPageState extends State<CollectionPage>
             enabled: false,
             controller: _subFeeController,
             decoration: cTheme.TextStyles.textField.copyWith(
-              hintText: 'Sub Fee',
-              helperText: 'Subscription Fee',
+              hintText: Localization.of(context, 'subscription_fee'),
+              helperText: Localization.of(context, 'subscription_fee'),
             )),
       ),
     );
@@ -235,8 +236,8 @@ class _CollectionPageState extends State<CollectionPage>
             enabled: false,
             controller: _discountController,
             decoration: cTheme.TextStyles.textField.copyWith(
-              hintText: 'Discount',
-              helperText: 'Discount',
+              hintText: Localization.of(context, 'discount'),
+              helperText: Localization.of(context, 'discount'),
             )),
       ),
     );
@@ -251,8 +252,8 @@ class _CollectionPageState extends State<CollectionPage>
             enabled: false,
             controller: _flatPriceController,
             decoration: cTheme.TextStyles.textField.copyWith(
-              hintText: 'Flat Price',
-              helperText: 'Flat Price',
+              hintText: Localization.of(context, 'flat_price'),
+              helperText: Localization.of(context, 'flat_price'),
             )),
       ),
     );
@@ -267,8 +268,8 @@ class _CollectionPageState extends State<CollectionPage>
             enabled: false,
             controller: _oldMeterController,
             decoration: cTheme.TextStyles.textField.copyWith(
-              hintText: 'Old Meter',
-              helperText: 'Old Meter',
+              hintText: Localization.of(context, 'old_meter'),
+              helperText: Localization.of(context, 'old_meter'),
             )),
       ),
     );
@@ -283,8 +284,8 @@ class _CollectionPageState extends State<CollectionPage>
             enabled: false,
             controller: _newMeterController,
             decoration: cTheme.TextStyles.textField.copyWith(
-              hintText: 'New Meter',
-              helperText: 'New Meter',
+              hintText: Localization.of(context, 'new_meter'),
+              helperText: Localization.of(context, 'new_meter'),
             )),
       ),
     );
@@ -297,9 +298,8 @@ class _CollectionPageState extends State<CollectionPage>
           enabled: false,
           controller: _billController,
           decoration: cTheme.TextStyles.textField.copyWith(
-            hintText: 'Bill',
-            helperText: 'Bill',
-          )),
+              hintText: Localization.of(context, 'bill'),
+              helperText: Localization.of(context, 'bill'))),
     );
   }
 
@@ -312,8 +312,8 @@ class _CollectionPageState extends State<CollectionPage>
             enabled: false,
             controller: _collectedAmountController,
             decoration: cTheme.TextStyles.textField.copyWith(
-              hintText: 'Collected amount',
-              helperText: 'Collected amount',
+              hintText: Localization.of(context, 'collected_amount'),
+              helperText: Localization.of(context, 'collected_amount'),
             )),
       ),
     );
@@ -350,12 +350,12 @@ class _CollectionPageState extends State<CollectionPage>
       },
       style: TextStyle(fontSize: 16),
       decoration: cTheme.TextStyles.textField.copyWith(
-        hintText: 'Enter Amount',
+        hintText: Localization.of(context, 'enter_amount'),
         errorText:
             _amountController.text.isEmpty || _controller.isValidCollection
                 ? null
-                : 'Must be less than or equal bill',
-        prefixText: 'LBP ',
+                : Localization.of(context, 'error_meter_amount'),
+        prefixText: Localization.of(context, 'currency'),
         border: OutlineInputBorder(),
       ),
     );
@@ -372,7 +372,7 @@ class _CollectionPageState extends State<CollectionPage>
               disabled: !_controller.isCollectionValid,
               loading: _controller.isLoading,
               label: Text(
-                'Confirm',
+                Localization.of(context, 'confirm'),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -394,7 +394,7 @@ class _CollectionPageState extends State<CollectionPage>
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: Text('Select Date'),
+            child: Text(Localization.of(context, 'select_date')),
           ),
           Expanded(
             flex: 1,
@@ -411,7 +411,7 @@ class _CollectionPageState extends State<CollectionPage>
                                 : ""),
                           );
                         }).toList(),
-                  hint: Text("Date"),
+                  hint: Text(Localization.of(context, 'date')),
                   onChanged: (newVal) async {
                     await _controller.setupClientSelectedHistory(newVal);
                     setState(() {
