@@ -72,10 +72,17 @@ class _MeteringPageState extends State<MeteringPage>
             _controller.setClientByReference(value);
             setState(() {});
           }),
-          _buildHistoryFields(),
-          _buildCamButton(),
-          _buildNewMeteringRow(),
-          _buildConfirmButton(),
+          Visibility(
+            visible: _controller.client != null,
+            child: Column(
+              children: <Widget>[
+                _buildHistoryFields(),
+                _buildCamButton(),
+                _buildNewMeteringRow(),
+                _buildConfirmButton(),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -200,9 +207,7 @@ class _MeteringPageState extends State<MeteringPage>
       value: _controller.lineStatus,
       onChanged: (val) {
         setState(() {
-          setState(() {
-            _controller.lineStatus = !_controller.lineStatus;
-          });
+          _controller.lineStatus = !_controller.lineStatus;
         });
       },
     );
@@ -347,14 +352,10 @@ class _MeteringPageState extends State<MeteringPage>
                   ? null
                   : 'Must be greater than or equal old metering',
           prefixText: 'KWH ',
+          border: OutlineInputBorder(),
         ),
       ),
     );
-  }
-
-  //ToDo
-  Widget _buildCamField() {
-    return _buildCamButton();
   }
 
   Widget _buildCamButton() {
@@ -363,7 +364,11 @@ class _MeteringPageState extends State<MeteringPage>
       child: GestureDetector(
         child: _controller.meterImageFile != null
             ? _buildImageCaptured()
-            : Container(child: (CircleAvatar(child: Icon(Icons.camera)))),
+            : Container(
+                child: CircleAvatar(
+                  child: Icon(Icons.camera_alt),
+                ),
+              ),
         onTap: _openCam,
       ),
     );
@@ -371,9 +376,5 @@ class _MeteringPageState extends State<MeteringPage>
 
   void _openCam() {
     _imagePickerHandler.getImageFromCamera();
-  }
-  @override
-  void updateView() {
-    setState(() {});
   }
 }

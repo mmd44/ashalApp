@@ -69,10 +69,17 @@ class _CollectionPageState extends State<CollectionPage>
             _controller.setClientByReference(value);
             setState(() {});
           }),
-          _buildDate(),
-          _buildHistoryFields(),
-          _buildAmountTBC(),
-          _buildConfirmButton(),
+          Visibility(
+            visible: _controller.client != null,
+            child: Column(
+              children: <Widget>[
+                _buildDate(),
+                _buildHistoryFields(),
+                _buildAmountTBC(),
+                _buildConfirmButton(),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -123,7 +130,8 @@ class _CollectionPageState extends State<CollectionPage>
     _discountController = TextEditingController(text: _controller.discount);
     _flatPriceController = TextEditingController(text: _controller.flatPrice);
     _billController = TextEditingController(text: _controller.bill);
-    _collectedAmountController=TextEditingController(text: _controller.collectedAmount);
+    _collectedAmountController =
+        TextEditingController(text: _controller.collectedAmount);
     _amountController = TextEditingController(
         text: formatAmountWithCurrency(_controller.amount));
   }
@@ -348,6 +356,7 @@ class _CollectionPageState extends State<CollectionPage>
                 ? null
                 : 'Must be less than or equal bill',
         prefixText: 'LBP ',
+        border: OutlineInputBorder(),
       ),
     );
   }
@@ -374,10 +383,11 @@ class _CollectionPageState extends State<CollectionPage>
       ],
     );
   }
-  static DateFormat dateFormatter=new DateFormat("y-M-d");
+
+  static DateFormat dateFormatter = new DateFormat("y-M-d");
   Widget _buildDate() {
-    List<DropdownMenuItem<History>> defaultV=new List();
-    defaultV.add(new DropdownMenuItem<History>(value: null,child: Text("")));
+    List<DropdownMenuItem<History>> defaultV = new List();
+    defaultV.add(new DropdownMenuItem<History>(value: null, child: Text("")));
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 55),
       child: Row(
@@ -391,17 +401,21 @@ class _CollectionPageState extends State<CollectionPage>
             child: Center(
               child: DropdownButton<History>(
                   value: _controller.selectedHistory,
-                  items: _controller.clientHistoryList==null?defaultV:_controller.clientHistoryList.map((History val) {
-                    return new DropdownMenuItem<History>(
-                      value: val,
-                      child: Text(val.entryDateTime!=null?dateFormatter.format(val.entryDateTime):""),
-                    );
-                  }).toList(),
+                  items: _controller.clientHistoryList == null
+                      ? defaultV
+                      : _controller.clientHistoryList.map((History val) {
+                          return new DropdownMenuItem<History>(
+                            value: val,
+                            child: Text(val.entryDateTime != null
+                                ? dateFormatter.format(val.entryDateTime)
+                                : ""),
+                          );
+                        }).toList(),
                   hint: Text("Date"),
-                  onChanged: (newVal) async  {
+                  onChanged: (newVal) async {
                     await _controller.setupClientSelectedHistory(newVal);
                     setState(() {
-                      updateFields();
+                      _initTextFieldControllers();
                     });
                   }),
             ),
@@ -409,22 +423,5 @@ class _CollectionPageState extends State<CollectionPage>
         ],
       ),
     );
-  }
-
-  @override
-  void updateView() {
-    setState(() {});
-  }
-
-  void updateFields() {
-    _ampController.text=_controller.ampStr;
-    _oldMeterController.text=_controller.oldMetering;
-    _newMeterController.text=_controller.newMetering;
-    _lineStatusController.text=_controller.lineStatus;
-    _subTypeController.text=_controller.subType;
-    _discountController.text=_controller.discount;
-    _flatPriceController.text=_controller.flatPrice;
-    _billController.text=_controller.bill;
-    _collectedAmountController.text=_controller.collectedAmount;
   }
 }

@@ -224,7 +224,6 @@ class MeteringController {
     _clientLastHistory = null;
     _meterReading = MeterReading();
     meteringDate = DateTime.now();
-    _view.updateView();
   }
 
   void setupHistoryFields(History history) {

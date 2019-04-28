@@ -32,79 +32,82 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                 .map((client) => client.referenceId.toString())
                 .toList();
           }, this, children: [
-            Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          decoration: Theme.TextStyles.textField.copyWith(
-                            hintText: widget.client?.area,
-                            helperText: 'Area',
+            Visibility(
+              visible: widget.client != null,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: widget.client?.area,
+                              helperText: 'Area',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          decoration: Theme.TextStyles.textField.copyWith(
-                            hintText: widget.client?.streetAddress,
-                            helperText: 'Street',
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: widget.client?.streetAddress,
+                              helperText: 'Street',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          decoration: Theme.TextStyles.textField.copyWith(
-                            hintText: widget.client?.building,
-                            helperText: 'Building',
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: widget.client?.building,
+                              helperText: 'Building',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          decoration: Theme.TextStyles.textField.copyWith(
-                            hintText: widget.client?.floor,
-                            helperText: 'Floor',
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: widget.client?.floor,
+                              helperText: 'Floor',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    enabled: false,
-                    decoration: Theme.TextStyles.textField.copyWith(
-                      hintText: widget.client?.phone,
-                      helperText: 'Phone',
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      enabled: false,
+                      decoration: Theme.TextStyles.textField.copyWith(
+                        hintText: widget.client?.phone,
+                        helperText: 'Phone',
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ]),
         ],

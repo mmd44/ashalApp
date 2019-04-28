@@ -58,7 +58,12 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
         },
         textAlign: TextAlign.center,
         decoration: Theme.TextStyles.textField.copyWith(
-            errorText: null, counterText: '', hintText: 'Reference Id'),
+            errorText: null,
+            hintText: 'Reference ID',
+            helperText: !isVisible && isVisibleOnTap
+                ? 'Please enter a reference ID in order to proceed'
+                : null,
+            border: OutlineInputBorder()),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 48),

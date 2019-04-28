@@ -59,8 +59,15 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
             _controller.setClientByReference(value);
             setState(() {});
           }),
-          _buildHistoryFields(),
-          _buildConfirmButton()
+          Visibility(
+            visible: _controller.client != null,
+            child: Column(
+              children: <Widget>[
+                _buildHistoryFields(),
+                _buildConfirmButton(),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -245,14 +252,9 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   @override
   void onSuccess(String msg) {
     setState(() {});
-
     showDialogMessage(context,
         title: 'Success',
         message: msg,
         onConfirm: () => Navigator.of(context).pop());
-  }
-  @override
-  void updateView() {
-    setState(() {});
   }
 }

@@ -72,6 +72,8 @@ void showDialogMessage(
   VoidCallback onConfirm,
   bool dismissible = false,
 }) {
+  if (message == null) return;
+
   List<Widget> children = [];
   EdgeInsets verticalPadding = EdgeInsets.symmetric(vertical: 10);
   if (title != null) {
@@ -82,14 +84,12 @@ void showDialogMessage(
       ),
     );
   }
-  if (message != null) {
-    children.add(
-      Container(
-        padding: verticalPadding,
-        child: Text(message),
-      ),
-    );
-  }
+  children.add(
+    Container(
+      padding: verticalPadding,
+      child: Text(message),
+    ),
+  );
 
   showDialog(
     barrierDismissible: dismissible,

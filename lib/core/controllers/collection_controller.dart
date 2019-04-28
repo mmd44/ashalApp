@@ -6,7 +6,6 @@ import 'package:ashal/ui/models/card_item.dart';
 
 class CollectionController {
   AmountCollection _collection;
-
   AmountCollection _collectedAmount;
 
   Client _client;
@@ -26,12 +25,12 @@ class CollectionController {
   Client get client => _client;
   History get selectedHistory => _clientSelectedHistory;
 
-   setupClientSelectedHistory(History value) async {
+  setupClientSelectedHistory(History value) async {
     _clientSelectedHistory = value;
-    _collection.historyId=_clientSelectedHistory.historyId;
-    _collectedAmount= await DBProvider.db.getMeterCollectionByHistroyId(client?.referenceId,_clientSelectedHistory?.historyId );
-   }
-
+    _collection.historyId = _clientSelectedHistory.historyId;
+    _collectedAmount = await DBProvider.db.getMeterCollectionByHistroyId(
+        client?.referenceId, _clientSelectedHistory?.historyId);
+  }
 
   String get clientArea => _client?.area;
   String get clientStreet => _client?.streetAddress;
@@ -81,10 +80,16 @@ class CollectionController {
         payers: ['Ali', 'Hussein'],
       ),
     ]);
-    await DBProvider.db.insertAmountCollection(AmountCollection(referenceId: 2,historyId: "ref1",date: DateTime.now(),amount: 5000,id: 1));
+    await DBProvider.db.insertAmountCollection(AmountCollection(
+        referenceId: 2,
+        historyId: "ref1",
+        date: DateTime.now(),
+        amount: 5000,
+        id: 1));
   }
 
-  bool get isCollectionValid => isValidCollection && (referenceID?.isNotEmpty ?? false);
+  bool get isCollectionValid =>
+      isValidCollection && (referenceID?.isNotEmpty ?? false);
 
   set collectionDate(DateTime dateTime) {
     todayDate = dateTime;
@@ -111,9 +116,11 @@ class CollectionController {
   String get oldMetering => _clientSelectedHistory?.oldMeter?.toString() ?? '';
   String get newMetering => _clientSelectedHistory?.newMeter?.toString() ?? '';
 
-  bool get isSubMetered => _clientSelectedHistory?.subType == SubscriptionType.meter;
+  bool get isSubMetered =>
+      _clientSelectedHistory?.subType == SubscriptionType.meter;
 
-  bool get isSubFlatPrice => _clientSelectedHistory?.subType == SubscriptionType.flat;
+  bool get isSubFlatPrice =>
+      _clientSelectedHistory?.subType == SubscriptionType.flat;
 
   String get lineStatus {
     if (_clientSelectedHistory?.lineStatus == null) return '';
@@ -128,16 +135,17 @@ class CollectionController {
 
   double get amount => _collection?.amount;
 
-  void setCollection (String value) {
+  void setCollection(String value) {
     double input;
     if (value != null) {
       input = double.tryParse(value);
     }
-    double test=double.parse('${_clientSelectedHistory?.bill ?? 0}')-_collectedAmount?.amount??0;
+    double test = double.parse('${_clientSelectedHistory?.bill ?? 0}') -
+            _collectedAmount?.amount ?? 0;
     if (input != null && input <= test) {
       isValidCollection = true;
       _collection.amount = input;
-      _view.updateView();
+      _view.onSuccess(null);
     } else {
       _collection.amount = null;
       isValidCollection = false;
@@ -150,16 +158,16 @@ class CollectionController {
     referenceID = ref;
     int id = int.tryParse(referenceID);
     if (id != null) {
-      DBProvider.db.getClient(id).then((client) async{
+      DBProvider.db.getClient(id).then((client) async {
         _client = client;
         _collection.referenceId = id;
         if (_client?.monthlyDataReferences != null &&
             _client.monthlyDataReferences.length > 0) {
           return DBProvider.db.getUnpaidHistory(id);
-        }else
+        } else
           return null;
       }).then((historyList) {
-        clientHistoryList=historyList;
+        clientHistoryList = historyList;
         //if (history != null) setupHistoryFields(history);
         _view.onSetClientSuccess();
       }).catchError((error) {
@@ -177,13 +185,13 @@ class CollectionController {
     await DBProvider.db.initDB();
   }
 
-  void submit({bypassChecks = false}) {
+  void submit() {
     isLoading = true;
-    if(_collectedAmount!=null) {
+    if (_collectedAmount != null) {
       _collectedAmount.amount = _collectedAmount.amount + _collection.amount;
-      _collectedAmount.date=DateTime.now();
+      _collectedAmount.date = DateTime.now();
       updateCollection();
-    }else {
+    } else {
       insertCollection();
     }
   }
@@ -216,7 +224,7 @@ class CollectionController {
     referenceID = null;
     _collection = AmountCollection();
     collectionDate = DateTime.now();
-    _collectedAmount=null;
+    _collectedAmount = null;
   }
 }
 
@@ -224,5 +232,4 @@ abstract class InputPageView {
   void onSetClientSuccess();
   void onError(String error, {bool initTextControllers = true});
   void onSuccess(String msg);
-  void updateView();
 }
