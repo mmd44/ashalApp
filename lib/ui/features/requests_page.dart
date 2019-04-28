@@ -1,6 +1,7 @@
 import 'package:ashal/core/controllers/collection_controller.dart';
 import 'package:ashal/core/controllers/requests_controller.dart';
 import 'package:ashal/core/models/history.dart';
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/helpers/common/subscriber_info.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/custom_button.dart';
@@ -91,7 +92,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
 
   _buildLineStatusSwitchTile() {
     return SwitchListTile.adaptive(
-        title: Text('Line Status'),
+        title: Text(Localization.of(context, 'line_status')),
         value: _controller.lineStatus,
         onChanged: (val) {
           setState(() {
@@ -106,10 +107,10 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
       controller: _ampController,
       keyboardType: TextInputType.numberWithOptions(),
       decoration: Theme.TextStyles.textField.copyWith(
-          hintText: 'AMPs',
-          helperText: 'AMPs',
+          hintText: Localization.of(context, 'amp'),
+          helperText: Localization.of(context, 'amp'),
           errorText:
-              _controller.isValidAMPField ? null : 'Must be greater than 0'),
+              _controller.isValidAMPField ? null : Localization.of(context, 'amp_input_error')),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {
@@ -127,8 +128,8 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
         keyboardType: TextInputType.multiline,
         maxLines:null,
         decoration: Theme.TextStyles.textField.copyWith(
-            hintText: 'Comment',
-            helperText: 'Comment',
+            hintText: Localization.of(context, 'comment'),
+            helperText: Localization.of(context, 'comment'),
             errorText:null),
         onChanged: (val) {
           setState(() {
@@ -144,7 +145,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: Text('Subscription Type'),
+          child: Text(Localization.of(context, 'subscription_type')),
         ),
         Expanded(
           flex: 1,
@@ -157,7 +158,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
                     child: Text(val.value),
                   );
                 }).toList(),
-                hint: Text("Type"),
+                hint: Text(Localization.of(context, 'type')),
                 onChanged: (newVal) {
                   _controller.subType = newVal;
                   setState(() {});
@@ -178,7 +179,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
       visible: _controller.isTypePrepaid,
       child: Row(
         children: <Widget>[
-          Text('Is Prepaid?'),
+          Text(Localization.of(context, "is_prepaid")),
           Radio(
               value: 'yes',
               groupValue: _controller.isPrepaid,
@@ -187,7 +188,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
                   _controller.isPrepaid = value;
                 });
               }),
-          Text('Yes'),
+          Text(Localization.of(context, 'yes')),
           Radio(
               value: 'no',
               groupValue: _controller.isPrepaid,
@@ -196,7 +197,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
                   _controller.isPrepaid = value;
                 });
               }),
-          Text('No'),
+          Text(Localization.of(context, 'no')),
         ],
       ),
     );
@@ -213,7 +214,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
               //disabled: !_controller.isMeteringValid,
               loading: _controller.isLoading,
               label: Text(
-                'Confirm',
+                Localization.of(context, 'confirm'),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -233,7 +234,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   void onError(String error, {bool initTextControllers = true}) {
     if (initTextControllers) _initTextFieldControllers();
     setState(() {});
-    showErrorSnackBar(error, context: context);
+    showErrorSnackBar(Localization.of(context, error), context: context);
   }
 
   @override
@@ -247,8 +248,8 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
     setState(() {});
 
     showDialogMessage(context,
-        title: 'Success',
-        message: msg,
+        title: Localization.of(context, 'success'),
+        message: Localization.of(context, msg),
         onConfirm: () => Navigator.of(context).pop());
   }
   @override

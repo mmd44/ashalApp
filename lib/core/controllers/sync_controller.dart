@@ -131,7 +131,7 @@ class SyncController implements SocketCallBack {
 
   Future syncMeterReading() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onSyncError("reading","Reading sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("reading",'sync_general_error');
       return;
     }
     _syncCallBack.onStart("reading");
@@ -143,17 +143,17 @@ class SyncController implements SocketCallBack {
       syncClientHistoryResponse(clientSyncResponse);
       ProjectSharedPreferences.instance.setMeterReadingSync(true);
       _readings = true;
-      _syncCallBack.onSyncSuccess("reading","Reading sync successfully");
+      _syncCallBack.onSyncSuccess("reading","sync_reading_success");
     }).catchError((error) {
       _readings = false;
       ProjectSharedPreferences.instance.setMeterReadingSync(false);
-      _syncCallBack.onSyncError("reading","Error in Reading sync");
+      _syncCallBack.onSyncError("reading","sync_reading_error");
     });
   }
 
   Future syncRequests() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onSyncError("request","Request sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("request","sync_general_error");
       return;
     }
     _syncCallBack.onStart("request");
@@ -162,15 +162,15 @@ class SyncController implements SocketCallBack {
     print(API.reading);
     _service.syncRequests(requests).then((res)async {
       DBProvider.db.deleteAllRequest();
-      _syncCallBack.onSyncSuccess("request","Request sync successfully");
+      _syncCallBack.onSyncSuccess("request","sync_requests_success");
     }).catchError((error) {
-      _syncCallBack.onSyncError("request","Error in Request sync");
+      _syncCallBack.onSyncError("request","sync_requests_error");
     });
   }
 
   Future syncCollection() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onSyncError("collection","Collection sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("collection","sync_general_error");
       return;
     }
     _syncCallBack.onStart("collection");
@@ -182,12 +182,12 @@ class SyncController implements SocketCallBack {
       syncClientHistoryResponse(clientSyncResponse);
       ProjectSharedPreferences.instance.setCollectionSync(true);
       _collection = true;
-      _syncCallBack.onSyncSuccess("collection","Collection sync successfully");
+      _syncCallBack.onSyncSuccess("collection","sync_collection_success");
     }).catchError((error) {
       _collection = false;
       ProjectSharedPreferences.instance.setCollectionSync(false);
       print('errorClientService $error');
-      _syncCallBack.onSyncError("collection","Error in Collection sync");
+      _syncCallBack.onSyncError("collection","sync_collection_error");
     });
   }
 
@@ -214,7 +214,7 @@ class SyncController implements SocketCallBack {
 
   Future syncClients() async {
     if(API.ipAddress.isEmpty) {
-      _syncCallBack.onSyncError("client","Client sync Cannot be done before connecting");
+      _syncCallBack.onSyncError("client","sync_general_error");
       return null;
     }
     _syncCallBack.onStart("client");
@@ -222,10 +222,10 @@ class SyncController implements SocketCallBack {
     print(API.client);
     _service.syncClients().then((clientSyncResponse) async {
       syncClientHistoryResponse(clientSyncResponse);
-      _syncCallBack.onSyncSuccess("client","Client sync successfully");
+      _syncCallBack.onSyncSuccess("client","sync_client_success");
     }).catchError((error) {
       print('errorClientService $error');
-      _syncCallBack.onSyncError("client","Error in Client sync");
+      _syncCallBack.onSyncError("client","sync_client_error");
     });
   }
 

@@ -208,10 +208,10 @@ class MeteringController {
 
   void insertReading() {
     DBProvider.db.insertMeterReading(_meterReading).then((result) {
-      _view.onSuccess('Reading saved successfully!');
+      _view.onSuccess('reading_success');
     }).catchError((error) {
       print('DBinsertReadingError: $error');
-      _view.onError('Failed to save reading!');
+      _view.onError('reading_error');
     }).whenComplete(() {
       isLoading = false;
     });
