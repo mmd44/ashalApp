@@ -99,13 +99,13 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
 
   _buildLineStatusSwitchTile() {
     return SwitchListTile.adaptive(
-        title: Text(Localization.of(context, 'line_status')),
-        value: _controller.lineStatus,
-        onChanged: (val) {
-          setState(() {
-            _controller.lineStatus = !_controller.lineStatus;
-          });
-        },
+      title: Text(Localization.of(context, 'line_status')),
+      value: _controller.lineStatus,
+      onChanged: (val) {
+        setState(() {
+          _controller.lineStatus = !_controller.lineStatus;
+        });
+      },
     );
   }
 
@@ -116,8 +116,9 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
       decoration: Theme.TextStyles.textField.copyWith(
           hintText: Localization.of(context, 'amp'),
           helperText: Localization.of(context, 'amp'),
-          errorText:
-              _controller.isValidAMPField ? null : Localization.of(context, 'amp_input_error')),
+          errorText: _controller.isValidAMPField
+              ? null
+              : Localization.of(context, 'amp_input_error')),
       onChanged: (val) {
         int value = int.tryParse(val);
         setState(() {
@@ -129,15 +130,15 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
 
   Widget _buildCommentField() {
     return Padding(
-      padding: const EdgeInsets.only(top:10.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: TextField(
         controller: _commentController,
         keyboardType: TextInputType.multiline,
-        maxLines:null,
+        maxLines: null,
         decoration: Theme.TextStyles.textField.copyWith(
             hintText: Localization.of(context, 'comment'),
             helperText: Localization.of(context, 'comment'),
-            errorText:null),
+            errorText: null),
         onChanged: (val) {
           setState(() {
             _controller.comment = val;
@@ -178,7 +179,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
 
   void _initTextFieldControllers() {
     _ampController = TextEditingController(text: _controller.ampStr);
-    _commentController=TextEditingController();
+    _commentController = TextEditingController();
   }
 
   Widget _buildIsPrepaid() {
@@ -241,7 +242,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   void onError(String error, {bool initTextControllers = true}) {
     if (initTextControllers) _initTextFieldControllers();
     setState(() {});
-    showErrorSnackBar(Localization.of(context, error), context: context);
+    showErrorSnackBar(error, context: context);
   }
 
   @override
@@ -254,8 +255,8 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   void onSuccess(String msg) {
     setState(() {});
     showDialogMessage(context,
-        title: Localization.of(context, 'success'),
-        message: Localization.of(context, msg),
+        title: 'success',
+        message: msg,
         onConfirm: () => Navigator.of(context).pop());
   }
 }

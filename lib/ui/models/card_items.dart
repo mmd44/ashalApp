@@ -5,25 +5,25 @@ class CardItemsDao {
     const CardItem(
       id: "1",
       name: "sync",
-      description: "Sync your data",
+      description: "sync_desc",
       image: "assets/img/pc_sync.png",
     ),
     const CardItem(
       id: "2",
       name: "metering",
-      description: "Type in a Meter Reading",
+      description: "metering_desc",
       image: "assets/img/metering.png",
     ),
     const CardItem(
       id: "3",
       name: "collection",
-      description: "Collect your Money!",
+      description: "collection_desc",
       image: "assets/img/bill_tools.png",
     ),
     const CardItem(
       id: "4",
       name: "requests",
-      description: "Any Suggestions?",
+      description: "requests_desc",
       image: "assets/img/requests.png",
     ),
   ];

@@ -127,8 +127,8 @@ class _MeteringPageState extends State<MeteringPage>
     setState(() {});
 
     showDialogMessage(context,
-        title: Localization.of(context, 'success'),
-        message: Localization.of(context, msg),
+        title: 'success',
+        message: msg,
         onConfirm: () => Navigator.of(context).pop());
   }
 
@@ -136,7 +136,7 @@ class _MeteringPageState extends State<MeteringPage>
   void onError(String error, {bool initTextControllers = true}) {
     if (initTextControllers) _initTextFieldControllers();
     setState(() {});
-    showErrorSnackBar(Localization.of(context, error), context: context);
+    showErrorSnackBar(error, context: context);
   }
 
   @override

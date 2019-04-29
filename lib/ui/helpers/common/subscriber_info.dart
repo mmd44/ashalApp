@@ -1,4 +1,3 @@
-import 'package:ashal/core/controllers/input_pages_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/localization.dart';
@@ -37,6 +36,53 @@ class _SubscriberInfoState extends State<SubscriberInfo>
               visible: widget.client != null,
               child: Column(
                 children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: getDisplayName(),
+                              helperText: Localization.of(context, 'name'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: widget.client?.category,
+                              helperText: Localization.of(context, 'category'),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: Theme.TextStyles.textField.copyWith(
+                              hintText: widget.client?.phone?.toString(),
+                              helperText: Localization.of(context, 'phone'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -89,7 +135,7 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                           child: TextFormField(
                             enabled: false,
                             decoration: Theme.TextStyles.textField.copyWith(
-                              hintText: widget.client?.floor,
+                              hintText: widget.client?.floor?.toString(),
                               helperText: Localization.of(context, 'floor'),
                             ),
                           ),
@@ -97,16 +143,6 @@ class _SubscriberInfoState extends State<SubscriberInfo>
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      enabled: false,
-                      decoration: Theme.TextStyles.textField.copyWith(
-                        hintText: widget.client?.phone,
-                        helperText: Localization.of(context, 'phone'),
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
@@ -119,5 +155,16 @@ class _SubscriberInfoState extends State<SubscriberInfo>
   @override
   void onEditingCompleted(String value) {
     widget.onEditingDone(value);
+  }
+
+  String getDisplayName() {
+    Client client = widget.client;
+    if (client?.firstName != null) {
+      return '${client?.prefix ?? ''} ${client?.firstName} ${client?.familyName ?? ''}';
+    } else if (client?.organizationName != null) {
+      return client.organizationName;
+    } else {
+      return client?.sharedDescription;
+    }
   }
 }

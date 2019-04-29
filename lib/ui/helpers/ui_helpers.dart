@@ -8,7 +8,7 @@ void showErrorSnackBar(String text,
     SnackBarAction action}) {
   if (text == null) return;
   final snackBar = SnackBar(
-    content: Text(text),
+    content: Text(Localization.of(context, text)),
     duration: Duration(milliseconds: 1700),
     backgroundColor: Colors.red,
     action: action,
@@ -25,7 +25,7 @@ void showSnackBar(String text, BuildContext context,
   if (text == null) return;
   final snackBar = SnackBar(
     content: Text(
-      text,
+      Localization.of(context, text),
       style: TextStyle(color: Colors.white),
     ),
     duration: Duration(milliseconds: 1700),
@@ -56,7 +56,7 @@ void showLoader(BuildContext context) {
               padding: const EdgeInsets.all(8.0),
               child: new CircularProgressIndicator(),
             ),
-            new Text("Loading")
+            Text(Localization.of(context, 'loading'))
           ],
         )),
       ));
@@ -80,14 +80,14 @@ void showDialogMessage(
     children.add(
       Container(
         padding: verticalPadding,
-        child: Text(title),
+        child: Text(Localization.of(context, title)),
       ),
     );
   }
   children.add(
     Container(
       padding: verticalPadding,
-      child: Text(message),
+      child: Text(Localization.of(context, message)),
     ),
   );
 
@@ -104,7 +104,7 @@ void showDialogMessage(
         actions: [
           FlatButton(
             child: buttonText != null
-                ? Text(buttonText)
+                ? Text(Localization.of(context, buttonText))
                 : Text(Localization.of(context, 'ok')),
             onPressed: () {
               Navigator.pop(context);
@@ -121,11 +121,10 @@ void showDialogMessage(
 
 void showDialogConfirm(
   BuildContext context, {
-  String message,
+  String message = 'are_you_sure',
   VoidCallback onConfirm,
   VoidCallback onDismiss,
 }) {
-  message ??= Localization.of(context, 'are_you_sure');
 
   showDialog(
     context: context,
@@ -133,12 +132,12 @@ void showDialogConfirm(
       return AlertDialog(
         content: SingleChildScrollView(
           child: ListBody(
-            children: [Text(message)],
+            children: [Text(Localization.of(context, message))],
           ),
         ),
         actions: [
           FlatButton(
-              child: Text('No'), //Text(Localization.of(context, 'no')),
+              child: Text(Localization.of(context, 'no')),
               onPressed: () {
                 if (onDismiss != null) {
                   onDismiss();
@@ -147,7 +146,7 @@ void showDialogConfirm(
                 }
               }),
           FlatButton(
-            child: Text('Yes'), //Text(Localization.of(context, 'yes')),
+            child: Text(Localization.of(context, 'yes')),
             onPressed: () {
               onConfirm();
               Navigator.pop(context);

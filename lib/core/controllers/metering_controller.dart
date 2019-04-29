@@ -35,7 +35,7 @@ class MeteringController {
   String get clientArea => _client?.area;
   String get clientStreet => _client?.streetAddress;
   String get clientBldg => _client?.building;
-  String get clientFloor => _client?.floor;
+  String get clientFloor => _client?.floor.toString();
   String get clientPhone => _client?.phone;
 
   init() {
@@ -48,18 +48,81 @@ class MeteringController {
     await DBProvider.db.reCreateDatabase();
 
     await DBProvider.db.insertClient(Client.from(
-        '1', 2, 'test', true, true, DateTime.now(), DateTime.now(), '03030303',
+        id: '1',
+        referenceId: 2222,
+        prefix: 'Mr',
+        firstName: 'John',
+        familyName: 'Whick',
+        organizationName: 'Ashal Co',
+        sharedDescription: 'Cafe Near Road',
+        area: 'Ashrafieh',
+        streetAddress: 'Independence Str',
+        building: 'Queen',
+        floor: 10,
+        category: 'Individual',
+        deleted: true,
+        purged: true,
+        dateTimeAdded: DateTime.now(),
+        dateTimeDeleted: DateTime.now(),
+        phone: '70300673',
         monthlyDataReferences: ['ref1', 'ref2']));
-    await DBProvider.db.insertClient(Client.from('1', 234, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 4564, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 1234, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 1232, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
-    await DBProvider.db.insertClient(Client.from('1', 1222, 'test', true, true,
-        DateTime.now(), DateTime.now(), '03040404'));
+
+    await DBProvider.db.insertClient(Client.from(
+      id: '2',
+      referenceId: 2345,
+      category: 'test',
+      deleted: true,
+      purged: true,
+      dateTimeAdded: DateTime.now(),
+      dateTimeDeleted: DateTime.now(),
+      phone: '03030303',
+    ));
+
+    await DBProvider.db.insertClient(Client.from(
+      id: '3',
+      referenceId: 4564,
+      category: 'test',
+      deleted: true,
+      purged: true,
+      dateTimeAdded: DateTime.now(),
+      dateTimeDeleted: DateTime.now(),
+      phone: '03030303',
+    ));
+
+    await DBProvider.db.insertClient(Client.from(
+        id: '4',
+        referenceId: 1234,
+        category: 'test',
+        deleted: true,
+        purged: true,
+        dateTimeAdded: DateTime.now(),
+        dateTimeDeleted: DateTime.now(),
+        phone: '03030303',
+        monthlyDataReferences: ['ref1', 'ref2']));
+
+    await DBProvider.db.insertClient(Client.from(
+      id: '5',
+      referenceId: 1232,
+      category: 'test',
+      deleted: true,
+      purged: true,
+      dateTimeAdded: DateTime.now(),
+      dateTimeDeleted: DateTime.now(),
+      phone: '03030303',
+    ));
+
+    await DBProvider.db.insertClient(Client.from(
+        id: '6',
+        referenceId: 1222,
+        category: 'test',
+        deleted: true,
+        purged: true,
+        dateTimeAdded: DateTime.now(),
+        dateTimeDeleted: DateTime.now(),
+        phone: '03030303',
+        monthlyDataReferences: ['ref1', 'ref2']),
+    );
+
 
     ///Dummy History
     await DBProvider.db.insertHistory([
@@ -165,9 +228,9 @@ class MeteringController {
         if (history != null) setupHistoryFields(history);
         _view.onSetClientSuccess();
       }).catchError((error) {
+        print('DBGetClient: ${error.toString()}');
         resetFields();
         _view.onError(error.toString());
-        print('DBGetClient: ${error.toString()}');
       });
     } else {
       _view.onError(null);
