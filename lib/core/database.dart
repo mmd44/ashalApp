@@ -367,10 +367,11 @@ class DBProvider {
       double collected = historyList[i]?.collected ?? 0;
       double bill = historyList[i]?.bill ?? 0;
       bool forgiven = historyList[i]?.forgiven ?? false;
-      if (collected != bill &&
+      if (collected < bill &&
           !forgiven &&
           historyList[i].entryDateTime != null) {
         if (!dates.contains(historyList[i].entryDateTime)) {
+          historyList[i].bill=historyList[i].bill-historyList[i].collected;
           dates.add(historyList[i].entryDateTime);
           unpaidHistories.add(historyList[i]);
         }

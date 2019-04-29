@@ -141,6 +141,7 @@ class CollectionController {
         prepaid: 'no',
         oldMeter: 170,
         newMeter: 270,
+        collected: 36494,
         payers: ['Ali', 'Hussein'],
       ),
     ]);

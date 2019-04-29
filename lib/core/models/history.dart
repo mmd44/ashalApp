@@ -27,9 +27,9 @@ class History {
   double discount;
   String lineStatus;
   String prepaid;
-  var bill;
+  double bill;
   var dependentsBill;
-  var collected;
+  double collected;
   var forgiven;
   String receiptIssued;
   String category;
@@ -107,9 +107,9 @@ class History {
       json["newMeter"],
       json["subscription"],
       json["discount"],
-      json["bill"],
+      json["bill"] ?? 0,
       json["dependentsBill"],
-      json["collected"],
+      json["collected"] ?? 0,
       toBoolean(json["forgiven"]?.toString()??null, false),
       json["receiptIssued"],
       json["category"],
