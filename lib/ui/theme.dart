@@ -53,6 +53,7 @@ class TextStyles {
     border: InputBorder.none,
     hasFloatingPlaceholder: false,
     hintStyle: TextStyle(fontWeight: FontWeight.normal),
+    helperStyle: TextStyle(color: Colors.primary, height: 0.5),
     filled: true,
   );
 

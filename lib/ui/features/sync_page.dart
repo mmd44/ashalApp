@@ -1,8 +1,9 @@
-import 'package:ashal/core/controllers/shared_perferences.dart';
+import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/core/controllers/sync_controller.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
 import 'package:ashal/core/network/api.dart';
+import 'package:ashal/localization.dart';
 import 'package:ashal/ui/helpers/ui_helpers.dart';
 import 'package:ashal/ui/models/card_item.dart';
 import 'package:ashal/ui/models/card_items.dart';
@@ -11,8 +12,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SyncPage extends StatefulWidget {
+
   final CardItem cardItem;
-  bool showDialog;
+  final bool showDialog;
+
   SyncPage(String id, this.showDialog)
       : cardItem = CardItemsDao.getCardByID(id);
 
@@ -41,9 +44,9 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
           new Center(
             child: new Column(
               children: <Widget>[
-                Text(!API.ipAddress.isEmpty
-                    ? 'Connected : ${API.ipAddress}'
-                    : "Searching For server"),
+                Text(API.ipAddress.isNotEmpty
+                    ? '${Localization.of(context, 'connected')}  : ${API.ipAddress}'
+                    : Localization.of(context, "searching_for_server")),
                 _buildClearIpButton(),
                 _buildSyncClientButton(),
                 _buildSyncMeterReadingButton(),
@@ -65,7 +68,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
     return ButtonTheme(
       minWidth: 100.0,
       child: new FlatButton(
-          child: const Text('Reconnect'),
+          child: Text(Localization.of(context, 'reconnect')),
           color: Colors.black12,
           onPressed: () async {
             API.ipAddress = '';
@@ -83,7 +86,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         child: ButtonTheme(
           minWidth: 200.0,
           child: new RaisedButton(
-              child: const Text('Sync Clients'),
+              child:  Text(Localization.of(context, 'sync_clients')),
               onPressed: API.ipAddress.isEmpty
                   ? null
                   : () async {
@@ -100,7 +103,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         child: ButtonTheme(
             minWidth: 200.0,
             child: new RaisedButton(
-                child: const Text('Sync Meter Reading'),
+                child:  Text(Localization.of(context, 'sync_meter_reading')),
                 onPressed: API.ipAddress.isEmpty || ProjectSharedPreferences.instance.isMeterReadingSync()
                     ? null
                     : () async {
@@ -117,7 +120,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         child: ButtonTheme(
             minWidth: 200.0,
             child: new RaisedButton(
-                child: const Text('Sync Collection Reading'),
+                child: Text(Localization.of(context, 'sync_collection_reading')),
                 onPressed: API.ipAddress.isEmpty || ProjectSharedPreferences.instance.isCollectionSync()
                     ? null
                     : () async {
@@ -134,7 +137,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         child: ButtonTheme(
             minWidth: 200.0,
             child: new RaisedButton(
-                child: const Text('Clear Meter Data and Sync Clients'),
+                child: Text(Localization.of(context, "clear_data")),
                 onPressed: API.ipAddress.isEmpty
                     ? null
                     : () async {
@@ -150,9 +153,9 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
     if (widget.showDialog) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         showDialogMessage(context,
-            buttonText: "ok",
-            title: 'Sync',
-            message: "Complete Sync and clear data to add new reading/collection",
+            buttonText: 'ok',
+            title: 'sync',
+            message: 'sync_message',
             onConfirm: null);
       });
     }
@@ -193,7 +196,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
   @override
   void onSyncError(String fromButton, String msg) {
     Navigator.pop(context);
-    showDialogMessage(context, title: 'Error', message: msg, onConfirm: null);
+    showDialogMessage(context, title: 'error', message: msg, onConfirm: null);
     if (mounted) {
       this.setState(() {});
     }
@@ -206,7 +209,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
       List<Client> clients = await DBProvider.db.getAllClients();
       clients.forEach((client) => print(client.toJson()));
     }
-    showDialogMessage(context, title: 'Success', message: msg, onConfirm: null);
+    showDialogMessage(context, title: 'success', message: msg, onConfirm: null);
     if (mounted) {
       this.setState(() {});
     }
