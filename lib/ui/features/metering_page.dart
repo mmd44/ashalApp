@@ -78,8 +78,8 @@ class _MeteringPageState extends State<MeteringPage>
             child: Column(
               children: <Widget>[
                 _buildHistoryFields(),
-                _buildCamButton(),
                 _buildNewMeteringRow(),
+                _buildCamButton(),
                 _buildConfirmButton(),
               ],
             ),
@@ -125,7 +125,6 @@ class _MeteringPageState extends State<MeteringPage>
   @override
   void onSuccess(String msg) {
     setState(() {});
-
     showDialogMessage(context,
         title: 'success',
         message: msg,
@@ -193,10 +192,7 @@ class _MeteringPageState extends State<MeteringPage>
             child: _buildAMPField(),
           ),
           _buildIsPrepaid(),
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: _buildOldMeter(),
-          ),
+          _buildOldMeter(),
         ],
       ),
     );
@@ -300,76 +296,82 @@ class _MeteringPageState extends State<MeteringPage>
   Widget _buildOldMeter() {
     return Visibility(
       visible: _controller.isSubMetered,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: TextField(
-              controller: _oldMeterController,
-              enabled: false,
-              decoration: Theme.TextStyles.textField
-                  .copyWith(helperText: Localization.of(context, 'old_metering')),
+      child: Padding(
+        padding: const EdgeInsets.only(top:8, bottom: 8),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: TextField(
+                controller: _oldMeterController,
+                enabled: false,
+                decoration: Theme.TextStyles.textField
+                    .copyWith(helperText: Localization.of(context, 'old_metering')),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNewMeteringRow() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          Expanded(
-            flex: 4,
-            child: _buildNewMeteringField(),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNewMeteringField() {
-    return Visibility(
-      visible: _controller.isSubMetered,
-      child: TextField(
-        keyboardType: TextInputType.number,
-        controller: _newMeterController,
-        onChanged: _controller.setNewMetering,
-        style: TextStyle(fontSize: 16),
-        decoration: Theme.TextStyles.textField.copyWith(
-          hintText: Localization.of(context, 'reading_new_input'),
-          errorText:
-              _newMeterController.text.isEmpty || _controller.isValidReading
-                  ? null : Localization.of(context, 'reading_new_input_error'),
-          prefixText: Localization.of(context, 'kwh'),
-          border: OutlineInputBorder(),
+          ],
         ),
       ),
     );
   }
 
+  Widget _buildNewMeteringRow() {
+    return Visibility(
+      visible: _controller.isSubMetered,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+            Expanded(
+              flex: 4,
+              child: _buildNewMeteringField(),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNewMeteringField() {
+    return TextField(
+      keyboardType: TextInputType.number,
+      controller: _newMeterController,
+      onChanged: _controller.setNewMetering,
+      style: TextStyle(fontSize: 16),
+      decoration: Theme.TextStyles.textField.copyWith(
+        hintText: Localization.of(context, 'reading_new_input'),
+        errorText:
+            _newMeterController.text.isEmpty || _controller.isValidReading
+                ? null : Localization.of(context, 'reading_new_input_error'),
+        prefixText: Localization.of(context, 'kwh'),
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
   Widget _buildCamButton() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: GestureDetector(
-        child: _controller.meterImageFile != null
-            ? _buildImageCaptured()
-            : Container(
-                child: CircleAvatar(
-                  child: Icon(Icons.camera_alt),
+    return Visibility(
+      visible: _controller.isSubMetered,
+      child: Padding(
+        padding: const EdgeInsets.only(top:12),
+        child: GestureDetector(
+          child: _controller.meterImageFile != null
+              ? _buildImageCaptured()
+              : Container(
+                  child: CircleAvatar(
+                    child: Icon(Icons.camera_alt),
+                  ),
                 ),
-              ),
-        onTap: _openCam,
+          onTap: _openCam,
+        ),
       ),
     );
   }

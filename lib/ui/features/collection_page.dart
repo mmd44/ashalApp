@@ -93,7 +93,6 @@ class _CollectionPageState extends State<CollectionPage>
   @override
   void onSuccess(String msg) {
     setState(() {});
-
     showDialogMessage(context,
         title: 'success',
         message: msg,

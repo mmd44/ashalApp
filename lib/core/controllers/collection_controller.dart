@@ -198,14 +198,14 @@ class CollectionController {
     if (value != null) {
       input = double.tryParse(value);
     }
-    double test = double.parse('${_clientSelectedHistory?.bill ?? 0}') -
-            _collectedAmount?.amount ??
-        0;
+    double test = double.tryParse(_clientSelectedHistory?.bill?.toString()) ?? 0 -
+                  _collectedAmount?.amount ?? 0;
     if (input != null && input <= test) {
       isValidCollection = true;
       _collection.amount = input;
       _view.onSuccess(null);
     } else {
+      print('setCollectionError: false');
       _collection.amount = null;
       isValidCollection = false;
       _view.onError(null, initTextControllers: false);
@@ -224,9 +224,12 @@ class CollectionController {
             _client.monthlyDataReferences.length > 0) {
           return DBProvider.db.getUnpaidHistory(id);
         } else
-          return null;
+          return new List<History>();
       }).then((historyList) {
         clientHistoryList = historyList;
+        if(historyList.length>0)
+          _clientSelectedHistory=historyList[0];
+
         _view.onSetClientSuccess();
       }).catchError((error) {
         resetFields();

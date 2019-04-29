@@ -202,7 +202,8 @@ class DBProvider {
 
   Future<int> insertMeterReading(MeterReading newMeterReading) async {
     final db = await databaseInit;
-    var res = await db.insert("`$METER_READING_TABLE`", newMeterReading.toJson());
+    var res =
+        await db.insert("`$METER_READING_TABLE`", newMeterReading.toJson());
     if (res <= 0)
       throw new APIException("database.insert_meter_readin_error", "");
     return res;
@@ -260,12 +261,13 @@ class DBProvider {
     return res.isNotEmpty ? AmountCollection.fromJson(res.first) : null;
   }
 
-  Future<AmountCollection> getMeterCollectionByHistroyId(int referenceId,String histroyId) async {
-    if(histroyId==null)
-      return null;
+  Future<AmountCollection> getMeterCollectionByHistroyId(
+      int referenceId, String histroyId) async {
+    if (histroyId == null) return null;
     final db = await databaseInit;
     var res = await db.query("$METER_COLLECTION_TABLE",
-        where: "referenceId = ? and historyId = ?", whereArgs: [referenceId,histroyId]);
+        where: "referenceId = ? and historyId = ?",
+        whereArgs: [referenceId, histroyId]);
     return res.isNotEmpty ? AmountCollection.fromJson(res.first) : null;
   }
 
@@ -320,7 +322,7 @@ class DBProvider {
 
   Future<bool> insertHistory(List<History> historyList) async {
     var batch = _database.batch();
-     historyList
+    historyList
         .forEach((history) => batch.insert("$HISTORY_TABLE", history.toJson()));
     List<dynamic> results = await batch.commit();
     if (results.length < historyList.length)
@@ -335,7 +337,7 @@ class DBProvider {
 
   Future<List<History>> getHistoryList(List<String> historyIdList) async {
     final db = await databaseInit;
-    String ids = '\''+historyIdList.join('\',\'')+'\'';
+    String ids = '\'' + historyIdList.join('\',\'') + '\'';
     var res = await db.rawQuery(
         "SELECT * FROM $HISTORY_TABLE WHERE historyId IN ($ids) ORDER BY entryDateTime DESC;");
     return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
@@ -356,16 +358,19 @@ class DBProvider {
 
   Future<List<History>> getUnpaidHistory(int referenceId) async {
     Client client = await getClient(referenceId);
-    List<History> historyList = await getHistoryList(client.monthlyDataReferences);
-    if (historyList.isEmpty) return null;
-    List<History> unpaidHistories=new List();
-    List<DateTime> dates=new List();
+    List<History> historyList =
+        await getHistoryList(client.monthlyDataReferences);
+    if (historyList.isEmpty) return List<History>();
+    List<History> unpaidHistories = new List<History>();
+    List<DateTime> dates = new List();
     for (var i = 0; i < historyList.length; i++) {
-      double collected=historyList[i].collected==null?0:historyList[i].collected;
-      double bill=historyList[i].bill==null?0:historyList[i].bill;
-      bool forgiven=historyList[i]?.forgiven==null?false:historyList[i].forgiven;
-      if (collected!=bill && !forgiven && historyList[i].entryDateTime!=null) {
-        if(!dates.contains(historyList[i].entryDateTime)) {
+      double collected = historyList[i]?.collected ?? 0;
+      double bill = historyList[i]?.bill ?? 0;
+      bool forgiven = historyList[i]?.forgiven ?? false;
+      if (collected != bill &&
+          !forgiven &&
+          historyList[i].entryDateTime != null) {
+        if (!dates.contains(historyList[i].entryDateTime)) {
           dates.add(historyList[i].entryDateTime);
           unpaidHistories.add(historyList[i]);
         }

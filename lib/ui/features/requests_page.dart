@@ -134,6 +134,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
       child: TextField(
         controller: _commentController,
         keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.done,
         maxLines: null,
         decoration: Theme.TextStyles.textField.copyWith(
             hintText: Localization.of(context, 'comment'),

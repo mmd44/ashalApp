@@ -257,6 +257,7 @@ class MeteringController {
     if (input != null && input >= (_clientLastHistory?.oldMeter ?? 0)) {
       isValidReading = true;
       _meterReading.reading = input;
+      _view.onSuccess(null);
     } else {
       _meterReading.reading = null;
       isValidReading = false;
