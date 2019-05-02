@@ -96,7 +96,7 @@ class Client {
   }
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
-        json["id"],
+        json["_id"],
         json["referenceId"],
         json["category"],
         json["organizationName"],

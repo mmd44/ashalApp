@@ -83,7 +83,7 @@ class DBProvider {
         '`collector` VARCHAR(800),'
         '`payers` TEXT);');
     await db.execute('CREATE TABLE `$CLIENT_TABLE` ('
-        '`id` TEXT NOT NULL,'
+        '`id` TEXT,'
         '`referenceId` INTEGER NOT NULL PRIMARY KEY,'
         '`category` VARCHAR(800),'
         '`organizationName` VARCHAR(800),'

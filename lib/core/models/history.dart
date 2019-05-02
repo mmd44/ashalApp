@@ -95,7 +95,7 @@ class History {
   }
 
   factory History.fromJson(Map<String, dynamic> json) => new History(
-      json["id"],
+      json["_id"],
       json["historyId"],
       json["entryDateTime"] != null
           ? DateTime.parse(json["entryDateTime"])

@@ -12,7 +12,6 @@ class ClientService {
 
         return HttpRequest.get(API.client)
         .then((dynamic res) {
-
       return ClientSyncResponse.fromJson(res);
     });
   }
