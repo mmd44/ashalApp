@@ -39,7 +39,7 @@ class RequestsController {
 
   init() {
     setupDB();
-    initDummy();
+    //initDummy();
     resetFields();
   }
 
