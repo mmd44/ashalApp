@@ -86,6 +86,7 @@ class History {
       this.prepaid});
 
   static List<History> fromJsonList(List<dynamic> json) {
+    print('HISTORT $json');
     return json.map((history) => History.fromJson(history)).toList();
   }
 
@@ -97,7 +98,7 @@ class History {
       json["id"],
       json["historyId"],
       json["entryDateTime"] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json["entryDateTime"])
+          ? DateTime.parse(json["entryDateTime"])
           : null,
       json["parentId"],
       SubscriptionType(json["subType"]),
@@ -115,7 +116,7 @@ class History {
       json["category"],
       json["meterReader"],
       json["collector"],
-      List.from(json['payers'] != null ? jsonDecode(json["payers"]) : []),
+      List.from(json['payers'] != null ? json['payers'] : []),
       json["lineStatus"],
       json["prepaid"]);
 

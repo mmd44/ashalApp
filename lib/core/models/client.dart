@@ -87,6 +87,7 @@ class Client {
       this.monthlyDataReferences);
 
   static List<Client> fromJsonList(List<dynamic> json) {
+    print("FROM JSON CLIENT $json");
     return json.map((client) => Client.fromJson(client)).toList();
   }
 
@@ -114,16 +115,14 @@ class Client {
         toBoolean(json["deleted"].toString(), false),
         toBoolean(json["purged"].toString(), false),
         json["dateTimeAdded"] != null
-            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"])
+            ? DateTime.parse(json["dateTimeAdded"])
             : null,
         json["dateTimeDeleted"] != null
-            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"])
+            ? DateTime.parse(json["dateTimeDeleted"])
             : null,
         json["outstanding"],
         json["comment"],
-        List.from(json['monthlyDataReferences'] != null
-            ? jsonDecode(json["monthlyDataReferences"])
-            : []),
+        [],
       );
 
   Map<String, dynamic> toJson() => {

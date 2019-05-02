@@ -21,9 +21,9 @@ class ClientSyncResponse
 
   ClientSyncResponse(this.client, this.history);
 
-  factory ClientSyncResponse.fromJson(Map<String, dynamic> json) => new ClientSyncResponse(
-      Client.fromJsonList(json["client"]),
-      History.fromJsonList(json["history"]),
+  factory ClientSyncResponse.fromJson(Map<String, dynamic> jsonObject) => new ClientSyncResponse(
+      Client.fromJsonList(json.decode(jsonObject["Clients"])),
+      History.fromJsonList(json.decode(jsonObject["History"])),
   );
 
 }

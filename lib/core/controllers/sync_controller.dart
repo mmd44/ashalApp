@@ -119,6 +119,8 @@ class SyncController implements SocketCallBack {
 
   Future getServerIp() async {
     RawDatagramSocket socket=await NetworkSocket.networkSocket.getInstance(this);
+    API.ipAddress="192.168.43.184";
+    canSend=true;
     while(API.ipAddress.isEmpty&&canSend) {
       try{
         socket.send(

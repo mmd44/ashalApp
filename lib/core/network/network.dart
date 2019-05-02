@@ -38,6 +38,7 @@ class HttpRequest {
       }
 
       if (response.bodyBytes == null || response.bodyBytes.isEmpty) return null;
+      print('parsing JSON ${utf8.decode(response.bodyBytes)}');
       return json.decode(utf8.decode(response.bodyBytes));
     });
   }
