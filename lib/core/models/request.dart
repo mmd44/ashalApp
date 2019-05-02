@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:ashal/core/models/history.dart';
 import 'package:ashal/core/models/parse_utils.dart';
 
 Request requestFromJson(String str) {
@@ -16,19 +17,20 @@ String requestToJson(Request data) {
 
 class Request {
   String id;
-  String requestId;
+  int referenceId;
   String lineStatus;
   int amp;
-  String subscriptionType;
+  SubscriptionType subType;
   String prepaid;
   String comment;
+  DateTime date;
 
 
-  Request(this.requestId, this.lineStatus, this.amp,
-      this.subscriptionType, this.prepaid, this.comment);
+  Request({this.referenceId, this.lineStatus, this.amp,
+      this.subType, this.prepaid, this.comment,this.date});
 
-  Request.Request(this.id, this.requestId, this.lineStatus, this.amp,
-      this.subscriptionType, this.prepaid, this.comment);
+  Request.Request({this.id, this.referenceId, this.lineStatus, this.amp,
+      this.subType, this.prepaid, this.comment,this.date});
   static List<Request> fromJsonList (List<dynamic> json) {
     return json.map((request) => Request.fromJson(request)).toList();
   }
@@ -38,23 +40,25 @@ class Request {
   }
 
   factory Request.fromJson(Map<String, dynamic> json) => new Request.Request(
-    json["id"],
-    json["requestId"],
-    json["lineStatus"],
-    json["amp"],
-    json["subscriptionType"],
-    json["prepaid"],
-    json["comment"]
+      id:json["id"],
+      referenceId:json["referenceId"],
+      lineStatus:json["lineStatus"],
+      amp:json["amp"],
+      subType:SubscriptionType(json["subType"]),
+      prepaid:json["prepaid"],
+      comment:json["comment"],
+      date:DateTime.fromMillisecondsSinceEpoch(json["date"])
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "requestId": requestId,
+    "referenceId": referenceId,
     "lineStatus": lineStatus,
     "amp": amp,
-    "subscriptionType": subscriptionType,
+    "subType": subType.value,
     "prepaid": prepaid,
-    "comment": comment
+    "comment": comment,
+    "date": date?.millisecondsSinceEpoch
   };
 
 

@@ -5,7 +5,7 @@ class API {
   static String host = 'http://$ipAddress:8889/lib-service';
 
   // services
-  static String metering = '$host/metering/';
+  static String metering = '$host/metering';
 
   // endpoints
   static String client = "$metering/client";

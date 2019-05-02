@@ -1,3 +1,4 @@
+import 'package:ashal/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ashal/ui/theme.dart' as Theme;
@@ -58,10 +59,14 @@ class _TextFieldWithSelectionState extends State<TextFieldWithSelection> {
         },
         textAlign: TextAlign.center,
         decoration: Theme.TextStyles.textField.copyWith(
-            errorText: null, counterText: '', hintText: 'Reference Id'),
+            hintText: Localization.of(context, 'reference_id'),
+            helperText: !isVisible && isVisibleOnTap
+                ? Localization.of(context, 'enter_ref_hint')
+                : null,
+            border: OutlineInputBorder()),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: 48),
+        padding: const EdgeInsets.only(top: 56),
         child: Visibility(
           visible: isVisible,
           child: Container(

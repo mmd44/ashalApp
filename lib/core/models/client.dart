@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/parse_utils.dart';
 
 Client clientFromJson(String str) {
@@ -26,7 +24,7 @@ class Client {
   String area;
   String streetAddress;
   String building;
-  String floor;
+  int floor;
   String phone;
   String email;
   String meterId;
@@ -38,8 +36,30 @@ class Client {
   String comment;
   List<String> monthlyDataReferences;
 
-  Client.from(this.id, this.referenceId, this.category, this.deleted,
-      this.purged, this.dateTimeAdded, this.dateTimeDeleted, this.phone);
+  Client.from(
+      {this.id,
+      this.referenceId,
+      this.category,
+      this.organizationName,
+      this.sharedDescription,
+      this.prefix,
+      this.firstName,
+      this.familyName,
+      this.name,
+      this.area,
+      this.streetAddress,
+      this.building,
+      this.floor,
+      this.phone,
+      this.email,
+      this.meterId,
+      this.deleted,
+      this.purged,
+      this.dateTimeAdded,
+      this.dateTimeDeleted,
+      this.outstanding,
+      this.comment,
+      this.monthlyDataReferences});
 
   Client(
       this.id,
@@ -64,41 +84,46 @@ class Client {
       this.dateTimeDeleted,
       this.outstanding,
       this.comment,
-      this.monthlyDataReferences
-      );
+      this.monthlyDataReferences);
 
-  static List<Client> fromJsonList (List<dynamic> json) {
+  static List<Client> fromJsonList(List<dynamic> json) {
     return json.map((client) => Client.fromJson(client)).toList();
   }
 
-  static List<Map<String, dynamic>> toJsonList (List<Client> clients) {
+  static List<Map<String, dynamic>> toJsonList(List<Client> clients) {
     return clients.map((client) => client.toJson()).toList();
   }
 
-  factory Client.fromJson(Map<String, dynamic> json) => new Client(
-      json["id"],
-      json["referenceId"],
-      json["category"],
-      json["organizationName"],
-      json["sharedDescription"],
-      json["prefix"],
-      json["firstName"],
-      json["familyName"],
-      json["name"],
-      json["area"],
-      json["streetAddress"],
-      json["building"],
-      json["floor"],
-      json["phone"],
-      json["email"],
-      json["meterId"],
-      toBoolean(json["deleted"].toString()),
-      toBoolean(json["purged"].toString()),
-      json["dateTimeAdded"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"]):null,
-      json["dateTimeDeleted"]!=null?DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"]):null,
-      json["outstanding"],
-      json["comment"],
-      json["monthlyDataReferences"]!=null?(jsonDecode(json["monthlyDataReferences"]) as List<dynamic>).cast<String>():List<String>()
+  factory Client.fromJson(Map<String, dynamic> json) => Client(
+        json["id"],
+        json["referenceId"],
+        json["category"],
+        json["organizationName"],
+        json["sharedDescription"],
+        json["prefix"],
+        json["firstName"],
+        json["familyName"],
+        json["name"],
+        json["area"],
+        json["streetAddress"],
+        json["building"],
+        json["floor"],
+        json["phone"],
+        json["email"],
+        json["meterId"],
+        toBoolean(json["deleted"].toString(), false),
+        toBoolean(json["purged"].toString(), false),
+        json["dateTimeAdded"] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"])
+            : null,
+        json["dateTimeDeleted"] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"])
+            : null,
+        json["outstanding"],
+        json["comment"],
+        List.from(json['monthlyDataReferences'] != null
+            ? jsonDecode(json["monthlyDataReferences"])
+            : []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -124,6 +149,6 @@ class Client {
         "dateTimeDeleted": dateTimeDeleted?.millisecondsSinceEpoch,
         "outstanding": outstanding,
         "comment": comment,
-        "monthlyDataReferences":monthlyDataReferences!=null?jsonEncode(monthlyDataReferences):null
+        "monthlyDataReferences": jsonEncode(monthlyDataReferences ?? []),
       };
 }

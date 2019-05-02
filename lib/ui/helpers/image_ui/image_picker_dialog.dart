@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:ashal/ui/card_detail/image_ui/image_picker_handler.dart';
+import 'package:ashal/ui/helpers/image_ui/image_picker_handler.dart';
 import 'package:flutter/material.dart';
 
 class ImagePickerDialog extends StatelessWidget {
