@@ -86,6 +86,11 @@ class Client {
       this.comment,
       this.monthlyDataReferences);
 
+  static List<Client> fromJsonListServer(List<dynamic> json) {
+    print("FROM JSON CLIENT $json");
+    return json.map((client) => Client.fromJsonServer(client)).toList();
+  }
+
   static List<Client> fromJsonList(List<dynamic> json) {
     print("FROM JSON CLIENT $json");
     return json.map((client) => Client.fromJson(client)).toList();
@@ -115,15 +120,45 @@ class Client {
         toBoolean(json["deleted"].toString(), false),
         toBoolean(json["purged"].toString(), false),
         json["dateTimeAdded"] != null
-            ? DateTime.parse(json["dateTimeAdded"])
+            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"])
             : null,
         json["dateTimeDeleted"] != null
             ? DateTime.parse(json["dateTimeDeleted"])
             : null,
         json["outstanding"],
         json["comment"],
-        [],
+        json["monthlyData_references"]!=null?new List<String>.from(json["monthlyData_references"]):[],
       );
+
+  factory Client.fromJsonServer(Map<String, dynamic> json) => Client(
+    json["_id"],
+    json["referenceId"],
+    json["category"],
+    json["organizationName"],
+    json["sharedDescription"],
+    json["prefix"],
+    json["firstName"],
+    json["familyName"],
+    json["name"],
+    json["area"],
+    json["streetAddress"],
+    json["building"],
+    json["floor"],
+    json["phone"],
+    json["email"],
+    json["meterId"],
+    toBoolean(json["deleted"].toString(), false),
+    toBoolean(json["purged"].toString(), false),
+    json["dateTimeAdded"] != null
+        ? DateTime.parse(json["dateTimeAdded"])
+        : null,
+    json["dateTimeDeleted"] != null
+        ? DateTime.parse(json["dateTimeDeleted"])
+        : null,
+    json["outstanding"],
+    json["comment"],
+    json["monthlyData_references"]!=null?new List<String>.from(json["monthlyData_references"]):[],
+  );
 
   Map<String, dynamic> toJson() => {
         "id": id,

@@ -89,12 +89,16 @@ class History {
     print('HISTORT $json');
     return json.map((history) => History.fromJson(history)).toList();
   }
+  static List<History> fromJsonListServer(List<dynamic> json) {
+    print('HISTORT $json');
+    return json.map((history) => History.fromJsonServer(history)).toList();
+  }
 
   static List<Map<String, dynamic>> toJsonList(List<History> historyList) {
     return historyList.map((history) => history.toJson()).toList();
   }
 
-  factory History.fromJson(Map<String, dynamic> json) => new History(
+  factory History.fromJsonServer(Map<String, dynamic> json) => new History(
       json["_id"],
       json["historyId"],
       json["entryDateTime"] != null
@@ -116,7 +120,33 @@ class History {
       json["category"],
       json["meterReader"],
       json["collector"],
-      List.from(json['payers'] != null ? json['payers'] : []),
+      [],
+      json["lineStatus"],
+      json["prepaid"]);
+
+  factory History.fromJson(Map<String, dynamic> json) => new History(
+      json["_id"],
+      json["historyId"],
+      json["entryDateTime"] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json["entryDateTime"])
+          : null,
+      json["parentId"],
+      SubscriptionType(json["subType"]),
+      json["amp"],
+      json["flatPrice"],
+      json["oldMeter"],
+      json["newMeter"],
+      json["subscription"],
+      json["discount"],
+      json["bill"] ?? 0,
+      json["dependentsBill"],
+      json["collected"] ?? 0,
+      toBoolean(json["forgiven"]?.toString()??null, false),
+      json["receiptIssued"],
+      json["category"],
+      json["meterReader"],
+      json["collector"],
+      [],
       json["lineStatus"],
       json["prepaid"]);
 

@@ -176,6 +176,7 @@ class SyncController implements SocketCallBack {
       return;
     }
     _syncCallBack.onStart("collection");
+    _collection = false;
     var collections = await DBProvider.db.getAllMeterCollection();
     ClientService _service = ClientService();
     print(API.collection);
@@ -183,10 +184,8 @@ class SyncController implements SocketCallBack {
       DBProvider.db.deleteAllMeterCollection();
       syncClientHistoryResponse(clientSyncResponse);
       ProjectSharedPreferences.instance.setCollectionSync(true);
-      _collection = true;
       _syncCallBack.onSyncSuccess("collection","sync_collection_success");
     }).catchError((error) {
-      _collection = false;
       ProjectSharedPreferences.instance.setCollectionSync(false);
       print('errorClientService $error');
       _syncCallBack.onSyncError("collection","sync_collection_error");
