@@ -127,38 +127,45 @@ class Client {
             : null,
         json["outstanding"],
         json["comment"],
-        json["monthlyData_references"]!=null?new List<String>.from(json["monthlyData_references"]):[],
+        json["monthlyDataReferences"] != null
+            ? json["monthlyDataReferences"]
+                .replaceAll("\[", "")
+                .replaceAll("\]", "")
+                .split(',')
+            : [],
       );
 
   factory Client.fromJsonServer(Map<String, dynamic> json) => Client(
-    json["_id"],
-    json["referenceId"],
-    json["category"],
-    json["organizationName"],
-    json["sharedDescription"],
-    json["prefix"],
-    json["firstName"],
-    json["familyName"],
-    json["name"],
-    json["area"],
-    json["streetAddress"],
-    json["building"],
-    json["floor"],
-    json["phone"],
-    json["email"],
-    json["meterId"],
-    toBoolean(json["deleted"].toString(), false),
-    toBoolean(json["purged"].toString(), false),
-    json["dateTimeAdded"] != null
-        ? DateTime.parse(json["dateTimeAdded"])
-        : null,
-    json["dateTimeDeleted"] != null
-        ? DateTime.parse(json["dateTimeDeleted"])
-        : null,
-    json["outstanding"],
-    json["comment"],
-    json["monthlyData_references"]!=null?new List<String>.from(json["monthlyData_references"]):[],
-  );
+        json["_id"],
+        json["referenceId"],
+        json["category"],
+        json["organizationName"],
+        json["sharedDescription"],
+        json["prefix"],
+        json["firstName"],
+        json["familyName"],
+        json["name"],
+        json["area"],
+        json["streetAddress"],
+        json["building"],
+        json["floor"],
+        json["phone"],
+        json["email"],
+        json["meterId"],
+        toBoolean(json["deleted"].toString(), false),
+        toBoolean(json["purged"].toString(), false),
+        json["dateTimeAdded"] != null
+            ? DateTime.parse(json["dateTimeAdded"])
+            : null,
+        json["dateTimeDeleted"] != null
+            ? DateTime.parse(json["dateTimeDeleted"])
+            : null,
+        json["outstanding"],
+        json["comment"],
+        json["monthlyData_references"] != null
+            ? List.from(json["monthlyData_references"])
+            : [],
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -183,6 +190,6 @@ class Client {
         "dateTimeDeleted": dateTimeDeleted?.millisecondsSinceEpoch,
         "outstanding": outstanding,
         "comment": comment,
-        "monthlyDataReferences": jsonEncode(monthlyDataReferences ?? []),
+        "monthlyDataReferences": monthlyDataReferences.toString() ?? [],
       };
 }
