@@ -98,6 +98,16 @@ class History {
     return historyList.map((history) => history.toJson()).toList();
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is History &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
   factory History.fromJsonServer(Map<String, dynamic> json) => new History(
       json["_id"],
       json["historyId"],

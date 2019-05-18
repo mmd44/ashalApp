@@ -146,15 +146,8 @@ class RequestsController {
     _request.date = dateTime;
   }
 
-  set lineStatus(bool val) {
-    switch (val) {
-      case true:
-        _request.lineStatus = 'on';
-        break;
-      case false:
-        _request.lineStatus = 'off';
-        break;
-    }
+  set lineStatus(String val) {
+    _request.lineStatus=val;
   }
 
   set amp(int val) {
@@ -190,13 +183,7 @@ class RequestsController {
   bool get isSubMetered => _request?.subType == SubscriptionType.meter;
 
   get lineStatus {
-    if (_request?.lineStatus == null) return false;
-    switch (_request?.lineStatus) {
-      case 'on':
-        return true;
-      case 'off':
-        return false;
-    }
+    return _request?.lineStatus;
   }
 
   void setClientByReference(String ref) {
@@ -207,8 +194,7 @@ class RequestsController {
       DBProvider.db.getClient(id).then((client) {
         _client = client;
         _request.referenceId = id;
-        if (_client?.monthlyDataReferences != null &&
-            _client.monthlyDataReferences.length > 0)
+        if (_client!=null)
           return DBProvider.db.getLastHistory(id);
         else
           return null;

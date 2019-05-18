@@ -156,15 +156,18 @@ class MeteringController {
     _meterReading.date = dateTime;
   }
 
-  set lineStatus(bool val) {
-    switch (val) {
-      case true:
-        _meterReading.lineStatus = 'on';
-        break;
-      case false:
-        _meterReading.lineStatus = 'off';
-        break;
-    }
+//  set lineStatus(bool val) {
+//    switch (val) {
+//      case true:
+//        _meterReading.lineStatus = 'on';
+//        break;
+//      case false:
+//        _meterReading.lineStatus = 'off';
+//        break;
+//    }
+//  }
+  set lineStatus(String val) {
+    _meterReading.lineStatus = val;
   }
 
   set amp(int val) {
@@ -201,13 +204,14 @@ class MeteringController {
   bool get isSubMetered => _meterReading?.subType==SubscriptionType.meter;
 
   get lineStatus {
-    if (_meterReading?.lineStatus == null) return false;
-    switch (_meterReading?.lineStatus) {
-      case 'on':
-        return true;
-      case 'off':
-        return false;
-    }
+    return _meterReading?.lineStatus;
+//    if (_meterReading?.lineStatus == null) return false;
+//    switch (_meterReading?.lineStatus) {
+//      case 'on':
+//        return true;
+//      case 'off':
+//        return false;
+//    }
   }
 
   void setClientByReference(String ref) {

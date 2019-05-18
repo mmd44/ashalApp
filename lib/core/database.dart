@@ -343,10 +343,21 @@ class DBProvider {
     return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
   }
 
+  Future<List<History>> getHistoryListByRefId(int refrenceId) async {
+    final db = await databaseInit;
+    var res = await db.rawQuery(
+        "SELECT * FROM $HISTORY_TABLE WHERE parentId = ($refrenceId) ORDER BY entryDateTime DESC;");
+    return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
+  }
   Future<History> getLastHistory(int referenceId) async {
     Client client = await getClient(referenceId);
-    List<History> historyList =
-        await getHistoryList(client.monthlyDataReferences);
+    List<History> historyList =new List<History>();
+    if(client?.monthlyDataReferences != null &&
+        client.monthlyDataReferences.length > 0) {
+      historyList= await getHistoryList(client.monthlyDataReferences);
+    }
+//    List<History> historyList2 = await getHistoryListByRefId(client.referenceId);
+//    historyList.addAll(historyList2);
     if (historyList.isEmpty) return null;
     History chosen = historyList[0];
     for (var i = 1; i < historyList.length; i++) {
@@ -358,8 +369,14 @@ class DBProvider {
 
   Future<List<History>> getUnpaidHistory(int referenceId) async {
     Client client = await getClient(referenceId);
-    List<History> historyList =
-        await getHistoryList(client.monthlyDataReferences);
+    List<History> historyList =new List<History>();
+    if(client?.monthlyDataReferences != null &&
+        client.monthlyDataReferences.length > 0) {
+      historyList= await getHistoryList(client.monthlyDataReferences);
+    }
+//    List<History> historyList2 = await getHistoryListByRefId(client.referenceId);
+//    if(historyList2!=null)
+//      historyList=historyList2;
     if (historyList.isEmpty) return List<History>();
     List<History> unpaidHistories = new List<History>();
     List<DateTime> dates = new List();

@@ -199,15 +199,43 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   _buildLineStatusSwitchTile() {
-    return SwitchListTile(
-      title: Text(Localization.of(context, 'line_status')),
-      value: _controller.lineStatus,
-      onChanged: (val) {
-        setState(() {
-          _controller.lineStatus = !_controller.lineStatus;
-        });
-      },
+    return Container(
+      child: Row(
+        children: <Widget>[
+          Text(Localization.of(context, 'line_status')),
+          Radio(
+              value: 'on',
+              groupValue: _controller.lineStatus,
+              onChanged: (value) {
+                setState(() {
+                  print('on $value');
+                  _controller.lineStatus = value;
+                });
+              }),
+          Text(Localization.of(context, 'on')),
+          Radio(
+              value: 'off',
+              groupValue: _controller.lineStatus,
+              onChanged: (value) {
+                setState(() {
+                  print('off $value');
+                  _controller.lineStatus = value;
+                });
+              }),
+          Text(Localization.of(context, 'off')),
+        ],
+      ),
     );
+
+//    return SwitchListTile(
+//      title: Text(Localization.of(context, 'line_status')),
+//      value: _controller.lineStatus,
+//      onChanged: (val) {
+//        setState(() {
+//          _controller.lineStatus = !_controller.lineStatus;
+//        });
+//      },
+//    );
   }
 
   Widget _buildAMPField() {

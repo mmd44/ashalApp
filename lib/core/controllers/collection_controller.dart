@@ -162,6 +162,8 @@ class CollectionController {
 
   String get discount => _clientSelectedHistory?.discount?.toString() ?? '';
 
+  double get discountValue => _clientSelectedHistory?.discount ?? 0;
+
   String get flatPrice => _clientSelectedHistory?.flatPrice?.toString() ?? '';
 
   String get bill => _clientSelectedHistory?.bill?.toString() ?? '';
@@ -221,8 +223,7 @@ class CollectionController {
       DBProvider.db.getClient(id).then((client) async {
         _client = client;
         _collection.referenceId = id;
-        if (_client?.monthlyDataReferences != null &&
-            _client.monthlyDataReferences.length > 0) {
+        if (_client!=null) {
           return DBProvider.db.getUnpaidHistory(id);
         } else
           return new List<History>();

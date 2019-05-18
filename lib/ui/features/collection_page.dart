@@ -157,11 +157,14 @@ class _CollectionPageState extends State<CollectionPage>
           ),
           _buildSubFeeField(),
           _buildDiscountField(),
-          Row(
-            children: <Widget>[
-              Expanded(flex: 1, child: _buildOldMeteringField()),
-              Expanded(flex: 1, child: _buildNewMeteringField()),
-            ],
+          Visibility(
+            visible: _controller.isSubMetered,
+            child: Row(
+              children: <Widget>[
+                Expanded(flex: 1, child: _buildOldMeteringField()),
+                Expanded(flex: 1, child: _buildNewMeteringField()),
+              ],
+            ),
           ),
           _buildBillField(),
           _buildCollectedAmountField()
@@ -211,10 +214,10 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   Widget _buildSubFeeField() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Visibility(
-        visible: _controller.isSubMetered,
+    return  Visibility (
+      visible: _controller.isSubMetered&&false,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: TextField(
             enabled: false,
             controller: _subFeeController,
@@ -227,10 +230,10 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   Widget _buildDiscountField() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Visibility(
-        visible: !_controller.isSubFlatPrice,
+    return  Visibility(
+      visible: !_controller.isSubFlatPrice && _controller.discountValue!=0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: TextField(
             enabled: false,
             controller: _discountController,

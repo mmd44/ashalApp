@@ -131,6 +131,7 @@ class Client {
             ? json["monthlyDataReferences"]
                 .replaceAll("\[", "")
                 .replaceAll("\]", "")
+                .replaceAll(" ","")
                 .split(',')
             : [],
       );
