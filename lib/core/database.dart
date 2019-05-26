@@ -165,7 +165,7 @@ class DBProvider {
     final db = await databaseInit;
     var res = await db.query("$CLIENT_TABLE",
         where: "referenceId = ?",
-        whereArgs: [referenceId]); //ToDo removed a check
+        whereArgs: [referenceId]);
     return res.isNotEmpty ? Client.fromJson(res.first) : null;
   }
 
@@ -227,7 +227,7 @@ class DBProvider {
   Future<int> updateMeterReading(MeterReading newMeterReadingModel) async {
     final db = await databaseInit;
     var res = await db.update(
-        "$METER_READING_TABLE", newMeterReadingModel.toJson(),
+        "$METER_READING_TABLE", newMeterReadingModel.toJsonUpdate(),
         where: "referenceId = ?",
         whereArgs: [newMeterReadingModel.referenceId]);
     return res;
@@ -343,10 +343,10 @@ class DBProvider {
     return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
   }
 
-  Future<List<History>> getHistoryListByRefId(int refrenceId) async {
+  Future<List<History>> getHistoryListByRefId(int referenceId) async {
     final db = await databaseInit;
     var res = await db.rawQuery(
-        "SELECT * FROM $HISTORY_TABLE WHERE parentId = ($refrenceId) ORDER BY entryDateTime DESC;");
+        "SELECT * FROM $HISTORY_TABLE WHERE parentId = ($referenceId) ORDER BY entryDateTime DESC;");
     return res.isNotEmpty ? res.map((c) => History.fromJson(c)).toList() : [];
   }
   Future<History> getLastHistory(int referenceId) async {

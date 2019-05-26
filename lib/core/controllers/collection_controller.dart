@@ -45,8 +45,8 @@ class CollectionController {
   }
 
   initDummy() async {
-    await DBProvider.db.reCreateDatabase();
 
+    /*
     await DBProvider.db.insertClient(Client.from(
         id: '1',
         referenceId: 2222,
@@ -144,7 +144,9 @@ class CollectionController {
         collected: 36494,
         payers: ['Ali', 'Hussein'],
       ),
-    ]);
+    ]);*/
+
+
   }
 
   bool get isCollectionValid =>
@@ -263,7 +265,7 @@ class CollectionController {
     DBProvider.db.updateMeterCollection(_collectedAmount).then((result) {
       _view.onSuccess('collection_success');
     }).catchError((error) {
-      print('DBinsertCollectionError: $error');
+      print('DBupdateCollectionError: $error');
       _view.onError('collection_error');
     }).whenComplete(() {
       isLoading = false;

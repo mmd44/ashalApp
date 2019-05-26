@@ -166,7 +166,7 @@ class _MeteringPageState extends State<MeteringPage>
       width: 70,
       height: 70,
       decoration: new BoxDecoration(
-        color: const Color(0xff7c94b6),
+        color: const Color(0xff3c90b6),
         image: new DecorationImage(
           image: new FileImage(_controller.meterImageFile),
           fit: BoxFit.fill,

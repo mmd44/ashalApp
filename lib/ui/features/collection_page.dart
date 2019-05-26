@@ -74,7 +74,7 @@ class _CollectionPageState extends State<CollectionPage>
             visible: _controller.client != null,
             child: Column(
               children: <Widget>[
-                _buildDate(),
+                _buildDateToCollect(),
                 _buildHistoryFields(),
                 _buildAmountTBC(),
                 _buildConfirmButton(),
@@ -387,7 +387,7 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   static DateFormat dateFormatter = new DateFormat("y-M-d");
-  Widget _buildDate() {
+  Widget _buildDateToCollect() {
     List<DropdownMenuItem<History>> defaultV = new List();
     defaultV.add(new DropdownMenuItem<History>(value: null, child: Text("")));
     return Padding(

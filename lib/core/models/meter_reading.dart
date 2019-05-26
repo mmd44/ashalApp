@@ -50,4 +50,15 @@ class MeterReading
     "lineStatus": lineStatus,
     "prepaid": prepaid,
   };
+
+  Map<String, dynamic> toJsonUpdate() => {
+    "referenceId": referenceId,
+    "reading": reading,
+    "date": date?.millisecondsSinceEpoch,
+    "meterImage": meterImage,
+    "subType": subType.value,
+    "amp": amp,
+    "lineStatus": lineStatus,
+    "prepaid": prepaid,
+  };
 }

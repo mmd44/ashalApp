@@ -123,7 +123,7 @@ class Client {
             ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeAdded"])
             : null,
         json["dateTimeDeleted"] != null
-            ? DateTime.parse(json["dateTimeDeleted"])
+            ? DateTime.fromMillisecondsSinceEpoch(json["dateTimeDeleted"])
             : null,
         json["outstanding"],
         json["comment"],
