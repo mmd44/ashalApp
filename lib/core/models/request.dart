@@ -16,7 +16,7 @@ String requestToJson(Request data) {
 }
 
 class Request {
-  String id;
+  int id;
   int referenceId;
   String lineStatus;
   int amp;

@@ -51,6 +51,7 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
                 _buildSyncClientButton(),
                 _buildSyncMeterReadingButton(),
                 _buildSyncCollectionReadingButton(),
+                _buildSyncRequestsButton(),
                 Visibility(
                     visible: _controller != null &&
                         _controller.collection &&
@@ -148,6 +149,22 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
                     borderRadius: new BorderRadius.circular(30.0)))));
   }
 
+  Widget _buildSyncRequestsButton() {
+    return Padding(
+        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 50.0),
+        child: ButtonTheme(
+            minWidth: 200.0,
+            child: new RaisedButton(
+                child:  Text(Localization.of(context, 'sync_requests')),
+                onPressed: API.ipAddress.isEmpty
+                    ? null
+                    : () async {
+                  await _controller.syncRequests();
+                  setState(() {});
+                },
+                shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(30.0)))));
+  }
   void _showSyncDialog()
   {
     if (widget.showDialog) {
