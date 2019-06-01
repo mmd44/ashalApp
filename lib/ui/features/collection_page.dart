@@ -91,7 +91,8 @@ class _CollectionPageState extends State<CollectionPage>
   }
 
   @override
-  void onSuccess(String msg) {
+  void onSuccess(String msg,{bool initTextControllers = false}) {
+    if (initTextControllers) _initTextFieldControllers();
     setState(() {});
     showDialogMessage(context,
         title: 'success',
@@ -416,9 +417,6 @@ class _CollectionPageState extends State<CollectionPage>
                   hint: Text(Localization.of(context, 'date')),
                   onChanged: (newVal) async {
                     await _controller.setupClientSelectedHistory(newVal);
-                    setState(() {
-                      _initTextFieldControllers();
-                    });
                   }),
             ),
           ),

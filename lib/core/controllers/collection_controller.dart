@@ -30,6 +30,7 @@ class CollectionController {
     _collection.historyId = _clientSelectedHistory.historyId;
     _collectedAmount = await DBProvider.db.getMeterCollectionByHistroyId(
         client?.referenceId, _clientSelectedHistory?.historyId);
+    _view.onSuccess(null,initTextControllers: true);
   }
 
   String get clientArea => _client?.area;
@@ -203,8 +204,7 @@ class CollectionController {
     if (value != null) {
       input = double.tryParse(value);
     }
-    double test = double.tryParse(_clientSelectedHistory?.bill?.toString()) ?? 0 -
-                  _collectedAmount?.amount ?? 0;
+    double test = (double.tryParse(_clientSelectedHistory?.bill?.toString()) ?? 0) - (_collectedAmount?.amount ?? 0);
     if (input != null && input <= test) {
       isValidCollection = true;
       _collection.amount = input;
@@ -231,8 +231,11 @@ class CollectionController {
           return new List<History>();
       }).then((historyList) {
         clientHistoryList = historyList;
-        if(historyList.length>0)
-          _clientSelectedHistory=historyList[0];
+        if(historyList.length>0) {
+          _clientSelectedHistory = historyList[0];
+          setupClientSelectedHistory(_clientSelectedHistory);
+
+        }
 
         _view.onSetClientSuccess();
       }).catchError((error) {
@@ -296,5 +299,5 @@ class CollectionController {
 abstract class InputPageView {
   void onSetClientSuccess();
   void onError(String error, {bool initTextControllers = true});
-  void onSuccess(String msg);
+  void onSuccess(String msg,{bool initTextControllers = false});
 }

@@ -143,12 +143,12 @@ class SyncController implements SocketCallBack {
     _service.syncMeterReadings(readings).then((clientSyncResponse)async {
       DBProvider.db.deleteAllMeterReading();
       syncClientHistoryResponse(clientSyncResponse);
-      ProjectSharedPreferences.instance.setMeterReadingSync(true);
+//      ProjectSharedPreferences.instance.setMeterReadingSync(true);
       _readings = true;
       _syncCallBack.onSyncSuccess("reading","sync_reading_success");
     }).catchError((error) {
       _readings = false;
-      ProjectSharedPreferences.instance.setMeterReadingSync(false);
+//      ProjectSharedPreferences.instance.setMeterReadingSync(false);
       _syncCallBack.onSyncError("reading","sync_reading_error");
     });
   }
@@ -183,10 +183,10 @@ class SyncController implements SocketCallBack {
     _service.syncMeterCollection(collections).then((clientSyncResponse)async {
       DBProvider.db.deleteAllMeterCollection();
       syncClientHistoryResponse(clientSyncResponse);
-      ProjectSharedPreferences.instance.setCollectionSync(true);
+//      ProjectSharedPreferences.instance.setCollectionSync(true);
       _syncCallBack.onSyncSuccess("collection","sync_collection_success");
     }).catchError((error) {
-      ProjectSharedPreferences.instance.setCollectionSync(false);
+//      ProjectSharedPreferences.instance.setCollectionSync(false);
       print('errorClientService $error');
       _syncCallBack.onSyncError("collection","sync_collection_error");
     });

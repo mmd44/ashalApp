@@ -41,7 +41,7 @@ class MeteringController {
 
   init() {
     setupDB();
-    initDummy();
+    //initDummy();
     resetFields();
   }
 

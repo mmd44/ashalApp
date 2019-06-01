@@ -123,7 +123,8 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   @override
-  void onSuccess(String msg) {
+  void onSuccess(String msg,{bool initTextControllers = false}) {
+    if (initTextControllers) _initTextFieldControllers();
     setState(() {});
     showDialogMessage(context,
         title: 'success',

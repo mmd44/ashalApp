@@ -135,7 +135,7 @@ class History {
       json["prepaid"]);
 
   factory History.fromJson(Map<String, dynamic> json) => new History(
-      json["_id"],
+      json["id"],
       json["historyId"],
       json["entryDateTime"] != null
           ? DateTime.fromMillisecondsSinceEpoch(json["entryDateTime"])

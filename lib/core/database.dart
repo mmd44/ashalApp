@@ -284,8 +284,8 @@ class DBProvider {
     final db = await databaseInit;
     var res = await db.update(
         "$METER_COLLECTION_TABLE", newMeterCollectionModel.toJson(),
-        where: "referenceId = ?",
-        whereArgs: [newMeterCollectionModel.referenceId]);
+        where: "referenceId = ? and historyId = ?",
+        whereArgs: [newMeterCollectionModel.referenceId,newMeterCollectionModel.historyId]);
     if (res <= 0)
       throw new APIException("database.update_meter_collection_error", "");
     return res;

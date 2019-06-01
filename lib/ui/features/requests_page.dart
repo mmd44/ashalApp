@@ -269,7 +269,8 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
   }
 
   @override
-  void onSuccess(String msg) {
+  void onSuccess(String msg,{bool initTextControllers = false}) {
+    if (initTextControllers) _initTextFieldControllers();
     setState(() {});
     showDialogMessage(context,
         title: 'success',
