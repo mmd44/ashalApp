@@ -2,7 +2,7 @@ class API {
 
   static String ipAddress='';
   // host ToDo: set this when ip is obtained before sync
-  static String host = 'http://$ipAddress:8889/lib-service';
+  static String host = 'http://$ipAddress:8889/';
 
   // endpoints
   static String client = "$host/sync_clients";
