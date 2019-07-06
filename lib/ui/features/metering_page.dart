@@ -206,6 +206,7 @@ class _MeteringPageState extends State<MeteringPage>
           Text(Localization.of(context, 'line_status')),
           Radio(
               value: 'on',
+              activeColor: Theme.Colors.itemCard,
               groupValue: _controller.lineStatus,
               onChanged: (value) {
                 setState(() {
@@ -216,6 +217,7 @@ class _MeteringPageState extends State<MeteringPage>
           Text(Localization.of(context, 'on')),
           Radio(
               value: 'off',
+              activeColor: Theme.Colors.itemCard,
               groupValue: _controller.lineStatus,
               onChanged: (value) {
                 setState(() {
@@ -302,6 +304,7 @@ class _MeteringPageState extends State<MeteringPage>
           Text(Localization.of(context, 'is_prepaid')),
           Radio(
               value: 'yes',
+              activeColor: Theme.Colors.itemCard,
               groupValue: _controller.isPrepaid,
               onChanged: (value) {
                 setState(() {
@@ -311,6 +314,7 @@ class _MeteringPageState extends State<MeteringPage>
           Text(Localization.of(context, 'yes')),
           Radio(
               value: 'no',
+              activeColor: Theme.Colors.itemCard,
               groupValue: _controller.isPrepaid,
               onChanged: (value) {
                 setState(() {

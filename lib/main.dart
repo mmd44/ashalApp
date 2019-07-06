@@ -6,6 +6,7 @@ import 'package:ashal/ui/home/home_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ashal/localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ashal/ui/theme.dart' as Theme;
 
 void main() => runApp(MainApp());
 
@@ -26,6 +27,9 @@ class MainAppState extends State<MainApp> {
     return new MaterialApp(
         key: key,
         title: 'Ashal Mobile',
+        theme: ThemeData(
+          primaryColor: Theme.Colors.itemCard,
+        ),
         supportedLocales: LocalizationDelegate.supportedLocales,
         localizationsDelegates: [
           LocalizationDelegate(),

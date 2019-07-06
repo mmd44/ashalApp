@@ -86,8 +86,10 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 50.0),
         child: ButtonTheme(
           minWidth: 200.0,
+          buttonColor: Theme.Colors.itemCard,
           child: new RaisedButton(
               child:  Text(Localization.of(context, 'sync_clients')),
+              textColor: Theme.Colors.appBarTitle,
               onPressed: API.ipAddress.isEmpty
                   ? null
                   : () async {
@@ -103,8 +105,10 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 50.0),
         child: ButtonTheme(
             minWidth: 200.0,
+            buttonColor: Theme.Colors.itemCard,
             child: new RaisedButton(
                 child:  Text(Localization.of(context, 'sync_meter_reading')),
+                textColor: Theme.Colors.appBarTitle,
                 onPressed: API.ipAddress.isEmpty || ProjectSharedPreferences.instance.isMeterReadingSync()
                     ? null
                     : () async {
@@ -120,8 +124,10 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 50.0),
         child: ButtonTheme(
             minWidth: 200.0,
+            buttonColor: Theme.Colors.itemCard,
             child: new RaisedButton(
                 child: Text(Localization.of(context, 'sync_collection_reading')),
+                textColor: Theme.Colors.appBarTitle,
                 onPressed: API.ipAddress.isEmpty || ProjectSharedPreferences.instance.isCollectionSync()
                     ? null
                     : () async {
@@ -137,8 +143,10 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 50.0),
         child: ButtonTheme(
             minWidth: 200.0,
+            buttonColor: Theme.Colors.itemCard,
             child: new RaisedButton(
                 child: Text(Localization.of(context, "clear_data")),
+                textColor: Theme.Colors.appBarTitle,
                 onPressed: API.ipAddress.isEmpty
                     ? null
                     : () async {
@@ -154,8 +162,10 @@ class _SyncPageState extends State<SyncPage> implements SyncCallBack {
         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 50.0),
         child: ButtonTheme(
             minWidth: 200.0,
+            buttonColor: Theme.Colors.itemCard,
             child: new RaisedButton(
                 child:  Text(Localization.of(context, 'sync_requests')),
+                textColor: Theme.Colors.appBarTitle,
                 onPressed: API.ipAddress.isEmpty
                     ? null
                     : () async {
