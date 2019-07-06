@@ -136,7 +136,7 @@ class _RequestsPageState extends State<RequestsPage> implements InputPageView {
               ? null
               : Localization.of(context, 'amp_input_error')),
       onChanged: (val) {
-        int value = int.tryParse(val);
+        double value = double.tryParse(val);
         setState(() {
           _controller.amp = value;
         });

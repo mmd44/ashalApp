@@ -65,7 +65,7 @@ class DBProvider {
         '`entryDateTime` INTEGER,'
         '`parentId` INTEGER,'
         '`subType` VARCHAR(800),'
-        '`amp` INTEGER,'
+        '`amp` DOUBLE,'
         '`flatPrice` DOUBLE,'
         '`oldMeter` DOUBLE,'
         '`newMeter` DOUBLE,'
@@ -113,7 +113,7 @@ class DBProvider {
         '`subType` TEXT,'
         '`lineStatus` TEXT,'
         '`prepaid` TEXT,'
-        '`amp` INTEGER,'
+        '`amp` DOUBLE,'
         '`meterImage` TEXT,'
         '`date` INTEGER);');
     await db.execute('CREATE TABLE `$METER_COLLECTION_TABLE` ('
@@ -127,7 +127,7 @@ class DBProvider {
         '`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
         '`referenceId` INTEGER NOT NULL,'
         '`lineStatus` TEXT,'
-        '`amp` INTEGER,'
+        '`amp` DOUBLE,'
         '`subType` TEXT,'
         '`comment` TEXT,'
         '`prepaid` TEXT,'
@@ -135,8 +135,9 @@ class DBProvider {
   }
 
   initDB() async {
-    int dbVersion =
-        await ProjectSharedPreferences.instance.getDataBaseVersion();
+//    int dbVersion =
+//        await ProjectSharedPreferences.instance.getDataBaseVersion();
+    int dbVersion =1000;
     print("DATA BASE VESION $dbVersion");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "ashal-$dbVersion.db");

@@ -20,7 +20,7 @@ class MeterReading
   DateTime date;
   String meterImage;
   SubscriptionType subType;
-  int amp;
+  double amp;
   String lineStatus;
   String prepaid;
 

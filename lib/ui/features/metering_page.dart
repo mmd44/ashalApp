@@ -249,7 +249,7 @@ class _MeteringPageState extends State<MeteringPage>
           errorText:
               _controller.isValidAMPField ? null : Localization.of(context, 'amp_input_error')),
       onChanged: (val) {
-        int value = int.tryParse(val);
+        double value = double.tryParse(val);
         setState(() {
           _controller.amp = value;
         });
@@ -258,6 +258,7 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   Widget _buildSubType() {
+    var subTypes=_controller.subType==SubscriptionType.meter?[SubscriptionType.meter]:SubscriptionType.values;
     return Row(
       children: <Widget>[
         Expanded(
@@ -269,7 +270,7 @@ class _MeteringPageState extends State<MeteringPage>
           child: Center(
             child: DropdownButton<SubscriptionType>(
                 value: _controller.subType,
-                items: SubscriptionType.values.map((SubscriptionType val) {
+                items: subTypes.map((SubscriptionType val) {
                   return new DropdownMenuItem<SubscriptionType>(
                     value: val,
                     child: Text(val.value),

@@ -19,7 +19,7 @@ class Request {
   int id;
   int referenceId;
   String lineStatus;
-  int amp;
+  double amp;
   SubscriptionType subType;
   String prepaid;
   String comment;

@@ -191,7 +191,7 @@ class MeteringController {
     _meterReading.lineStatus = val;
   }
 
-  set amp(int val) {
+  set amp(double val) {
     if (val != null && val >= 0) {
       _meterReading.amp = val;
       isValidAMPField = true;

@@ -150,7 +150,7 @@ class RequestsController {
     _request.lineStatus=val;
   }
 
-  set amp(int val) {
+  set amp(double val) {
     if (val != null && val >= 0) {
       _request.amp = val;
       isValidAMPField = true;
