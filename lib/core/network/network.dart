@@ -39,7 +39,11 @@ class HttpRequest {
 
       if (response.bodyBytes == null || response.bodyBytes.isEmpty) return null;
       print('parsing JSON ${utf8.decode(response.bodyBytes)}');
-      return json.decode(utf8.decode(response.bodyBytes));
+      try{
+        return json.decode(utf8.decode(response.bodyBytes));
+      }on Exception{
+        return utf8.decode(response.bodyBytes);
+      }
     });
   }
 
@@ -64,7 +68,11 @@ class HttpRequest {
       }
 
       if (response.bodyBytes == null || response.bodyBytes.isEmpty) return null;
-      return json.decode(utf8.decode(response.bodyBytes));
+      try{
+        return json.decode(utf8.decode(response.bodyBytes));
+      }on Exception{
+        return utf8.decode(response.bodyBytes);
+      }
     });
   }
 
@@ -110,7 +118,11 @@ class HttpRequest {
           }
         }
       }
-      return json.decode(utf8.decode(response.bodyBytes));
+      try{
+        return json.decode(utf8.decode(response.bodyBytes));
+      }on Exception{
+        return utf8.decode(response.bodyBytes);
+      }
     });
   }
 
@@ -145,7 +157,11 @@ class HttpRequest {
         }
       }
       if (response.bodyBytes == null || response.bodyBytes.isEmpty) return null;
-      return json.decode(utf8.decode(response.bodyBytes));
+      try{
+        return json.decode(utf8.decode(response.bodyBytes));
+      }on Exception{
+        return utf8.decode(response.bodyBytes);
+      }
     });
   }
 

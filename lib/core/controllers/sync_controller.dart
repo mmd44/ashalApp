@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ashal/core/models/sync_meter_reading_response.dart';
 import 'package:ashal/core/shared_perferences.dart';
 import 'package:ashal/core/database.dart';
 import 'package:ashal/core/models/client.dart';
@@ -142,7 +143,7 @@ class SyncController implements SocketCallBack {
     print(API.reading);
     _service.syncMeterReadings(readings).then((clientSyncResponse)async {
       DBProvider.db.deleteAllMeterReading();
-      syncClientHistoryResponse(clientSyncResponse);
+      syncMeterHistoryResponse(clientSyncResponse);
 //      ProjectSharedPreferences.instance.setMeterReadingSync(true);
       _readings = true;
       _syncCallBack.onSyncSuccess("reading","sync_reading_success");
@@ -163,8 +164,14 @@ class SyncController implements SocketCallBack {
     ClientService _service = ClientService();
     print(API.reading);
     _service.syncRequests(requests).then((res)async {
-      DBProvider.db.deleteAllRequest();
-      _syncCallBack.onSyncSuccess("request","sync_requests_success");
+      if("ok".compareTo(res)==0)
+      {
+          DBProvider.db.deleteAllRequest();
+          _syncCallBack.onSyncSuccess("request","sync_requests_success");
+      }else{
+        _syncCallBack.onSyncError("request","sync_requests_error");
+      }
+
     }).catchError((error) {
       _syncCallBack.onSyncError("request","sync_requests_error");
     });
@@ -181,10 +188,14 @@ class SyncController implements SocketCallBack {
     ClientService _service = ClientService();
     print(API.collection);
     _service.syncMeterCollection(collections).then((clientSyncResponse)async {
-      DBProvider.db.deleteAllMeterCollection();
-      syncClientHistoryResponse(clientSyncResponse);
-//      ProjectSharedPreferences.instance.setCollectionSync(true);
-      _syncCallBack.onSyncSuccess("collection","sync_collection_success");
+      if("ok".compareTo(clientSyncResponse)==0)
+      {
+          DBProvider.db.deleteAllMeterCollection();
+          //      ProjectSharedPreferences.instance.setCollectionSync(true);
+          _syncCallBack.onSyncSuccess("collection","sync_collection_success");
+      }else{
+        _syncCallBack.onSyncError("collection","sync_collection_error");
+      }
     }).catchError((error) {
 //      ProjectSharedPreferences.instance.setCollectionSync(false);
       print('errorClientService $error');
@@ -229,6 +240,12 @@ class SyncController implements SocketCallBack {
       print('errorClientService $error');
       _syncCallBack.onSyncError("client","sync_client_error");
     });
+  }
+
+  syncMeterHistoryResponse(MeterSyncResponse clientSyncResponse) async
+  {
+    await DBProvider.db.deleteAllHistory();
+    await DBProvider.db.insertHistory(clientSyncResponse.history);
   }
 
   syncClientHistoryResponse(ClientSyncResponse clientSyncResponse) async

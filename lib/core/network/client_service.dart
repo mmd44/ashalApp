@@ -2,6 +2,7 @@ import 'package:ashal/core/models/amount_collection.dart';
 import 'package:ashal/core/models/meter_reading.dart';
 import 'package:ashal/core/models/request.dart';
 import 'package:ashal/core/models/sync_client_response.dart';
+import 'package:ashal/core/models/sync_meter_reading_response.dart';
 import 'package:ashal/core/network/api.dart';
 import 'package:ashal/core/network/network.dart';
 import 'dart:convert';
@@ -26,21 +27,21 @@ class ClientService {
 //    });
   }
 
-  Future<ClientSyncResponse> syncMeterCollection(List<AmountCollection> collections) {
+  Future<String> syncMeterCollection(List<AmountCollection> collections) {
     return HttpRequest.post(API.collection,collections)
         .then((dynamic res) {
-      return ClientSyncResponse.fromJson(res);
+      return res;
     });
   }
 
-  Future<ClientSyncResponse> syncMeterReadings(List<MeterReading> readings) {
+  Future<MeterSyncResponse> syncMeterReadings(List<MeterReading> readings) {
     return HttpRequest.post(API.reading,readings)
         .then((dynamic res) {
-      return ClientSyncResponse.fromJson(res);
+      return MeterSyncResponse.fromJson(res);
     });
   }
 
-  Future syncRequests(List<Request> requests) {
+  Future<String> syncRequests(List<Request> requests) {
     return HttpRequest.post(API.requests,requests)
         .then((dynamic res) {
       return res;

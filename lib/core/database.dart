@@ -375,9 +375,9 @@ class DBProvider {
         client.monthlyDataReferences.length > 0) {
       historyList= await getHistoryList(client.monthlyDataReferences);
     }
-//    List<History> historyList2 = await getHistoryListByRefId(client.referenceId);
-//    if(historyList2!=null)
-//      historyList=historyList2;
+    List<History> historyList2 = await getHistoryListByRefId(client.referenceId);
+    if(historyList2!=null && historyList2.length!=historyList.length && !historyList2.isEmpty)
+      historyList=historyList2;
     if (historyList.isEmpty) return List<History>();
     List<History> unpaidHistories = new List<History>();
     List<DateTime> dates = new List();

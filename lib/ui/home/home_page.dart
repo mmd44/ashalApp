@@ -7,7 +7,12 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return new Scaffold( appBar:  AppBar(titleSpacing: NavigationToolbar.kMiddleSpacing,flexibleSpace: Padding(padding:const EdgeInsets.only(top:8)
+        ,child:new Image.asset(
+        'assets/img/ashal_logo.png',
+        height: 60,
+        fit: BoxFit.scaleDown,
+      ))),
       body: new HomePageBody(),
     );
   }
@@ -25,7 +30,8 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return new Column(
       children: <Widget>[
-        new GradientAppBar("Ashal"),
+
+       // new GradientAppBar("Ashal"),
         new CardList(),
       ],
     );

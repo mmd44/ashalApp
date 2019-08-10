@@ -203,6 +203,7 @@ class MeteringController {
 
   String get ampStr => _meterReading?.amp?.toString() ?? '';
 
+  SubscriptionType get historySubType => _clientLastHistory?.subType ?? SubscriptionType.meter;
   set subType(SubscriptionType val) {
     _meterReading.subType = val;
     if (!isSubMetered) {

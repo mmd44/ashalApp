@@ -260,7 +260,7 @@ class _MeteringPageState extends State<MeteringPage>
   }
 
   Widget _buildSubType() {
-    var subTypes=_controller.subType==SubscriptionType.meter?[SubscriptionType.meter]:SubscriptionType.values;
+    var subTypes=_controller.historySubType==SubscriptionType.meter?[SubscriptionType.meter]:SubscriptionType.values;
     return Row(
       children: <Widget>[
         Expanded(
