@@ -4,15 +4,18 @@ import 'package:ashal/ui/home/card_list.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return new Scaffold( appBar:  AppBar(titleSpacing: NavigationToolbar.kMiddleSpacing,flexibleSpace: Padding(padding:const EdgeInsets.only(top:8)
-        ,child:new Image.asset(
-        'assets/img/ashal_logo.png',
-        height: 60,
-        fit: BoxFit.scaleDown,
-      ))),
+    return new Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+          title: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: new Image.asset(
+                'assets/img/ashal_logo.png',
+                height: 60,
+                fit: BoxFit.scaleDown,
+              ))),
       body: new HomePageBody(),
     );
   }
@@ -24,14 +27,10 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
-
-
   @override
   Widget build(BuildContext context) {
     return new Column(
       children: <Widget>[
-
-       // new GradientAppBar("Ashal"),
         new CardList(),
       ],
     );
@@ -42,11 +41,4 @@ class _HomePageBodyState extends State<HomePageBody> {
     super.initState();
     ProjectSharedPreferences.instance.init();
   }
-
 }
-
-
-
-
-
-
